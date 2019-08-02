@@ -1,16 +1,35 @@
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import App from './App.vue'
+import Vue from 'vue';
+import firebase from 'firebase';
+import App from './App.vue';
+import router from './router';
+import vuetify from './plugins/vuetify';
 
-import routes from './routes'
+Vue.config.productionTip = false;
 
-Vue.config.productionTip = false
+let app = '';
+const config = {
+  apiKey: "AIzaSyBvaKgMQ1FEkRHP4NjcMCsd6iCHfz392fo",
+    authDomain: "scanbage.firebaseapp.com",
+    databaseURL: "https://scanbage.firebaseio.com",
+    projectId: "scanbage",
+    storageBucket: "",
+    messagingSenderId: "691846540350",
+    appId: "1:691846540350:web:6f4fafc83a4e028f"
+};
 
-Vue.use(VueRouter);
+firebase.initializeApp(config);
 
-const router = new VueRouter({routes});
+/*firebase.app().delete().then(function() {
+  firebase.initializeApp(config);
+});*/
 
-new Vue({
-  router,
-  render: h => h(App),
-}).$mount('#app');
+firebase.auth().onAuthStateChanged(() => {
+  if (!app) {
+    /* eslint-disable no-new */
+    app = new Vue({
+      router,
+      vuetify,
+      render: h => h(App)
+    }).$mount('#app');
+  }
+});
