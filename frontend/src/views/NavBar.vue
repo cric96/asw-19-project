@@ -16,7 +16,7 @@
       </v-toolbar-items>
       <!-- sign out button -->
       <v-toolbar-items class='hidden-xs-only' v-else>
-        <v-btn flat @click='logoutFromFirebase'>
+        <v-btn text @click='logoutFromFirebase'>
           <v-icon right>delete_sweep</v-icon>Logout
         </v-btn>
       </v-toolbar-items>
@@ -25,7 +25,7 @@
 
 <script>
   import firebase from 'firebase';
- 
+
 export default {
   computed: {
     items () {
@@ -55,12 +55,12 @@ export default {
         });
       }
       //var token = User.getToken();
-      return user!=null;
+      return user;
     }
   },
   methods: {
     logoutFromFirebase () {
-        firebase.auth().signOut().then(function() {
+        firebase.auth().signOut().then(() => {
         // Sign-out successful.
         this.$router.replace('/login')
       }, function(error) {

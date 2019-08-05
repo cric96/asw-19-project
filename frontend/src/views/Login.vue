@@ -6,8 +6,8 @@
           class="mx-2"
           src="https://image.freepik.com/free-vector/garbage-background-design_1294-88.jpg"
           :aspect-ratio="4/3"
-          height=20dp
-          width=20dp
+          height="20dp"
+          width="20dp"
           max-height="40dp"
           max-width="40dp"
           contain
@@ -95,11 +95,26 @@ export default {
         });
     },
     loginWithFb () {
+        const provider = new firebase.auth.FacebookAuthProvider();
+        firebase.auth().signInWithPopup(provider).then((result) => {
+            var token = result.credential.accessToken;
+            var user = result.user;
+            this.$router.replace('/home')
+        }).catch(function(error) {
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            var email = error.email;
+            var credential = error.credential;
+            console.log(errorCode);
+            console.log(errorMessage);
+            console.log(email);
+            console.log(credential);
 
+        });
     },
     loginWithGoogle () {
         const provider = new firebase.auth.GoogleAuthProvider();
-        firebase.auth().signInWithPopup(provider).then(function(result) {
+        firebase.auth().signInWithPopup(provider).then((result) => {
             var token = result.credential.accessToken;
             var user = result.user;
             this.$router.replace('/home')
