@@ -25,26 +25,26 @@
           ></v-text-field>
 
           <v-text-field
-            v-model="confirmPassword"
-            label="confirm Password"
-            :rules="passwordRules"
-            required
-            :append-icon="confirmPasswordShow ? 'visibility' : 'visibility_off'"
-            :type="confirmPasswordShow ? 'text' : 'password'"
-             @click:append="confirmPasswordShow = !confirmPasswordShow"
+          v-model="confirmPassword"
+          label="confirm Password"
+          :rules="passwordRules"
+          required
+          :append-icon="confirmPasswordShow ? 'visibility' : 'visibility_off'"
+          :type="confirmPasswordShow ? 'text' : 'password'"
+          @click:append="confirmPasswordShow = !confirmPasswordShow"
           ></v-text-field>
 
           <v-btn
-            :disabled="!valid"
-            color="success"
-            @click="validate"
+          :disabled="!valid"
+          color="success"
+          @click="validate"
           >
-            Register
+          Register
           </v-btn>
 
           <v-btn
-            color="error"
-            @click="reset"
+          color="error"
+          @click="reset"
           >
             Reset Form
           </v-btn>

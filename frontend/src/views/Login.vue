@@ -2,30 +2,40 @@
   <v-container>
     <v-layout align-center justify-center>
     <!--TODO. use src set for dimension-->
-      <v-img
-          class="mx-2"
-          src="https://image.freepik.com/free-vector/garbage-background-design_1294-88.jpg"
-          :aspect-ratio="4/3"
-          height="20dp"
-          width="20dp"
-          max-height="40dp"
-          max-width="40dp"
+    <v-flex xs12>
+        <v-img
+          :src="require('../assets/logo.png')"
+          class="my-3"
           contain
+          height="200"
         ></v-img>
+      </v-flex>
+
     </v-layout>
-    <v-layout row wrap>
+    <v-layout row wrap align-center justify-center   width: 50%>
       <v-flex>
         <v-form
+          align-center
+          justify-center
           ref="form"
           v-model="valid"
           lazy-validation
         >
-          <v-text-field
+          <!--<v-text-field
             v-model="email"
             :rules="emailRules"
             label="E-mail"
             required
-          ></v-text-field>
+          ></v-text-field>-->
+
+          <v-text-field
+              v-model="email"
+              label="E-mail"
+              :outlined=true
+              :solo=true
+              :clearable=true
+              required
+            ></v-text-field>
 
           <v-text-field
             v-model="password"
@@ -48,7 +58,7 @@
         </v-form>
         <button class="loginBtn loginBtn--facebook" @click="loginWithFb">
             Login with Facebook
-        </button>
+        </button><br>
 
         <button class="loginBtn loginBtn--google" @click="loginWithGoogle">
             Login with Google
@@ -95,39 +105,21 @@ export default {
         });
     },
     loginWithFb () {
-        const provider = new firebase.auth.FacebookAuthProvider();
-        firebase.auth().signInWithPopup(provider).then((result) => {
-            var token = result.credential.accessToken;
-            var user = result.user;
-            this.$router.replace('/home')
-        }).catch(function(error) {
-            var errorCode = error.code;
-            var errorMessage = error.message;
-            var email = error.email;
-            var credential = error.credential;
-            console.log(errorCode);
-            console.log(errorMessage);
-            console.log(email);
-            console.log(credential);
-
-        });
+        var provider = new firebase.auth.FacebookAuthProvider();
+        this.providerLogin(provider)
     },
     loginWithGoogle () {
-        const provider = new firebase.auth.GoogleAuthProvider();
+        var provider = new firebase.auth.GoogleAuthProvider();
+        this.providerLogin(provider)
+    },
+    providerLogin(provider) {
         firebase.auth().signInWithPopup(provider).then((result) => {
+          console.log("tutto ok")
             var token = result.credential.accessToken;
             var user = result.user;
             this.$router.replace('/home')
         }).catch(function(error) {
-            var errorCode = error.code;
-            var errorMessage = error.message;
-            var email = error.email;
-            var credential = error.credential;
-            console.log(errorCode);
-            console.log(errorMessage);
-            console.log(email);
-            console.log(credential);
-
+            console.log(error)
         });
     }
   }

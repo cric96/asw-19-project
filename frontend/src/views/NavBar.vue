@@ -1,32 +1,42 @@
 <template>
+    <div>
     <!-- display the navigation bar -->
-    <v-toolbar >
-      <v-toolbar-title >
-        Scanbage
-      </v-toolbar-title>
-      <v-spacer></v-spacer>
-
+    <v-toolbar dark>
+      <v-toolbar-title >Scanbage</v-toolbar-title>
       <!-- navigation bar links -->
-      <v-toolbar-items class='hidden-xs-only' v-if="!userLoggedIn">
-        <v-btn tile color="teal" dark v-for="item in items" :key="item.title" :to="item.link">
+      <v-spacer></v-spacer>
+      <v-toolbar-items class='hidden-xs-only' v-if="userLoggedIn==null">
+        <v-btn text color="teal" dark v-for="item in items" :key="item.title" :to="item.link">
               <v-icon left>{{item.icon}}</v-icon> {{item.title}}
         </v-btn>
-        
         <v-spacer></v-spacer>
       </v-toolbar-items>
       <!-- sign out button -->
       <v-toolbar-items class='hidden-xs-only' v-else>
-        <v-btn text @click='logoutFromFirebase'>
-          <v-icon right>delete_sweep</v-icon>Logout
-        </v-btn>
+        <v-btn  text color="teal" dark @click='logoutFromFirebase'>
+        Logout
+        <v-icon right dark>delete_sweep</v-icon>
+      </v-btn>
       </v-toolbar-items>
     </v-toolbar>
+    </div>
 </template>
 
 <script>
   import firebase from 'firebase';
-
+  
 export default {
+  data: function () {
+    return {
+      userLoggedIn: firebase.auth().currentUser
+    }
+  },
+  created: function(){
+    this.data.userLoggedIn = null
+    firebase.auth().onAuthStateChanged((user) => {
+      this.data.userLoggedIn = user
+    });
+  },
   computed: {
     items () {
       let menuItems = [
@@ -42,29 +52,15 @@ export default {
         }
       ]
       return menuItems
-    },
-    userLoggedIn () {
-      var user = firebase.auth().currentUser;
-      if (user != null) {
-        user.providerData.forEach(function (profile) {
-          console.log("Sign-in provider: " + profile.providerId);
-          console.log("  Provider-specific UID: " + profile.uid);
-          console.log("  Name: " + profile.displayName);
-          console.log("  Email: " + profile.email);
-          console.log("  Photo URL: " + profile.photoURL);
-        });
-      }
-      //var token = User.getToken();
-      return user;
     }
   },
   methods: {
     logoutFromFirebase () {
         firebase.auth().signOut().then(() => {
-        // Sign-out successful.
         this.$router.replace('/login')
+        this.userLoggedIn = null
       }, function(error) {
-        //An error happened.
+        console.log(error)
       });
     }
   }

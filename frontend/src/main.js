@@ -16,16 +16,13 @@ const config = {
     messagingSenderId: "691846540350",
     appId: "1:691846540350:web:6f4fafc83a4e028f"
 };
-
 firebase.initializeApp(config);
 
-/*firebase.app().delete().then(function() {
-  firebase.initializeApp(config);
-});*/
+const auth = firebase.auth()
+const currentUser = auth.currentUser
 
 firebase.auth().onAuthStateChanged(() => {
   if (!app) {
-    /* eslint-disable no-new */
     app = new Vue({
       router,
       vuetify,
@@ -33,3 +30,8 @@ firebase.auth().onAuthStateChanged(() => {
     }).$mount('#app');
   }
 });
+
+export {
+  auth,
+  currentUser
+}
