@@ -5,7 +5,7 @@
       <v-toolbar-title >Scanbage</v-toolbar-title>
       <!-- navigation bar links -->
       <v-spacer></v-spacer>
-      <v-toolbar-items class='hidden-xs-only' v-if="userLoggedIn==null">
+      <v-toolbar-items class='hidden-xs-only' v-if="!isAuthenticated">
         <v-btn text color="teal" dark v-for="item in items" :key="item.title" :to="item.link">
               <v-icon left>{{item.icon}}</v-icon> {{item.title}}
         </v-btn>
@@ -26,18 +26,10 @@
   import firebase from 'firebase';
   
 export default {
-  data: function () {
-    return {
-      userLoggedIn: firebase.auth().currentUser
-    }
-  },
-  created: function(){
-    this.data.userLoggedIn = null
-    firebase.auth().onAuthStateChanged((user) => {
-      this.data.userLoggedIn = user
-    });
-  },
   computed: {
+    isAuthenticated() {
+        return this.$store.getters.isAuthenticated;
+    },
     items () {
       let menuItems = [
         {
@@ -57,8 +49,8 @@ export default {
   methods: {
     logoutFromFirebase () {
         firebase.auth().signOut().then(() => {
+        this.$store.dispatch('clearData')
         this.$router.replace('/login')
-        this.userLoggedIn = null
       }, function(error) {
         console.log(error)
       });

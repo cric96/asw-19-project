@@ -98,6 +98,8 @@ export default {
     login () {
         firebase.auth().signInWithEmailAndPassword(this.email, this.password).then((user) => {
             if(user){
+                this.$store.commit('setCurrentUser', user.user)
+                this.$store.dispatch('fetchUserProfile')
                 this.$router.replace('/home')
             }
         }).catch((err) => {
