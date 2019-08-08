@@ -1,0 +1,46 @@
+image: node:latest
+
+stages:
+  - build
+
+cache:
+  paths:
+    - "*/node_modules/"
+
+.install_dependencies:
+  stage: build
+  script:
+    - npm install
+  after_script:
+    - cd /
+  artifacts:
+    paths:
+      - node_modules/
+
+install_dependencies_backend:
+  extends: .install_dependencies
+  before_script:
+    - cd backend/
+  only:
+    changes:
+      - backend/*
+
+install_dependencies_frontend:
+  extends: .install_dependencies
+  before_script:
+    - cd frontend/
+  only:
+    changes:
+      - frontend/*
+
+build_frontend:
+  only:
+    changes:
+      - frontend/*
+  before_script:
+    - cd frontend/
+  script:
+    - npm run build
+  artifacts:
+    paths:
+      - dist/
