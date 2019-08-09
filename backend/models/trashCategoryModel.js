@@ -5,6 +5,7 @@ var trashCategorySchema = new Schema({
     name: {
         type: String,
         trim: true,
+        unique : true,
         required: 'The name is required'
     },
     score: {

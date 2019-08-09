@@ -1,0 +1,42 @@
+[
+    {
+        "name": "Plastica",
+        "score": 8
+    },
+    {
+        "name": "Carta",
+        "score": 4
+    },
+    {
+        "name": "Vetro",
+        "score": 9
+    },
+    {
+        "name": "Alluminio",
+        "score": 5
+    },
+    {
+        "name": "Organico",
+        "score": 2
+    },
+    {
+        "name": "Indifferenziato",
+        "score": 0
+    },
+    {
+        "name": "Medicinali",
+        "score": 10
+    },
+    {
+        "name": "Pile",
+        "score": 10
+    },
+    {
+        "name": "Olio Esausto",
+        "score": 7
+    },
+    {
+        "name": "Potature",
+        "score": 3
+    }
+]
