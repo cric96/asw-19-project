@@ -1,18 +1,22 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
+var regex = require("../utils/regex")
+
 var rewardSchema = new Schema({
     name: {
         type: String,
+        trim: true,
         required: 'We need a name for the reward'
     },
     picture: {
         type: String,
-        // TODO: validate as URL, use match with Regex
+        match: regex.url,
         required: 'We need a picture for the reward'
     },
     description: {
         type: String,
+        trim: true,
         required: 'We need a description for the reward'
     },
     availableAtLevel: {
@@ -28,8 +32,8 @@ var rewardSchema = new Schema({
         of: String
     },
     video: {
-        type: String
-        // TODO: validate as URL, use match with Regex
+        type: String,
+        match: regex.url
     }
 });
 
