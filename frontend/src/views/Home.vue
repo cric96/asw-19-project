@@ -1,13 +1,14 @@
 <template>
-  <HelloWorld />
+  <BuldingProfileHeader />
 </template>
 
 <script>
-import HelloWorld from '../components/HelloWorld';
+import BuldingProfileHeader from '../components/BuildingProfile'
 
 export default {
   components: {
-    HelloWorld,
+    //HelloWorld,
+    BuldingProfileHeader
   },
 };
 </script>
