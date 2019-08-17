@@ -41,8 +41,9 @@ build_frontend:
   before_script:
     - cd frontend/
   script:
-    - npm install -g @vue/cli
     - npm run build
+  dependencies:
+    - build:install_dependencies_frontend
   artifacts:
     paths:
       - dist/
