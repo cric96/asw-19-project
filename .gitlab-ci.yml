@@ -43,7 +43,7 @@ build_frontend:
   script:
     - npm run build
   dependencies:
-    - build:install_dependencies_frontend
+    - install_dependencies_frontend
   artifacts:
     paths:
       - dist/
