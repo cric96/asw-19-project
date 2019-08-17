@@ -41,6 +41,7 @@ build_frontend:
   before_script:
     - cd frontend/
   script:
+    - npm install -g @vue/cli
     - npm run build
   artifacts:
     paths:
