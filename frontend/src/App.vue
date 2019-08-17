@@ -10,9 +10,10 @@
 
     <v-navigation-drawer v-model="drawer" app clipped>
       <template v-slot:prepend>
-        <navigation-header />
+        <user-header/>
       </template>
       <v-divider/>
+      <nav-building-selector/>
     </v-navigation-drawer>
 
     <v-content>
@@ -25,8 +26,8 @@
 
 <script>
 import NavBar from '@/views/NavBar'
-import BuldingProfileHeader from '@/components/BuildingProfile'
-
+import NavBuildingSelector from '@/components/NavBuildingSelector'
+import UserHeader from '@/components/UserHeader'
 
 export default {
   name: 'App',
@@ -34,7 +35,8 @@ export default {
     drawer: null
   }),
   components: {
-    'navigation-header': BuldingProfileHeader
+    'nav-building-selector': NavBuildingSelector,
+    'user-header': UserHeader
   }
 }
 </script>

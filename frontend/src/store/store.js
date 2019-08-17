@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import buildingModule from './module/building.js'
 const fb = require('@/firebaseConfig.js')
 
 Vue.use(Vuex)
@@ -16,6 +17,9 @@ fb.auth.onAuthStateChanged(user => {
 });
 
 export const store = new Vuex.Store({
+    modules: {
+        building: buildingModule
+    },
     state: {
         currentUser: null,
         userProfile: {},
