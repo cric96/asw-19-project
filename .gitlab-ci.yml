@@ -19,9 +19,6 @@ build_backend:
 
 build_frontend:
   stage: build
-  only:
-    changes:
-      - frontend/*
   before_script:
     - cd frontend/
     - npm install
@@ -29,4 +26,7 @@ build_frontend:
     - npm run build
   artifacts:
     paths:
-      - dist/
+      - frontend/dist/
+  only:
+    changes:
+      - frontend/*
