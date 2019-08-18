@@ -7,31 +7,15 @@ cache:
   paths:
     - "*/node_modules/"
 
-.install_dependencies:
+build_backend:
   stage: build
-  script:
-    - npm install
-  after_script:
-    - cd /
-  artifacts:
-    paths:
-      - node_modules/
-
-install_dependencies_backend:
-  extends: .install_dependencies
   before_script:
     - cd backend/
+  script:
+    - npm install
   only:
     changes:
       - backend/*
-
-install_dependencies_frontend:
-  extends: .install_dependencies
-  before_script:
-    - cd frontend/
-  only:
-    changes:
-      - frontend/*
 
 build_frontend:
   stage: build
@@ -40,6 +24,7 @@ build_frontend:
       - frontend/*
   before_script:
     - cd frontend/
+    - npm install
   script:
     - npm run build
   artifacts:
