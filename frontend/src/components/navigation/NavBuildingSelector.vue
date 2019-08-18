@@ -1,5 +1,5 @@
 <template>
-    <v-list nav dense v-if="availableBuildings.length > 0">
+    <v-list app nav dense v-if="availableBuildings.length > 0">
         <v-list-group prepend-icon="home" append-icon="mdi-menu-down" v-model="expanded">
             <template slot="activator" v-if="activeBuilding != null">
                 <v-list-item-content>
@@ -21,10 +21,10 @@
                 </template>
             </v-list-item-group>
             
-            <v-list-item>
-                <v-list-item-avatar>
+            <v-list-item >
+                <v-list-item-icon>
                     <v-icon>settings</v-icon>
-                </v-list-item-avatar>
+                </v-list-item-icon>
                 <v-list-item-content>
                     <v-list-item-title>Manage Buildings</v-list-item-title>
                 </v-list-item-content>

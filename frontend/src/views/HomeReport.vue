@@ -1,0 +1,31 @@
+<template>
+    <v-container fluid>
+      <v-speed-dial v-model="fabExpanded" bottom right fixed direction="top" transition="scale-transition">
+        <template v-slot:activator>
+          <v-btn fab light v-model="fabExpanded">
+            <v-icon v-if="fabExpanded">close</v-icon>
+            <v-icon v-else>add</v-icon>
+          </v-btn>
+        </template>
+
+        <v-btn fab light>
+            <v-icon>camera</v-icon>
+        </v-btn>
+
+        <v-btn fab light>
+            <v-icon>edit</v-icon>
+        </v-btn>
+
+      </v-speed-dial>
+      
+    </v-container>
+</template>
+
+
+<script>
+export default {
+  data:() => ({
+    fabExpanded: false
+  })
+}
+</script>

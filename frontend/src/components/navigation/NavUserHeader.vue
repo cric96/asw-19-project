@@ -4,6 +4,8 @@
             <v-list-item-avatar color="secondary">
                 <span>{{user.level}}</span>
             </v-list-item-avatar>
+        </v-list-item>
+        <v-list-item>
             <v-list-item-content>
                 <v-list-item-title>{{user.nickname}}</v-list-item-title>
                 <v-list-item-subtitle>{{score}} <!-- add an icon for "trash point" or similar --></v-list-item-subtitle>
@@ -17,7 +19,7 @@
 
 <script>
 export default {
-    name: 'UserHeader',
+    name: 'NavUserHeader',
     props: {
         user: {
             type: Object, 
@@ -40,9 +42,6 @@ export default {
         score() {
             return `Score: ${this.user.score}`;
         }
-    },
-    mounted() {
-
     }
 }
 </script>
