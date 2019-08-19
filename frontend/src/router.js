@@ -4,6 +4,7 @@ import Router from 'vue-router'
 import Home from './views/Home.vue'
 import Login from './views/Login.vue'
 import SignUp from './views/SignUp.vue'
+import Intro from './views/Intro.vue'
 
 Vue.use(Router)
 
@@ -12,12 +13,17 @@ const router = new Router({
   base: process.env.BASE_URL,
   routes: [
     {
+      path: '/intro',
+      name: 'Intro',
+      component: Intro
+    },
+    {
       path: '*',
-      redirect: '/login'
+      redirect: '/intro'
     },
     {
       path: '/',
-      redirect: '/login'
+      redirect: '/intro'
     },
     {
       path: '/login',
@@ -44,7 +50,7 @@ router.beforeEach((to, from, next) => {
   const currentUser = firebase.auth().currentUser;
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
 
-  if (requiresAuth && !currentUser) next('login');
+  if (requiresAuth && !currentUser) next('intro');
   else if (!requiresAuth && currentUser) next('home');
   else next();
 });

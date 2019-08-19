@@ -107,7 +107,9 @@ export default {
     signUp : function() {
         firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
         .then((user) => {
+          if(user){
             this.$router.replace('/login')
+          }
         }).catch((err) => {
             if (err.code == 'auth/email-already-in-use') {
               const existingEmail = this.email;
@@ -123,11 +125,11 @@ export default {
                     });
                   } 
                 })
-                .then(function(user) {
-                  // Existing email/password or Google user signed in.
-                  // Link Facebook OAuth credential to existing account.
+                .then(function(user) {    
                   if(user){
-                    firebase.auth().currentUser.linkWithCredential(firebase.auth.EmailAuthProvider.credential(existingEmail, password))
+                    if(firebase.auth().currentUser.linkWithCredential(firebase.auth.EmailAuthProvider.credential(existingEmail, password))){
+                      this.$router.replace('/login')
+                    }
                   }
                 });
             }    
