@@ -21,13 +21,7 @@
           v-model="valid"
           lazy-validation
         >
-          <!--<v-text-field
-            v-model="email"
-            :rules="emailRules"
-            label="E-mail"
-            required
-          ></v-text-field>-->
-
+        
           <v-text-field
               v-model="email"
               label="E-mail"
@@ -99,11 +93,14 @@ export default {
         firebase.auth().signInWithEmailAndPassword(this.email, this.password).then((user) => {
             if(user){
                 this.$store.commit('setCurrentUser', user.user)
-                this.$store.dispatch('fetchUserProfile')
                 this.$router.replace('/home')
             }
         }).catch((err) => {
-            alert(err.message)
+            if (err.code == 'auth/account-exists-with-different-credential') {
+              var provider = new firebase.auth.FacebookAuthProvider();
+              firebase.auth().currentUser.linkWithPopup(provider);
+            }
+
         });
     },
     loginWithFb () {
@@ -116,12 +113,41 @@ export default {
     },
     providerLogin(provider) {
         firebase.auth().signInWithPopup(provider).then((result) => {
-          console.log("tutto ok")
-            var token = result.credential.accessToken;
-            var user = result.user;
-            this.$router.replace('/home')
+          var token = result.credential.accessToken;
+          var user = result.user;
+          console.log(token)
+          console.log(user)
+          this.$store.commit('setCurrentUser', user)
+          this.$router.replace('/home')
         }).catch(function(error) {
-            console.log(error)
+            if (error.code == 'auth/account-exists-with-different-credential') {
+              const existingEmail = error.email;
+              const pendingCred = error.credential;
+              // Lookup existing account’s provider ID.
+              firebase.auth().fetchSignInMethodsForEmail(error.email)
+                .then(function(providers) {
+                  if (providers.indexOf(firebase.auth.EmailAuthProvider.PROVIDER_ID) != -1) {
+                    // Password account already exists with the same email.
+                    // Ask user to provide password associated with that account.
+                    var password = window.prompt('Please provide the password for ' + existingEmail);
+                    return firebase.auth().signInWithEmailAndPassword(existingEmail, password);    
+                  } /*else if (providers.indexOf(firebase.auth.GoogleAuthProvider.PROVIDER_ID) != -1) {
+                    var googProvider = new firebase.auth.GoogleAuthProvider();
+                    // Sign in user to Google with same account.
+                    provider.setCustomParameters({'login_hint': existingEmail});
+                    return firebase.auth().signInWithPopup(googProvider).then(function(result) {
+                      return result.user;
+                    });
+                  } */
+                })
+                .then(function(user) {
+                  // Existing email/password or Google user signed in.
+                  // Link Facebook OAuth credential to existing account.
+                  if(user){
+                    firebase.auth().currentUser.linkWithCredential(pendingCred);
+                  }
+                });
+            }
         });
     }
   }

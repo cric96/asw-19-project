@@ -34,12 +34,30 @@
           @click:append="confirmPasswordShow = !confirmPasswordShow"
           ></v-text-field>
 
+          <v-text-field
+            v-model="name"
+            label="Name"
+            required
+          ></v-text-field>
+
+          <v-text-field
+            v-model="surname"
+            label="Surname"
+            required
+          ></v-text-field>
+
+          <v-text-field
+            v-model="nickname"
+            label="Nickname"
+            required
+          ></v-text-field>
+
           <v-btn
           :disabled="!valid"
           color="success"
           @click="validate"
           >
-          Register
+          Sign Up!
           </v-btn>
 
           <v-btn
@@ -63,6 +81,9 @@ export default {
     confirmPasswordShow: false,
     valid: true,
     email: '',
+    name: '',
+    surname: '',
+    nickname:'',
     emailRules: [
       v => !!v || 'E-mail is required',
       v => /.+@.+/.test(v) || 'E-mail must be valid'
@@ -86,9 +107,32 @@ export default {
     signUp : function() {
         firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
         .then((user) => {
+          if(user){
             this.$router.replace('/login')
+          }
         }).catch((err) => {
-            alert(err.message)
+            if (err.code == 'auth/email-already-in-use') {
+              const existingEmail = this.email;
+              const password = this.password;
+              firebase.auth().fetchSignInMethodsForEmail(existingEmail)
+                .then(function(providers) {
+                  const fbProvider = new firebase.auth.FacebookAuthProvider();
+                  if (providers.indexOf(firebase.auth.FacebookAuthProvider.PROVIDER_ID) != -1) {
+                    // Sign in user to fb with same account.
+                    fbProvider.setCustomParameters({'login_hint': existingEmail});
+                    return firebase.auth().signInWithPopup(fbProvider).then(function(result) {
+                      return result.user;
+                    });
+                  } 
+                })
+                .then(function(user) {    
+                  if(user){
+                    if(firebase.auth().currentUser.linkWithCredential(firebase.auth.EmailAuthProvider.credential(existingEmail, password))){
+                      this.$router.replace('/login')
+                    }
+                  }
+                });
+            }    
         });
     }
    
