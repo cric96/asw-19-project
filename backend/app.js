@@ -5,13 +5,19 @@ var mongoose = require('mongoose')
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors');
+var admin = require('firebase-admin');
 
-var moviesModel = require("./models/moviesModel");
-var moviesRouter = require('./routes/moviesRoutes');
+var userModel = require("./models/userModel");
+var usersRouter = require('./routes/usersRoutes');
 
 var app = express();
 
-mongoose.connect('mongodb://localhost/dbmovies', { useNewUrlParser: true, useFindAndModify: false });
+let serviceAccount = require('./scanbage-firebase-adminsdk-itzje-52ab1c019c.json')
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount)
+});
+
+mongoose.connect('mongodb://localhost/dbtrash', { useNewUrlParser: true, useFindAndModify: false });
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -20,7 +26,7 @@ app.use(cookieParser());
 
 app.use(cors());
 app.use(express.static(path.join(__dirname, '../frontend/dist')))
-app.use('/api', moviesRouter);
+app.use('/api', usersRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

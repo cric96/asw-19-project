@@ -1,9 +1,15 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
+var utils = require("../utils/utils");
 var regex = require("../utils/regex");
 
 var userSchema = new Schema({
+    firebase_uid: {
+        type: String,
+        required: true,
+        unique: true
+    },
     name: {
         type: String,
         trim: true,
@@ -45,5 +51,14 @@ var userSchema = new Schema({
         ref: 'Trash'
     }]
 });
+
+userSchema.methods.prepareUpdate = utils.exclude(this, 'email', 'level', 'score');
+
+userSchema.options.toJSON = {
+    transform: function(doc, ret, options) {
+        delete ret.firebase_uid;
+        return ret;
+    }
+}
 
 module.exports = mongoose.model('User', userSchema);

@@ -103,6 +103,13 @@ export default {
 
         });
     },
+    refreshTokenAndSend() {
+      firebase.auth().currentUser.getIdToken(/* forceRefresh */ true).then(function(idToken) {
+        console.log('Token: ' + idToken);
+      }).catch(function(error) {
+        console.log(error);
+      });
+    },
     loginWithFb () {
         var provider = new firebase.auth.FacebookAuthProvider();
         this.providerLogin(provider)
