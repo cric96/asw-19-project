@@ -23,6 +23,7 @@ build_frontend:
     - cd frontend/
     - npm install
   script:
+    - npm install -g @vue/cli
     - npm run build
   artifacts:
     paths:
