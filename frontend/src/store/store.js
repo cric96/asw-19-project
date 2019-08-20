@@ -9,10 +9,8 @@ fb.auth.onAuthStateChanged(user => {
     if (user) {
         store.commit('setCurrentUser', user)
         store.commit('setIsAuthenticated', true)
-        console.log("loggato")
     }else{
         store.commit('setIsAuthenticated', false)
-        console.log("uscito")
     }
 });
 
@@ -36,6 +34,14 @@ export const store = new Vuex.Store({
         clearData({ commit }) {
             commit('setCurrentUser', null)
             commit('setIsAuthenticated', false)
+        },
+        logout() {
+                fb.auth.signOut().then(() => {
+                this.dispatch('clearData')
+                this.$router.replace('/intro')
+              }, function(error) {
+                console.log(error)
+              });        
         }
     }, 
     mutations: {

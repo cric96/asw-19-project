@@ -20,7 +20,7 @@
         <!-- Footer navigation drawer -->
         <template v-slot:append>
             <div class="pa-2">
-                <v-btn block>Logout</v-btn>
+                <v-btn block @click="logout">Logout</v-btn>
             </div>
         </template>
     </v-navigation-drawer>
@@ -35,6 +35,11 @@ export default {
     components: {
         'nav-user-header': NavUserHeader,
         'nav-building-selector': NavBuildingSelector
+    },
+    methods: {
+        logout : function(){
+            this.$store.dispatch('logout')
+        }
     },
     props: {
         value: {
