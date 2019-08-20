@@ -1,7 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import buildingModule from './module/building.js'
-const fb = require('@/firebaseConfig.js')
+import fb from '@/firebaseConfig.js'
+import usersApi from '../services/users.api.js'
 
 Vue.use(Vuex)
 
@@ -9,39 +10,47 @@ fb.auth.onAuthStateChanged(user => {
     if (user) {
         store.commit('setCurrentUser', user)
         store.commit('setIsAuthenticated', true)
+        fb.auth.currentUser.getIdToken(/* forceRefresh */ true).then(function(token){
+            if(token){
+                store.commit('setToken', token)
+                store.dispatch('fetchUserProfile')
+            }
+        });
     }else{
         store.commit('setIsAuthenticated', false)
+        store.commit('setToken', null)
     }
 });
 
-export const store = new Vuex.Store({
+const store = new Vuex.Store({
     modules: {
         building: buildingModule
     },
     state: {
         currentUser: null,
-        userProfile: {},
+        token: null,
+        userProfile: null,
         isAuthenticated: false,
     },
     actions: {
         fetchUserProfile({ commit, state }) {
-            /*fb.usersCollection.doc(state.currentUser.uid).get().then(res => {
-                commit('setUserProfile', res.data())
-            }).catch(err => {
-                console.log(err)
-            })*/
+            usersApi.get_user().then(function(res){
+                console.log(res.data)
+                
+            })
         },
         clearData({ commit }) {
             commit('setCurrentUser', null)
             commit('setIsAuthenticated', false)
+            commit('setToken', null)
         },
         logout() {
                 fb.auth.signOut().then(() => {
                 this.dispatch('clearData')
-                this.$router.replace('/intro')
+
               }, function(error) {
-                console.log(error)
-              });        
+
+            });        
         }
     }, 
     mutations: {
@@ -53,11 +62,19 @@ export const store = new Vuex.Store({
         },
         setIsAuthenticated(state, val){
             state.isAuthenticated = val
+        },
+        setToken(state, val){
+            state.token = val
         }
     },
     getters: {
         isAuthenticated(state) {
             return state.currentUser !== null && state.currentUser !== undefined;
+        },
+        token(state){
+            return state.token;
         }
     }    
 })
+
+export default store
