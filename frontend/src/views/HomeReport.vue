@@ -18,7 +18,7 @@
       <v-row dense>
         <v-col v-for="n in 4" :key="n" cols="12" md="4">
           <v-card >
-            <v-card-text>ciaoo</v-card-text>
+            <bin color="primary"></bin>
           </v-card>
         </v-col>
       </v-row>
@@ -28,7 +28,12 @@
 
 
 <script>
+import Bin from '@/components/Bin.vue'
+
 export default {
+  components: {
+    'bin': Bin
+  },
   data:() => ({
     fabExpanded: false
   })
