@@ -1,14 +1,28 @@
 var mongoose = require('mongoose');
+var utils = require("../utils/utils");
 var User = mongoose.model('User');
 
 
 exports.create_user = function(req, res) {
     var user = new User(req.body);
-    user.save(function(err, newUser) {
-        if(err)
-            res.send(err);
-        res.status(201).json(newUser);
-    });
+    console.log(user)
+    var error = user.validateSync();
+    if(error){
+        utils.sendResponseMessage(res, 400, "Bad request; email,name,surname,nickname and firebase_uid are required fields");
+    }else {
+        user.save(function(err, newUser) {
+            if(!err && newUser){
+                utils.sendResponseMessage(res, 201, newUser);
+            }else{
+                console.log(err)
+                if(err.code == 11000) {
+                    utils.sendResponseMessage(res, 409, "Conflict: " + err.errmsg); 
+                } else {
+                    utils.sendResponseMessage(res, 500, "Internal Error"); 
+                }
+            }
+        });
+    }    
 };
 
 exports.get_user = function(req, res) {
