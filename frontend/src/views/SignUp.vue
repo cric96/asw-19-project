@@ -109,9 +109,8 @@ export default {
         firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
         .then((user) => {
           if(user){
-            console.log("Aaaaaaajijij")
-            let user = new User(this.$store.getters.token, this.user, this.name, this.surname, this.email, this.nickname)
-            usersapi.create_user(user)
+            let newuser = new User(user.user.uid, this.name, this.surname, this.email, null, null, this.nickname)
+            usersapi.create_user(newuser)
             this.$router.replace('/login')
           }
         }).catch((err) => {

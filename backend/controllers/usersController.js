@@ -4,6 +4,7 @@ var User = mongoose.model('User');
 
 
 exports.create_user = function(req, res) {
+    console.log(JSON.stringify(req.body))
     var user = new User(req.body);
     console.log(user)
     var error = user.validateSync();
