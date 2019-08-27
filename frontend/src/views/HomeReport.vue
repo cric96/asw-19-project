@@ -13,6 +13,9 @@
         <v-btn fab light>
             <v-icon>edit</v-icon>
         </v-btn>
+        <v-btn fab light>
+            <v-icon>fa-barcode</v-icon>
+        </v-btn>
       </v-speed-dial>
       
       <v-row dense>
