@@ -6,6 +6,7 @@ import Login from './views/Login.vue'
 import SignUp from './views/SignUp.vue'
 import HomeReport from './views/HomeReport.vue'
 import Intro from './views/Intro.vue'
+import ManualInsertion from './views/scan/ManualInsertion.vue'
 
 Vue.use(Router)
 
@@ -57,6 +58,11 @@ const router = new Router({
           path: '', // TODO: replace it with a main home page.
           name: 'Home',
           component: HomeReport
+        },
+        {
+          path: '/manual',
+          name: 'Manual',
+          component: ManualInsertion
         },
         {
           path: 'other', // TODO: replace it with a main home page.

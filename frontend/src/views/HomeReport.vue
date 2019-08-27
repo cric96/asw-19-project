@@ -10,7 +10,7 @@
         <v-btn fab light>
             <v-icon>camera</v-icon>
         </v-btn>
-        <v-btn fab light>
+        <v-btn fab light to="/manual">
             <v-icon>edit</v-icon>
         </v-btn>
         <v-btn fab light>
@@ -34,6 +34,15 @@
 export default {
   data:() => ({
     fabExpanded: false
-  })
+  }),
+  methods: {
+    /**
+     * change current child screen to manual screen
+     */
+    goToManual() {
+      console.log("change screen to manual")
+      this.$router.replace('/manual')
+    }
+  }
 }
 </script>
