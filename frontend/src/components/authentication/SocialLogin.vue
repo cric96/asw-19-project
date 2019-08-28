@@ -1,37 +1,26 @@
 <template>
   <div>
-    <button class="loginBtn loginBtn--facebook" @click="loginWithFb">Login with Facebook</button>
-    <button class="loginBtn loginBtn--google" @click="loginWithGoogle">Login with Google</button>
-    <v-dialog v-model="dialog" persistent max-width="600px">
-      <v-card>
-        <v-card-title>
-          <span class="headline">Complete User Profile info</span>
-        </v-card-title>
-        <v-card-text>
-          <v-container>
-            <v-row>
-              <v-col cols="12" sm="6" md="4">
-                <v-text-field label="Nickname" required></v-text-field>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-card-text>
-        <v-card-actions>
-          <div class="flex-grow-1"></div>
-          <v-btn color="blue darken-1" text @click="dialog = false">Close</v-btn>
-          <v-btn color="blue darken-1" text @click="dialog = false">Continue</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <v-row justify="center">
+      <button class="loginBtn loginBtn--facebook" @click="loginWithFb">Login with Facebook</button>
+    </v-row>
+    <v-row justify="center">
+      <button class="loginBtn loginBtn--google" @click="loginWithGoogle">Login with Google</button>
+    </v-row>
+    <complete-user-dialog-form
+            v-model="showCompleteDialog"
+            :user="this.incompleteUser"></complete-user-dialog-form>
   </div>
 </template>
 
  <script>
-import firebase from "firebase";
-
+    import firebase from "firebase";
+    import CompleteUserInfoForm from '@/components/authentication/CompleteUserInfoForm'
+    import User from '@/model/user'
 export default {
+  components: { "complete-user-dialog-form":CompleteUserInfoForm },
   data: () => ({
-    dialog: false
+    showCompleteDialog: false,
+    incompleteUser: null
   }),
   methods: {
     loginWithFb() {
@@ -49,7 +38,12 @@ export default {
         .then(result => {
           this.$store.commit("setCurrentUser", result.user);
           // show dialog form to add loss info (nickname)
-          this.dialog = true
+          if (result.additionalUserInfo.isNewUser) {
+            //sand and save data user in backend
+            var userLogged = result.user;
+            this.incompleteUser = new User(userLogged.uid, userLogged.displayName, userLogged.displayName, userLogged.email, 0,1,null)
+            this.showCompleteDialog = true;
+          }
           this.$router.replace("/intro");
         })
         .catch(function(error) {
@@ -61,15 +55,11 @@ export default {
               .auth()
               .fetchSignInMethodsForEmail(error.email)
               .then(function(providers) {
-                if (
-                  providers.indexOf(
-                    firebase.auth.EmailAuthProvider.PROVIDER_ID
-                  ) != -1
-                ) {
+                if (providers.indexOf(firebase.auth.EmailAuthProvider.PROVIDER_ID) != -1) {
                   // Password account already exists with the same email.
                   // Ask user to provide password associated with that account.
                   var password = window.prompt(
-                    "Please provide the password for " + existingEmail
+                    "Password account already exists with the same email. Please provide the password for " + existingEmail
                   );
                   return firebase
                     .auth()

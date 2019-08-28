@@ -2,6 +2,14 @@
   <v-card class="elevation-12">
     <v-card-text>
       <v-form ref="form" v-model="valid" lazy-validation>
+
+        <v-flex class="mb-4">
+          <v-avatar size="96" class="mr-4">
+              <img :src="'https://st2.depositphotos.com/8440746/11336/v/950/depositphotos_113366940-stock-illustration-user-icon-profile-man-businessman.jpg'" alt="Avatar">
+          </v-avatar>
+          <v-btn @click="openAvatarPicker">Change Avatar</v-btn>
+        </v-flex>
+
         <v-text-field v-model="email" :rules="emailRules" label="E-mail" required></v-text-field>
 
         <v-text-field
@@ -87,7 +95,8 @@ export default {
               this.nickname
             );
             usersapi.create_user(newuser);
-            this.$router.replace("/login");
+            //TODO check if registration of new user is ok
+            this.$router.replace("/intro");
           }
         })
         .catch(err => {
