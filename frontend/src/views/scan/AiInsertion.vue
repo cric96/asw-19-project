@@ -1,16 +1,26 @@
 <template>
-    <v-btn :loading='waitingImage'/>
+    <v-layout row wrap align-center justify-center>
+        <pacman :loading="waitingImage" size=70 :color=primaryColor></pacman>
+    </v-layout>
 </template>
 <script>
+import { Prediction} from '@/services/mockApiPrediction'
+import  color  from '@/plugins/vuetify'
+import { PacmanLoader } from '@saeris/vue-spinners'
 export default {
     data: () => ({
-        waitingImage : true
+        waitingImage : true,
+        primaryColor : color.preset.theme.themes.light.primary
     }),
     props: {
-        image : File
+        img : File
+    },
+    components: {
+        'pacman' : PacmanLoader
     },
     mounted() {
-        console.log(this.image)
-    }
+              console.log(img)
+
+    }    
 }
 </script>

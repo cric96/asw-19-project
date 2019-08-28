@@ -47,7 +47,8 @@ export default {
       document.getElementById('camera').click()
     },
     onPhotoSelected(event) {
-      this.$router.push({name : 'AiInsertion', params : {image : event.target.files[0]}})
+      console.log(event.target.files[0])
+      this.$router.push({name : 'AiInsertion', params : {img : event.target.files[0]}})
     }
   }
 }
