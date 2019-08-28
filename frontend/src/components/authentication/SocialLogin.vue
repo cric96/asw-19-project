@@ -9,18 +9,27 @@
     <complete-user-dialog-form
             v-model="showCompleteDialog"
             :user="this.incompleteUser"></complete-user-dialog-form>
+    <user-binding-dialog-form :existing-email="this.existingEmail" :pending-cred="this.pendingCred" v-model="showBindingDialog"></user-binding-dialog-form>
   </div>
 </template>
 
  <script>
     import firebase from "firebase";
     import CompleteUserInfoForm from '@/components/authentication/CompleteUserInfoForm'
+    import BindUserForm from '@/components/authentication/BindUserForm'
     import User from '@/model/user'
 export default {
-  components: { "complete-user-dialog-form":CompleteUserInfoForm },
+  components: { 
+    "complete-user-dialog-form":CompleteUserInfoForm,
+    "user-binding-dialog-form":BindUserForm 
+ },
   data: () => ({
     showCompleteDialog: false,
-    incompleteUser: null
+    showBindingDialog: false,
+    incompleteUser: null,
+    existingEmail: null,
+    pendingCred : null
+
   }),
   methods: {
     loginWithFb() {
@@ -30,6 +39,9 @@ export default {
     loginWithGoogle() {
       var provider = new firebase.auth.GoogleAuthProvider();
       this.providerLogin(provider);
+    },
+    showBindingDialog() {
+      this.showBindingDialog = true;
     },
     providerLogin(provider) {
       firebase
@@ -44,47 +56,28 @@ export default {
             this.incompleteUser = new User(userLogged.uid, userLogged.displayName, userLogged.displayName, userLogged.email, 0,1,null)
             this.showCompleteDialog = true;
           }
-          this.$router.replace("/intro");
+          this.$router.replace("/dashboard");
         })
-        .catch(function(error) {
+        .catch((error) => {
           if (error.code == "auth/account-exists-with-different-credential") {
-            const existingEmail = error.email;
-            const pendingCred = error.credential;
+            this.existingEmail = error.email;
+            this.pendingCred = error.credential;
             // Lookup existing account’s provider ID.
             firebase
               .auth()
               .fetchSignInMethodsForEmail(error.email)
-              .then(function(providers) {
+              .then((providers) =>{
                 if (providers.indexOf(firebase.auth.EmailAuthProvider.PROVIDER_ID) != -1) {
                   // Password account already exists with the same email.
                   // Ask user to provide password associated with that account.
-                  var password = window.prompt(
-                    "Password account already exists with the same email. Please provide the password for " + existingEmail
-                  );
-                  return firebase
-                    .auth()
-                    .signInWithEmailAndPassword(existingEmail, password);
-                } /*else if (providers.indexOf(firebase.auth.GoogleAuthProvider.PROVIDER_ID) != -1) {
-                    var googProvider = new firebase.auth.GoogleAuthProvider();
-                    // Sign in user to Google with same account.
-                    provider.setCustomParameters({'login_hint': existingEmail});
-                    return firebase.auth().signInWithPopup(googProvider).then(function(result) {
-                      return result.user;
-                    });
-                  } */
-              })
-              .then(function(user) {
-                // Existing email/password or Google user signed in.
-                // Link Facebook OAuth credential to existing account.
-                if (user) {
-                  firebase.auth().currentUser.linkWithCredential(pendingCred);
+                  this.showBindingDialog= true
                 }
-              });
-          }
-        });
-    }
+              })
+          } 
+      })
+    }  
   }
-};
+}
 </script>
 
 <style scoped>
