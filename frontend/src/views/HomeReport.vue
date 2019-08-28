@@ -7,8 +7,9 @@
             <v-icon v-else>add</v-icon>
           </v-btn>
         </template>
-        <v-btn fab light>
+        <v-btn fab light @click='openCamera'>
             <v-icon>camera</v-icon>
+            <input id="camera" type="file" accept="image/*" @change="onPhotoSelected" capture="camera" hidden=true />
         </v-btn>
         <v-btn fab light to="/manual">
             <v-icon>edit</v-icon>
@@ -40,8 +41,13 @@ export default {
      * change current child screen to manual screen
      */
     goToManual() {
-      console.log("change screen to manual")
       this.$router.replace('/manual')
+    },
+    openCamera() {
+      document.getElementById('camera').click()
+    },
+    onPhotoSelected(event) {
+      this.$router.push({name : 'AiInsertion', params : {image : event.target.files[0]}})
     }
   }
 }

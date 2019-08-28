@@ -7,6 +7,8 @@ import SignUp from './views/SignUp.vue'
 import HomeReport from './views/HomeReport.vue'
 import Intro from './views/Intro.vue'
 import ManualInsertion from './views/scan/ManualInsertion.vue'
+import AiInsertion from './views/scan/AiInsertion.vue'
+import BarcodeInsertion from './views/scan/BarcodeInsertion.vue'
 
 Vue.use(Router)
 
@@ -58,6 +60,17 @@ const router = new Router({
           path: '', // TODO: replace it with a main home page.
           name: 'Home',
           component: HomeReport
+        },
+        {
+          path: '/ai',
+          props: true,
+          name: 'AiInsertion',
+          component: AiInsertion
+        },
+        {
+          path: '/barcode',
+          name: 'BarcodeInsertion',
+          component: BarcodeInsertion
         },
         {
           path: '/manual',
