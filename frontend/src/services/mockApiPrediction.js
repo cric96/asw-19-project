@@ -1,9 +1,9 @@
-import helper from './mockApiHelper'
+import {simulateDelay} from './mockApiHelper'
 class MockApiPrediction {
     constructor(){}
 
     predict(image) {
-        return helper.simulateDelay(() => 'Plastic', 2000);
+        return simulateDelay(() => 'Plastic', 2000);
     }
 }
 

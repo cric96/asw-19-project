@@ -19,8 +19,12 @@ export default {
         'pacman' : PacmanLoader
     },
     mounted() {
-              console.log(img)
-
+            Prediction.predict(this.img).then(res => {
+                //todo IMPROVE HERE
+                console.log(res)
+                this.waitingImage = false
+            })
+            
     }    
 }
 </script>

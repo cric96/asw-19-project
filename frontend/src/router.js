@@ -63,9 +63,9 @@ const router = new Router({
         },
         {
           path: '/ai',
-          props: true,
           name: 'AiInsertion',
-          component: AiInsertion
+          component: AiInsertion,
+          props: true
         },
         {
           path: '/barcode',
