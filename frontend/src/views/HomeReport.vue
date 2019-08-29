@@ -34,7 +34,9 @@
 <script>
 export default {
   data:() => ({
-    fabExpanded: false
+    fabExpanded: false,
+    newTrash: false,
+    score: 0
   }),
   methods: {
     /**

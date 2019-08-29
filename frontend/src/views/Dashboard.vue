@@ -12,9 +12,15 @@
           <v-container fluid>
             <!-- TODO: insert v-breadcrumbs?? -->
             <!-- Replaced with the childrend view -->
-            <router-view/>
+            <router-view v-on:score-received="onScoreReceived"/>
           </v-container>
       </v-content>
+      <v-snackbar
+            v-model="newTrash"
+            :timeout=2000
+        >
+        <p> Hai guardagnato {{score}} punti </p>
+      </v-snackbar>
   </v-app>
 </template>
 
@@ -25,6 +31,8 @@ export default {
   name: 'Dashboard',
   data: () => ({
     drawer: null,
+    newTrash: false,
+    score: 0,
     navItems: [
       {
         path: '/dashboard',
@@ -51,6 +59,13 @@ export default {
   },
   components: {
     'navigation-drawer': NavigationDrawer
+  },
+  methods: {
+    onScoreReceived(scoreReceived) {
+      console.log("event reiceved")
+      this.newTrash = true
+      this.score = scoreReceived
+    }
   }
 };
 </script>

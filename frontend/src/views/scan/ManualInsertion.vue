@@ -1,13 +1,12 @@
 <template>
     <v-layout align-center justify-center>
         <v-toolbar >
-            <v-toolbar-title>Trash category</v-toolbar-title>
+            <v-toolbar-title>Tipologia di rifiuto</v-toolbar-title>
             <!-- loading is used to show the loading time 
                  items are the item showed in the dropdown menu after typing,
-                 is better to create a component? 
             -->
             <v-autocomplete
-                v-model="select"
+                v-model="category"
                 :loading="loading"
                 :items="categories"
                 cache-items
@@ -15,12 +14,12 @@
                 flat
                 hide-no-data
                 hide-details
-                label="Start typing..."
+                label="Digita..."
                 solo-inverted
             ></v-autocomplete>
-            <v-btn icon>
-      <v-icon>done</v-icon>
-    </v-btn>
+            <v-btn icon @click="onAccept">
+              <v-icon>done</v-icon>
+            </v-btn>
     </v-toolbar>
     </v-layout>
 </template>
@@ -36,7 +35,14 @@
           'Metal',
           'Paper',
         ],
+        category: ''
       }
     },
+    methods: {
+      onAccept() {
+        console.log(this.category)
+      }
+    }
+  
   }
 </script>

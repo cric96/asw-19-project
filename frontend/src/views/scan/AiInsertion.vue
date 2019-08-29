@@ -17,15 +17,14 @@
             </v-img>
             <v-card-title class="align-end fill-height">{{category}}</v-card-title>
             <v-card-text>
-            <p> Do you agree?</p>
+            <p>Confermi?</p>
             </v-card-text>
 
             <v-card-actions>
-            <v-btn icon> <v-icon>done</v-icon></v-btn>
-            <v-btn icon> <v-icon>close</v-icon></v-btn>
+            <v-btn icon @click="onDoneClicked"><v-icon>done</v-icon></v-btn>
+            <v-btn icon to="/dashboard"> <v-icon>close</v-icon></v-btn>
             </v-card-actions>
         </v-card>
-
     </v-layout>
 </template>
 <script>
@@ -37,11 +36,18 @@ export default {
     data: () => ({
         waitingImage : true,
         primaryColor : color.preset.theme.themes.light.primary,
-        category: ''
+        category: '',
+        accept: false
     }),
     computed: {
         resultReiceved: function() {
             return !this.waitingImage
+        }
+    },
+    methods: {
+        onDoneClicked() {
+            this.$emit("score-received", 8)
+            this.$router.push("/dashboard")
         }
     },
     props: {
@@ -52,8 +58,6 @@ export default {
     },
     mounted() {
             Prediction.predict(this.img).then(res => {
-                //todo IMPROVE HERE
-                console.log(res)
                 this.waitingImage = false
                 this.category = res
             })
