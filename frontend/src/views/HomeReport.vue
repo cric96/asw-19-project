@@ -20,7 +20,7 @@
       </v-speed-dial>
       
       <v-row dense>
-          <v-col v-for="(bin, index) in bins" :key="index" cols="12" md="3">
+          <v-col v-for="(bin, index) in bins" :key="index" cols="12" md="3" sm="4">
             <bin :bin="bin"></bin>
           </v-col>
       </v-row>
@@ -30,7 +30,7 @@
 
 <script>
 import DynamicBin from '@/components/DynamicBin.vue'
-import Bin from '@/model/bin'
+import {ApiBin} from '../services/mockApiBin'
 
 export default {
   components: {
@@ -40,12 +40,14 @@ export default {
     fabExpanded: false,
     newTrash: false,
     score: 0,
-    bins: [
-      new Bin(300, ['Paper'], '#d50000'),
-      new Bin(350, ['Plastic'], '#fdd835'),
-      new Bin(20, ['Glass'], '#43a047')
-      ]
+    bins: []
   }),
+  mounted() {
+    ApiBin.getAll("das").then(result => {
+      console.log('Bin: ' + result);
+      this.bins = result;
+    })
+  },
   methods: {
     /**
      * change current child screen to manual screen
