@@ -22,7 +22,7 @@ class ApiService {
     }
 
     post(resource, data, requireAuth= false) {
-        return axios.post(this.baseURL+resource, requireAuth ? this.getHeader() : {}, data)
+        return axios.post(this.baseURL+resource, data, requireAuth ? this.getHeader() : {})
     }
 
     put(resource, data, requireAuth= false) {

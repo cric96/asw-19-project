@@ -1,0 +1,167 @@
+<template>
+  <div>
+    <button class="loginBtn loginBtn--facebook" @click="loginWithFb">Login with Facebook</button>
+    <button class="loginBtn loginBtn--google" @click="loginWithGoogle">Login with Google</button>
+    <v-dialog v-model="dialog" persistent max-width="600px">
+      <v-card>
+        <v-card-title>
+          <span class="headline">Complete User Profile info</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container>
+            <v-row>
+              <v-col cols="12" sm="6" md="4">
+                <v-text-field label="Nickname" required></v-text-field>
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <div class="flex-grow-1"></div>
+          <v-btn color="blue darken-1" text @click="dialog = false">Close</v-btn>
+          <v-btn color="blue darken-1" text @click="dialog = false">Continue</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </div>
+</template>
+
+ <script>
+import firebase from "firebase";
+
+export default {
+  data: () => ({
+    dialog: false
+  }),
+  methods: {
+    loginWithFb() {
+      var provider = new firebase.auth.FacebookAuthProvider();
+      this.providerLogin(provider);
+    },
+    loginWithGoogle() {
+      var provider = new firebase.auth.GoogleAuthProvider();
+      this.providerLogin(provider);
+    },
+    providerLogin(provider) {
+      firebase
+        .auth()
+        .signInWithPopup(provider)
+        .then(result => {
+          this.$store.commit("setCurrentUser", result.user);
+          // show dialog form to add loss info (nickname)
+          this.dialog = true
+          this.$router.replace("/intro");
+        })
+        .catch(function(error) {
+          if (error.code == "auth/account-exists-with-different-credential") {
+            const existingEmail = error.email;
+            const pendingCred = error.credential;
+            // Lookup existing account’s provider ID.
+            firebase
+              .auth()
+              .fetchSignInMethodsForEmail(error.email)
+              .then(function(providers) {
+                if (
+                  providers.indexOf(
+                    firebase.auth.EmailAuthProvider.PROVIDER_ID
+                  ) != -1
+                ) {
+                  // Password account already exists with the same email.
+                  // Ask user to provide password associated with that account.
+                  var password = window.prompt(
+                    "Please provide the password for " + existingEmail
+                  );
+                  return firebase
+                    .auth()
+                    .signInWithEmailAndPassword(existingEmail, password);
+                } /*else if (providers.indexOf(firebase.auth.GoogleAuthProvider.PROVIDER_ID) != -1) {
+                    var googProvider = new firebase.auth.GoogleAuthProvider();
+                    // Sign in user to Google with same account.
+                    provider.setCustomParameters({'login_hint': existingEmail});
+                    return firebase.auth().signInWithPopup(googProvider).then(function(result) {
+                      return result.user;
+                    });
+                  } */
+              })
+              .then(function(user) {
+                // Existing email/password or Google user signed in.
+                // Link Facebook OAuth credential to existing account.
+                if (user) {
+                  firebase.auth().currentUser.linkWithCredential(pendingCred);
+                }
+              });
+          }
+        });
+    }
+  }
+};
+</script>
+
+<style scoped>
+body {
+  padding: 2em;
+}
+/* Shared */
+.loginBtn {
+  box-sizing: border-box;
+  position: relative;
+  /* width: 13em;  - apply for fixed size */
+  margin: 0.2em;
+  padding: 0 15px 0 46px;
+  border: none;
+  text-align: left;
+  line-height: 34px;
+  white-space: nowrap;
+  border-radius: 0.2em;
+  font-size: 16px;
+  color: #fff;
+}
+.loginBtn:before {
+  content: "";
+  box-sizing: border-box;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 34px;
+  height: 100%;
+}
+.loginBtn:focus {
+  outline: none;
+}
+.loginBtn:active {
+  box-shadow: inset 0 0 0 32px rgba(0, 0, 0, 0.1);
+}
+
+/* Facebook */
+.loginBtn--facebook {
+  background-color: #4c69ba;
+  background-image: linear-gradient(#4c69ba, #3b55a0);
+  /*font-family: "Helvetica neue", Helvetica Neue, Helvetica, Arial, sans-serif;*/
+  text-shadow: 0 -1px 0 #354c8c;
+}
+.loginBtn--facebook:before {
+  border-right: #364e92 1px solid;
+  background: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/14082/icon_facebook.png")
+    6px 6px no-repeat;
+}
+.loginBtn--facebook:hover,
+.loginBtn--facebook:focus {
+  background-color: #5b7bd5;
+  background-image: linear-gradient(#5b7bd5, #4864b1);
+}
+
+/* Google */
+.loginBtn--google {
+  /*font-family: "Roboto", Roboto, arial, sans-serif;*/
+  background: #dd4b39;
+}
+.loginBtn--google:before {
+  border-right: #bb3f30 1px solid;
+  background: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/14082/icon_google.png")
+    6px 6px no-repeat;
+}
+.loginBtn--google:hover,
+.loginBtn--google:focus {
+  background: #e74b37;
+}
+</style>

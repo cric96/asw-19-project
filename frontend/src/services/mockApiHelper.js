@@ -4,7 +4,7 @@
  */
 
 
-function simulateDelay(fun, delay) {
+export function simulateDelay(fun, delay) {
     return new Promise((resolve) => {
         setTimeout(() => {
             resolve(fun());

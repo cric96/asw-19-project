@@ -1,25 +1,36 @@
 var mongoose = require('mongoose');
+var utils = require("../utils/utils");
 var User = mongoose.model('User');
 
 
 exports.create_user = function(req, res) {
     var user = new User(req.body);
-    user.save(function(err, newUser) {
-        if(err)
-            res.send(err);
-        res.status(201).json(newUser);
-    });
+    var error = user.validateSync();
+    if(error){
+        utils.sendResponseMessage(res, 400, "Bad request; email,name,surname,nickname and firebase_uid are required fields");
+    }else {
+        user.save(function(err, newUser) {
+            if(!err && newUser){
+                utils.sendResponseMessage(res, 201, newUser);
+            }else{
+                console.log(err)
+                if(err.code == 11000) {
+                    utils.sendResponseMessage(res, 409, "Conflict: " + err.errmsg); 
+                } else {
+                    utils.sendResponseMessage(res, 500, "Internal Error"); 
+                }
+            }
+        });
+    }    
 };
 
 exports.get_user = function(req, res) {
     let uid = res.locals.uid;
     User.findOne({firebase_uid: uid}, function(err, user) {
         if(user && !err) {
-            res.status(200).json(user);
+            utils.sendResponseMessage(res, 200, user); 
         } else {
-            res.status(404).json({
-                description: 'User not found!'
-            });
+            utils.sendResponseMessage(res, 404, "User not found");
         }
     }); 
 }
@@ -32,12 +43,10 @@ exports.update_user = function(req, res) {
 			res.send(err);
 		else{
 			if(updateUser == null){
-				res.status(404).send({
-					description: 'User not found'
-				});
+                utils.sendResponseMessage(res, 404, "User not found");
 			}
 			else{
-				res.json(updateUser);
+                utils.sendResponseMessage(res, 200, updateUser);
 			}
 		}
     });

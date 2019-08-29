@@ -7,11 +7,15 @@
             <v-icon v-else>add</v-icon>
           </v-btn>
         </template>
-        <v-btn fab light>
+        <v-btn fab light @click='openCamera'>
             <v-icon>camera</v-icon>
+            <input id="camera" type="file" accept="image/*" @change="onPhotoSelected" capture="camera" hidden=true />
+        </v-btn>
+        <v-btn fab light to="/manual">
+            <v-icon>edit</v-icon>
         </v-btn>
         <v-btn fab light>
-            <v-icon>edit</v-icon>
+            <v-icon>fa-barcode</v-icon>
         </v-btn>
       </v-speed-dial>
       
@@ -35,7 +39,24 @@ export default {
     'bin': Bin
   },
   data:() => ({
-    fabExpanded: false
-  })
+    fabExpanded: false,
+    newTrash: false,
+    score: 0
+  }),
+  methods: {
+    /**
+     * change current child screen to manual screen
+     */
+    goToManual() {
+      this.$router.replace('/manual')
+    },
+    openCamera() {
+      document.getElementById('camera').click()
+    },
+    onPhotoSelected(event) {
+      console.log(event.target.files[0])
+      this.$router.push({name : 'AiInsertion', params : {img : event.target.files[0]}})
+    }
+  }
 }
 </script>
