@@ -4,7 +4,6 @@ import router from './router';
 import  store  from './store/store.js'
 import fb from './firebaseConfig.js'
 import vuetify from './plugins/vuetify';
-require('./plugins/konva');
 
 Vue.config.productionTip = false;
 

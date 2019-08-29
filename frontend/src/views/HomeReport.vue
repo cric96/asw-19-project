@@ -20,28 +20,31 @@
       </v-speed-dial>
       
       <v-row dense>
-        <v-col v-for="n in 4" :key="n" cols="12" md="4">
-          <v-card >
-            <bin color="primary"></bin>
-          </v-card>
-        </v-col>
+          <v-col v-for="(bin, index) in bins" :key="index" cols="12" md="3">
+            <bin :bin="bin"></bin>
+          </v-col>
       </v-row>
-
     </v-container>
 </template>
 
 
 <script>
-import Bin from '@/components/Bin.vue'
+import DynamicBin from '@/components/DynamicBin.vue'
+import Bin from '@/model/bin'
 
 export default {
   components: {
-    'bin': Bin
+    'bin': DynamicBin
   },
   data:() => ({
     fabExpanded: false,
     newTrash: false,
-    score: 0
+    score: 0,
+    bins: [
+      new Bin(300, ['Paper'], '#d50000'),
+      new Bin(350, ['Plastic'], '#fdd835'),
+      new Bin(20, ['Glass'], '#43a047')
+      ]
   }),
   methods: {
     /**
