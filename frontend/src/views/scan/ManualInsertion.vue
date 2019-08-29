@@ -3,7 +3,8 @@
         <v-toolbar >
             <v-toolbar-title>Trash category</v-toolbar-title>
             <!-- loading is used to show the loading time 
-                 items are the item showed in the dropdown menu after typing     
+                 items are the item showed in the dropdown menu after typing,
+                 is better to create a component? 
             -->
             <v-autocomplete
                 v-model="select"
