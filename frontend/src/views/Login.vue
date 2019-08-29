@@ -40,10 +40,10 @@
             <v-btn :disabled="!valid" color="success" @click="validate">Login</v-btn>
             <v-btn color="error" @click="reset">Reset Form</v-btn>
           </v-card-actions>
+          <v-card-text>
+            <p  class="pa-3">You don't have an account? <router-link to="/sign-up">Sign up</router-link></p>
+          </v-card-text>
         </v-card>
-        <div class="ma-3">
-          <p style="background-color:rgba(255,255,255,0.8)" class="pa-3">You don't have an account? <router-link to="/sign-up">Sign up</router-link></p>
-        </div>
       </v-flex>
     </v-layout>
   </v-container>

@@ -6,9 +6,6 @@
       </v-flex>
       <v-flex xs12 sm8 md4>
         <signup-form class="mx-auto"></signup-form>
-        <div class="ma-2">
-            <p style="background-color:rgba(255,255,255,0.8)" class="pa-3">Have you already an account? <router-link to="/login">Log in</router-link></p>
-        </div>
       </v-flex>
     </v-layout>
   </v-container>

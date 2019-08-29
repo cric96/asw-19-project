@@ -88,6 +88,9 @@
         <v-btn :disabled="!valid" color="success" @click="validate">Register</v-btn>
         <v-btn color="error" @click="reset">Reset Form</v-btn>
       </v-card-actions>
+      <v-card-text>
+        <p>Have you already an account? <router-link to="/login">Log in</router-link></p>
+      </v-card-text>
     </v-card>
   </v-container>
 </template>
