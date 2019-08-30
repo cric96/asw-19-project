@@ -82,8 +82,6 @@ export default {
               this.name,
               this.surname,
               this.email,
-              null,
-              null,
               this.nickname
             );
             usersapi.create_user(newuser);
