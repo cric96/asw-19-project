@@ -8,12 +8,14 @@
     </v-row>
     <complete-user-dialog-form
       :visible="showCompleteDialog"
-      :user="this.incompleteUser"
+      :user="incompleteUser"
+      @close="showCompleteDialog=false"
     ></complete-user-dialog-form>
     <user-binding-dialog-form 
       :existing-email="this.existingEmail" 
       :pending-cred="this.pendingCred" 
-      :visible="showBindingDialog">
+      :visible="showBindingDialog"
+      @close="showBindingDialog=false">
     </user-binding-dialog-form>
   </div>
 </template>

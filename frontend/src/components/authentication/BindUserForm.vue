@@ -29,7 +29,7 @@
       </v-card-text>
       <v-card-actions>
         <div class="flex-grow-1"></div>
-        <v-btn color="blue darken-1" text @click="show = false">Close</v-btn>
+        <v-btn color="blue darken-1" text @click="show=false">Close</v-btn>
         <v-btn color="blue darken-1" text @click="bind">Bind</v-btn>
       </v-card-actions>
     </v-card>
@@ -48,7 +48,7 @@ export default {
   props: {
     pendingCred:String,
     existingEmail: String,
-    value: Boolean
+    visible: Boolean
   },
   computed: {
     showSuccessAlert: function(){
@@ -59,10 +59,12 @@ export default {
     },
     show: {
       get() {
-        return this.value;
+        return this.visible;
       },
-      set(value) {
-        this.$emit("input", value);
+      set(visible) {
+        if(!visible){
+          this.$emit('close');
+        }
       }
     }
   },

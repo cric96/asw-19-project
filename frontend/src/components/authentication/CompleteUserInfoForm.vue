@@ -6,7 +6,7 @@
       </v-card-title>
       <v-card-text>
         <v-container v-if="show">
-          <v-row v-for="(value, propertyName) in simpleUser" :key="propertyName">
+          <v-row  v-for="(value, propertyName) in simpleUser" :key="propertyName">
             <v-col cols="12" sm="6" md="4">
               <v-text-field :v-model="finalUser.propertyName" :label="''+ propertyName" :value="''+value!=null?value:''" required></v-text-field>
             </v-col>
@@ -35,13 +35,17 @@ export default {
   },
   data: function (){
     return {
-      finalUser: ''
+      finalUser: {}
     }
   },
   mounted: function () {
-    this.finalUser = this.user
+    if(this.user!= null){
+      this.finalUser = this.user
+    }
     console.log(this.finalUser)
     console.log(this.user)
+    console.log(this.show)
+
   },
   computed: {
     show: {
