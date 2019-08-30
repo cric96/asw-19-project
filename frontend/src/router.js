@@ -40,14 +40,6 @@ const router = new Router({
       component: SignUp
     },
     {
-      path: '*',
-      redirect: '/dashboard'
-    },
-    {
-      path: '/',
-      redirect: '/dashboard'
-    },
-    {
       path: '/dashboard',
       name: 'Dashboard',
       component: Dashboard,

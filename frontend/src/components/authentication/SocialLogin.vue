@@ -1,37 +1,41 @@
 <template>
   <div>
-    <button class="loginBtn loginBtn--facebook" @click="loginWithFb">Login with Facebook</button>
-    <button class="loginBtn loginBtn--google" @click="loginWithGoogle">Login with Google</button>
-    <v-dialog v-model="dialog" persistent max-width="600px">
-      <v-card>
-        <v-card-title>
-          <span class="headline">Complete User Profile info</span>
-        </v-card-title>
-        <v-card-text>
-          <v-container>
-            <v-row>
-              <v-col cols="12" sm="6" md="4">
-                <v-text-field label="Nickname" required></v-text-field>
-              </v-col>
-            </v-row>
-          </v-container>
-        </v-card-text>
-        <v-card-actions>
-          <div class="flex-grow-1"></div>
-          <v-btn color="blue darken-1" text @click="dialog = false">Close</v-btn>
-          <v-btn color="blue darken-1" text @click="dialog = false">Continue</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
+    <v-row justify="center">
+      <button class="loginBtn loginBtn--facebook" @click="loginWithFb">Login with Facebook</button>
+    </v-row>
+    <v-row justify="center">
+      <button class="loginBtn loginBtn--google" @click="loginWithGoogle">Login with Google</button>
+    </v-row>
+    <complete-user-dialog-form
+      :visible="showCompleteDialog"
+      :user="incompleteUser"
+      @close="showCompleteDialog=false"
+    ></complete-user-dialog-form>
+    <user-binding-dialog-form 
+      :existing-email="this.existingEmail" 
+      :pending-cred="this.pendingCred" 
+      :visible="showBindingDialog"
+      @close="showBindingDialog=false">
+    </user-binding-dialog-form>
   </div>
 </template>
 
  <script>
-import firebase from "firebase";
-
+    import firebase from "firebase";
+    import CompleteUserInfoForm from '@/components/authentication/CompleteUserInfoForm'
+    import BindUserForm from '@/components/authentication/BindUserForm'
+    import User from '@/model/user'
 export default {
+  components: { 
+    "complete-user-dialog-form":CompleteUserInfoForm,
+    "user-binding-dialog-form":BindUserForm 
+ },
   data: () => ({
-    dialog: false
+    showCompleteDialog: false,
+    showBindingDialog: false,
+    incompleteUser: null,
+    existingEmail: null,
+    pendingCred : null
   }),
   methods: {
     loginWithFb() {
@@ -49,52 +53,35 @@ export default {
         .then(result => {
           this.$store.commit("setCurrentUser", result.user);
           // show dialog form to add loss info (nickname)
-          this.dialog = true
-          this.$router.replace("/intro");
+          if (result.additionalUserInfo.isNewUser) {
+            //sand and save data user in backend
+            var userLogged = result.user;
+            this.incompleteUser = new User(userLogged.uid, userLogged.displayName.split(" ")[0], userLogged.displayName.split(" ")[1], userLogged.email, 0,1,null)
+            this.showCompleteDialog = true;
+          }else{
+            this.$router.replace("/dashboard");
+          }
         })
-        .catch(function(error) {
+        .catch((error) => {
           if (error.code == "auth/account-exists-with-different-credential") {
-            const existingEmail = error.email;
-            const pendingCred = error.credential;
+            this.existingEmail = error.email;
+            this.pendingCred = error.credential;
             // Lookup existing account’s provider ID.
             firebase
               .auth()
               .fetchSignInMethodsForEmail(error.email)
-              .then(function(providers) {
-                if (
-                  providers.indexOf(
-                    firebase.auth.EmailAuthProvider.PROVIDER_ID
-                  ) != -1
-                ) {
+              .then((providers) =>{
+                if (providers.indexOf(firebase.auth.EmailAuthProvider.PROVIDER_ID) != -1) {
                   // Password account already exists with the same email.
                   // Ask user to provide password associated with that account.
-                  var password = window.prompt(
-                    "Please provide the password for " + existingEmail
-                  );
-                  return firebase
-                    .auth()
-                    .signInWithEmailAndPassword(existingEmail, password);
-                } /*else if (providers.indexOf(firebase.auth.GoogleAuthProvider.PROVIDER_ID) != -1) {
-                    var googProvider = new firebase.auth.GoogleAuthProvider();
-                    // Sign in user to Google with same account.
-                    provider.setCustomParameters({'login_hint': existingEmail});
-                    return firebase.auth().signInWithPopup(googProvider).then(function(result) {
-                      return result.user;
-                    });
-                  } */
-              })
-              .then(function(user) {
-                // Existing email/password or Google user signed in.
-                // Link Facebook OAuth credential to existing account.
-                if (user) {
-                  firebase.auth().currentUser.linkWithCredential(pendingCred);
+                  this.showBindingDialog= true
                 }
-              });
-          }
-        });
-    }
+              })
+          } 
+      })
+    }  
   }
-};
+}
 </script>
 
 <style scoped>
