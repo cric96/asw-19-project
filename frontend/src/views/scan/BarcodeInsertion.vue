@@ -73,7 +73,7 @@ export default {
         'barcode-animation' : Loader
     },
     mounted() {
-            console.log(this.img    )
+            console.log(this.img)
             BarcodeResearch.search(this.img).then(res => {
                 this.waitingImage = false 
                 if(!res) {
