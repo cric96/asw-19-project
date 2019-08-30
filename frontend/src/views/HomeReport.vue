@@ -35,7 +35,7 @@
 
 <script>
 import DynamicBin from '@/components/DynamicBin.vue'
-import {ApiBin} from '../services/mockApiBin'
+import { ApiBin } from '../services/mockApiBin'
 import { ScaleLoader } from '@saeris/vue-spinners'
 
 export default {
