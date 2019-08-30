@@ -18,24 +18,13 @@
 
 
 <script>
+import User from '@/model/user'
 export default {
     name: 'NavUserHeader',
     props: {
         user: {
-            type: Object, 
-            //required: true,
-            default() { // TODO: remove it when the user's model is defined
-                return {
-                    nickname: 'pedrolon',
-                    email: 'petretiandrea@gmail.com',
-                    score: 3560,
-                    level: 30
-                };
-            }
-            /* TODO: when the user's model is defined, insted of Object put the constructor
-             * Example: function User (firstName, lastName, ...) { ... }
-             * user : { type: User, required: true }
-             * this validate the value of props -> https://vuejs.org/v2/guide/components-props.html#Type-Checks */
+            type: User, 
+            required: true
         }
     },
     computed: {

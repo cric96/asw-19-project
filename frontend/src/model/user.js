@@ -10,7 +10,11 @@ class User {
         this.nickname = nickname;
     }
 
-
+    static fromJson(json) {
+        let obj = Object.assign(new User(), json);
+        console.log(obj);
+        return obj;
+    }
 }
 
 export default User

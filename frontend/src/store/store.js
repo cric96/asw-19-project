@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import buildingModule from './module/building.js'
 import fb from '@/firebaseConfig.js'
 import usersApi from '../services/users.api.js'
+import User from '@/model/user'
 
 Vue.use(Vuex)
 
@@ -35,11 +36,11 @@ const store = new Vuex.Store({
     actions: {
         fetchUserProfile({ commit, state }) {
             usersApi.get_user().then(function(res){
-                console.log(res.data)
-                
+                commit('setUserProfile', User.fromJson(res.data));
             })
         },
         clearData({ commit }) {
+            commit('setUserProfile', null);
             commit('setCurrentUser', null)
             commit('setIsAuthenticated', false)
             commit('setToken', null)

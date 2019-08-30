@@ -2,7 +2,7 @@
     <v-navigation-drawer v-bind:value.sync="value" @input="val => $emit('input', val)" app clipped>
         <!-- Header navigation drawer -->
         <template v-slot:prepend>
-            <nav-user-header/>
+            <nav-user-header v-if="userProfile" :user="userProfile"/>
         </template>
         <v-divider/>
         <!-- Main content navigation drawer -->
@@ -39,6 +39,11 @@ export default {
     methods: {
         logout : function(){
             this.$store.dispatch('logout')
+        }
+    },
+    computed: {
+        userProfile: function() {
+            return this.$store.state.userProfile;
         }
     },
     props: {
