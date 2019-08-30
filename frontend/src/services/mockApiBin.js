@@ -11,7 +11,7 @@ class MockApiBin {
                 new Bin(350, ['Plastic'], '#fdd835'),
                 new Bin(20, ['Glass'], '#43a047')
             ]
-        }, 2000);
+        }, 5000);
     }
 }
 

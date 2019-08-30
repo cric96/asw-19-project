@@ -8,7 +8,7 @@
                 <canvas ref="hiddenMask" id="hidden_mask" ></canvas>
             </v-layout>
             <v-layout row wrap justify-center>
-                 <h6 class="headline font-weight-light">Collected: {{bin.collected}}</h6> <!-- or font-weight-thin? -->
+                <h6 class="headline font-weight-light">Collected: {{bin.collected}}</h6> <!-- or font-weight-thin? -->
             </v-layout>
         </v-container>
     </v-card>
