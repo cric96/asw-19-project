@@ -70,7 +70,8 @@ const router = new Router({
         {
           path: '/barcode',
           name: 'BarcodeInsertion',
-          component: BarcodeInsertion
+          component: BarcodeInsertion,
+          props: true
         },
         {
           path: '/manual',

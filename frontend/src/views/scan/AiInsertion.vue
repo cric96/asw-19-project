@@ -5,17 +5,17 @@
         <v-card
             class="mx-auto"
             max-width="400"
-            v-if="resultReiceved"
+            v-if="resultReceived && !resNotFound"
         >
             <v-img
                 class="white--text"
                 height="200px"
                 width="200px"
-                src="https://image.flaticon.com/icons/svg/1039/1039778.svg"
+                :src=category.url
             >
                 
             </v-img>
-            <v-card-title class="align-end fill-height">{{category}}</v-card-title>
+            <v-card-title class="align-end fill-height">{{category.name}}</v-card-title>
             <v-card-text>
             <p>Confermi?</p>
             </v-card-text>
@@ -24,6 +24,21 @@
             <v-btn icon @click="onDoneClicked"><v-icon>done</v-icon></v-btn>
             <v-btn icon to="/dashboard"> <v-icon>close</v-icon></v-btn>
             </v-card-actions>
+        </v-card>
+        <v-card
+            class="mx-auto"
+            max-width="400"
+            v-if="resultReceived && resNotFound"
+        >
+            <v-layout row wrap align-center justify-center>
+                <v-icon size=70>sentiment_dissatisfied</v-icon>  
+            </v-layout>
+            <v-card-title class="align-end fill-height">Rifiuto non riconosciuto..</v-card-title>
+            <v-layout row wrap align-center justify-center>
+                <v-card-actions>
+                    <v-btn icon to="/dashboard"> <v-icon>done</v-icon></v-btn>
+                </v-card-actions>
+            </v-layout> 
         </v-card>
     </v-layout>
 </template>
@@ -36,17 +51,18 @@ export default {
     data: () => ({
         waitingImage : true,
         primaryColor : color.preset.theme.themes.light.primary,
-        category: '',
-        accept: false
+        category : '',
+        accept: false,
+        resNotFound : false
     }),
     computed: {
-        resultReiceved: function() {
+        resultReceived: function() {
             return !this.waitingImage
         }
     },
     methods: {
         onDoneClicked() {
-            this.$emit("score-received", 8)
+            this.$emit("score-received", this.category.score)
             this.$router.push("/dashboard")
         }
     },
@@ -58,8 +74,12 @@ export default {
     },
     mounted() {
             Prediction.predict(this.img).then(res => {
-                this.waitingImage = false
-                this.category = res
+                this.waitingImage = false 
+                if(!res) {
+                   this.resNotFound = true
+                } else {      
+                    this.category = res
+                }
             })
     }    
 }
