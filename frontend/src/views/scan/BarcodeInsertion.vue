@@ -43,7 +43,7 @@
     </v-layout>
 </template>
 <script>
-import { Prediction} from '@/services/mockApiPrediction'
+import { BarcodeResearch } from '@/services/mockApiBarcode'
 import  color  from '@/plugins/vuetify'
 import Loader from '@/components/BarcodeLoader'
 import { functions } from 'firebase';
@@ -73,7 +73,8 @@ export default {
         'barcode-animation' : Loader
     },
     mounted() {
-            Prediction.predict(this.img).then(res => {
+            console.log(this.img    )
+            BarcodeResearch.search(this.img).then(res => {
                 this.waitingImage = false 
                 if(!res) {
                    this.resNotFound = true
