@@ -1,5 +1,5 @@
 <template>
-    <v-list app nav dense v-if="availableBuildings.length > 0">
+    <v-list app nav dense v-if="buildings.length > 0">
         <v-list-group prepend-icon="home" append-icon="mdi-menu-down" v-model="expanded">
             <template slot="activator" v-if="activeBuilding != null">
                 <v-list-item-content>
@@ -9,7 +9,7 @@
             </template>
 
             <v-list-item-group :value="activeItem" mandatory>
-                <template v-for="(building, i) in availableBuildings">
+                <template v-for="(building, i) in buildings">
                     <v-list-item :key="i" @click="selectBuilding(building)">
                         <template v-slot:default="{active}">
                             <v-list-item-content >
@@ -36,7 +36,7 @@
 
 <script>
 import { createNamespacedHelpers } from 'vuex'
-const { mapState, mapActions } = createNamespacedHelpers('building');
+const { mapGetters, mapActions } = createNamespacedHelpers('building');
 
 export default {
     name: 'NavBuildingSelector',
@@ -44,17 +44,17 @@ export default {
         expanded: false
     }),
     computed: {
-        ...mapState([
+        ...mapGetters([
             'activeBuilding',
-            'availableBuildings'
+            'buildings'
         ]),
         activeItem() {
-            return this.availableBuildings.indexOf(this.activeBuilding);
+            return this.buildings.indexOf(this.activeBuilding);
         }
     },
     methods: {
         ...mapActions([
-            'changeActiveBuilding',
+            'changeActiveBuildingId',
             'fetchBuildings'
         ]),
         init() {
@@ -62,7 +62,7 @@ export default {
         },
         selectBuilding(building) {
             this.expanded = false; /* trick for collpase the dropdown after selection */
-            this.changeActiveBuilding(building);
+            this.changeActiveBuildingId(building._id);
         }
     },
     mounted() {

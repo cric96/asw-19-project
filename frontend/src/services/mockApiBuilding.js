@@ -21,17 +21,17 @@ class MockApiBuilding {
 
 export const ApiBuilding = new MockApiBuilding(new MockApiHelper([
         {
-            id: 1,
+            _id: 1,
             name: 'Montefelcino House',
             address: 'Via via via',
         },
         {
-            id: 2, 
+            _id: 2, 
             name: "Mone ufficio",
             address: 'Via Mone'
         },
         {
-            id: 3,
+            _id: 3,
             name: "Gianlu's home",
             address: 'San michele'
         }
