@@ -34,10 +34,10 @@ const store = new Vuex.Store({
     },
     actions: {
         fetchUserProfile({ commit, state }) {
-            usersApi.get_user().then(function(res){
+            /*usersApi.get_user().then(function(res){
                 console.log(res.data)
                 
-            })
+            })*/
         },
         clearData({ commit }) {
             commit('setCurrentUser', null)

@@ -7,13 +7,13 @@
       <button class="loginBtn loginBtn--google" @click="loginWithGoogle">Login with Google</button>
     </v-row>
     <complete-user-dialog-form
-      v-model="showCompleteDialog"
+      :visible="showCompleteDialog"
       :user="this.incompleteUser"
     ></complete-user-dialog-form>
     <user-binding-dialog-form 
       :existing-email="this.existingEmail" 
       :pending-cred="this.pendingCred" 
-      v-model="showBindingDialog">
+      :visible="showBindingDialog">
     </user-binding-dialog-form>
   </div>
 </template>
@@ -54,8 +54,7 @@ export default {
           if (result.additionalUserInfo.isNewUser) {
             //sand and save data user in backend
             var userLogged = result.user;
-            this.incompleteUser = new User(userLogged.uid, userLogged.displayName.split(" ")[0], userLogged.displayName.split[1], userLogged.email, 0,1,null)
-            console.log(incompleteUser)
+            this.incompleteUser = new User(userLogged.uid, userLogged.displayName.split(" ")[0], userLogged.displayName.split(" ")[1], userLogged.email, 0,1,null)
             this.showCompleteDialog = true;
           }else{
             this.$router.replace("/dashboard");

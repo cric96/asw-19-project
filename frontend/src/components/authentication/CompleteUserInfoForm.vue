@@ -5,7 +5,7 @@
         <span class="headline">Complete User Profile info</span>
       </v-card-title>
       <v-card-text>
-        <v-container>
+        <v-container v-if="show">
           <v-row v-for="(value, propertyName) in simpleUser" :key="propertyName">
             <v-col cols="12" sm="6" md="4">
               <v-text-field :v-model="finalUser.propertyName" :label="''+ propertyName" :value="''+value!=null?value:''" required></v-text-field>
@@ -31,20 +31,27 @@ export default {
       type: User,
       required: true
     },
-    value: Boolean
+    visible: Boolean
   },
   data: function (){
     return {
-      finalUser: this.user
+      finalUser: ''
     }
+  },
+  mounted: function () {
+    this.finalUser = this.user
+    console.log(this.finalUser)
+    console.log(this.user)
   },
   computed: {
     show: {
       get() {
-        return this.value;
+        return this.visible;
       },
-      set(value) {
-        this.$emit("input", value);
+      set(visible) {
+        if(!visible){
+          this.$emit('close');
+        }
       }
     },
     simpleUser: function() {
@@ -58,7 +65,7 @@ export default {
   },
   methods:{
     continueSaving: function(){
-      console.log(user)
+      console.log(this.finalUser)
       //console.log(usersapi.create_user(user));
       this.show=false;
       //this.$router.replace("/dashboard");
