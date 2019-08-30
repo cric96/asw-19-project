@@ -5,10 +5,10 @@
         <span class="headline">Complete User Profile info</span>
       </v-card-title>
       <v-card-text>
-        <v-container v-if="show">
-          <v-row  v-for="(value, propertyName) in simpleUser" :key="propertyName">
+        <v-container v-if="user">
+          <v-row v-for="(value, propertyName) in simpleUser" :key="propertyName">
             <v-col cols="12" sm="6" md="4">
-              <v-text-field :v-model="finalUser.propertyName" :label="''+ propertyName" :value="''+value!=null?value:''" required></v-text-field>
+              <v-text-field v-model="finalUser[propertyName]" :label="''+ propertyName" :value="''+value!=null?value:''" required></v-text-field>
             </v-col>
           </v-row>
         </v-container>
@@ -17,6 +17,7 @@
         <div class="flex-grow-1"></div>
         <v-btn color="blue darken-1" text @click="show = false">Close</v-btn>
         <v-btn color="blue darken-1" text @click="continueSaving">Continue</v-btn>
+        <v-btn color="blue darken-1" text @click="print">Print</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -31,7 +32,7 @@ export default {
       type: User,
       required: true
     },
-    visible: Boolean
+    value: Boolean
   },
   data: function (){
     return {
@@ -39,23 +40,17 @@ export default {
     }
   },
   mounted: function () {
-    if(this.user!= null){
+    if(this.user != null){
       this.finalUser = this.user
     }
-    console.log(this.finalUser)
-    console.log(this.user)
-    console.log(this.show)
-
   },
   computed: {
     show: {
       get() {
-        return this.visible;
+        return this.value;
       },
-      set(visible) {
-        if(!visible){
-          this.$emit('close');
-        }
+      set(value) {
+        this.$emit('input', value);
       }
     },
     simpleUser: function() {
@@ -69,11 +64,12 @@ export default {
   },
   methods:{
     continueSaving: function(){
-      console.log(this.finalUser)
-      //console.log(usersapi.create_user(user));
-      this.show=false;
-      //this.$router.replace("/dashboard");
-
+      console.log(this.finalUser);
+      this.value = false;
+      this.$emit('save', this.finalUser);
+    },
+    print: function() {
+      console.log(this.finalUser);
     }
   }
 };

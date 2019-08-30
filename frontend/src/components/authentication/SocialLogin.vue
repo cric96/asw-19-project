@@ -6,10 +6,8 @@
     <v-row justify="center">
       <button class="loginBtn loginBtn--google" @click="loginWithGoogle">Login with Google</button>
     </v-row>
-    <complete-user-dialog-form
-      :visible="showCompleteDialog"
-      :user="incompleteUser"
-      @close="showCompleteDialog=false"
+    <complete-user-dialog-form v-if="incompleteUser" v-model="showCompleteDialog"
+      :user="incompleteUser" @save="socialRegister"
     ></complete-user-dialog-form>
     <user-binding-dialog-form 
       :existing-email="this.existingEmail" 
@@ -21,10 +19,13 @@
 </template>
 
  <script>
-    import firebase from "firebase";
-    import CompleteUserInfoForm from '@/components/authentication/CompleteUserInfoForm'
-    import BindUserForm from '@/components/authentication/BindUserForm'
-    import User from '@/model/user'
+  import firebase from "firebase";
+  import CompleteUserInfoForm from '@/components/authentication/CompleteUserInfoForm'
+  import BindUserForm from '@/components/authentication/BindUserForm'
+  import User from '@/model/user'
+
+  import usersApi from '../../services/users.api.js'
+
 export default {
   components: { 
     "complete-user-dialog-form":CompleteUserInfoForm,
@@ -51,15 +52,17 @@ export default {
         .auth()
         .signInWithPopup(provider)
         .then(result => {
-          this.$store.commit("setCurrentUser", result.user);
-          // show dialog form to add loss info (nickname)
-          if (result.additionalUserInfo.isNewUser) {
-            //sand and save data user in backend
-            var userLogged = result.user;
-            this.incompleteUser = new User(userLogged.uid, userLogged.displayName.split(" ")[0], userLogged.displayName.split(" ")[1], userLogged.email, 0,1,null)
-            this.showCompleteDialog = true;
-          }else{
-            this.$router.replace("/dashboard");
+          if(result) {
+            // show dialog form to add loss info (nickname)
+            if (result.additionalUserInfo.isNewUser) {
+              //sand and save data user in backend
+              var userLogged = result.user;
+              this.incompleteUser = new User(userLogged.uid, userLogged.displayName.split(" ")[0], userLogged.displayName.split(" ")[1], userLogged.email, "", 0, 1)
+              this.showCompleteDialog = true;
+            }else{
+              this.$store.dispatch('login');
+              this.$router.replace("/dashboard");
+            } 
           }
         })
         .catch((error) => {
@@ -79,6 +82,17 @@ export default {
               })
           } 
       })
+    },
+    socialRegister(finalUser) {
+      // send to backend
+      // when complete, store.login()
+      usersApi.create_user(finalUser).then(response => {
+        this.$store.dispatch('login');
+        this.$router.replace("/dashboard");
+      })
+      .catch(error => {
+        // TODO: handle error
+      });
     }  
   }
 }

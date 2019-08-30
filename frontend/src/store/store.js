@@ -8,10 +8,21 @@ import User from '@/model/user'
 Vue.use(Vuex)
 
 fb.auth.onAuthStateChanged(user => {
+    console.log('onAuthStateChanged');
+    console.log(user);
+    if(user && !store.getters.isAuthenticated) {
+        store.dispatch('login');
+        
+    } else {
+        store.dispatch('logout');
+    }
+});
+/*
+fb.auth.onAuthStateChanged(user => {
     if (user) {
         store.commit('setCurrentUser', user)
         store.commit('setIsAuthenticated', true)
-        fb.auth.currentUser.getIdToken(/* forceRefresh */ true).then(function(token){
+        fb.auth.currentUser.getIdToken(true).then(function(token){
             if(token){
                 store.commit('setToken', token)
                 store.dispatch('fetchUserProfile')
@@ -21,61 +32,52 @@ fb.auth.onAuthStateChanged(user => {
         store.commit('setIsAuthenticated', false)
         store.commit('setToken', null)
     }
-});
+});*/
 
 const store = new Vuex.Store({
     modules: {
         building: buildingModule
     },
     state: {
-        currentUser: null,
         token: null,
-        userProfile: null,
-        isAuthenticated: false,
+        userProfile: null
     },
     actions: {
-        fetchUserProfile({ commit, state }) {
-            usersApi.get_user().then(function(res){
-                commit('setUserProfile', User.fromJson(res.data));
-            })
-        },
-        clearData({ commit }) {
-            commit('setUserProfile', null);
-            commit('setCurrentUser', null)
-            commit('setIsAuthenticated', false)
-            commit('setToken', null)
+        login({ commit }) {
+            fb.auth.currentUser.getIdToken(/* forceRefresh */ true).then(function(token) {
+                if(token) {
+                    commit('setToken', token);
+                    usersApi.get_user().then(function(res) {
+                        commit('setUserProfile', User.fromJson(res.data));
+                        this.$router.replace("/dashboard");
+                    });
+                }
+            });
         },
         logout() {
-                fb.auth.signOut().then(() => {
-                this.dispatch('clearData')
-
-              }, function(error) {
-
-            });        
-        }
-    }, 
-    mutations: {
-        setCurrentUser(state, val) {
-            state.currentUser = val
+            fb.auth.signOut().then(() => { this.dispatch('clearData'); }, error => { });        
         },
-        setUserProfile(state, val) {
-            state.userProfile = val
-        },
-        setIsAuthenticated(state, val){
-            state.isAuthenticated = val
-        },
-        setToken(state, val){
-            state.token = val
+        clearData({ commit }) {
+            commit('setToken', null);
+            commit('setUserProfile', null);
         }
     },
     getters: {
         isAuthenticated(state) {
-            return state.currentUser !== null && state.currentUser !== undefined;
+            return state.userProfile !== null && state.userProfile !== undefined;
         },
         token(state){
             return state.token;
         }
-    }    
+    },
+    mutations: {
+        setToken(state, val) {
+            state.token = val;
+        },
+        setUserProfile(state, val) {
+            state.userProfile = val;
+        }
+    }
 })
 
 export default store
