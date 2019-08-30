@@ -19,7 +19,9 @@
 
         <!-- Footer navigation drawer -->
         <template v-slot:append>
-            <v-btn block @click="logout">Logout</v-btn>
+            <div class="pa-2">
+                <v-btn block @click="logout">Logout</v-btn>
+            </div>
         </template>
     </v-navigation-drawer>
 </template>
