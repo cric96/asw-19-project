@@ -1,31 +1,29 @@
 <template>
-  <v-container>
-    <v-layout align-center justify-center>
+  <v-container fluid class="container_background" fill-height>
+    <v-layout row align-center justify-center>
       <!--TODO. use src set for dimension-->
-      <v-flex xs12>
-        <v-img :src="require('../assets/logo.png')" class="my-3" contain height="200"></v-img>
+      <v-flex xs12 sm8 md4>
+        <v-img :src="require('../assets/logo.png')" class="my-3, centered_img" height="300" width="300" style="background-color:rgba(255,255,255,0.8);border-radius: 50%"></v-img>
       </v-flex>
-    </v-layout>
-    <v-layout align-center justify-center>
-      <v-flex>
-        <v-card class="elevation-12">
+      <v-flex xs12 sm8 md4 wrap>
+        <v-card v-bind:style="{ backgroundColor: color}" class="mx-auto, ma-3, mp-5">
           <v-card-text>
             <v-form ref="form" v-model="valid" lazy-validation>
               <v-text-field
                 v-model="email"
                 label="E-mail"
                 prepend-icon="person"
-                :outlined="true"
+                outlined="true"
                 :rules="emailRules"
-                :solo="true"
-                :clearable="true"
+                solo="true"
+                clearable="true"
                 required
               ></v-text-field>
 
               <v-text-field
-                :outlined="true"
-                :solo="true"
-                :clearable="true"
+                outlined="true"
+                solo="true"
+                clearable="true"
                 v-model="password"
                 :rules="passwordRules"
                 prepend-icon="lock"
@@ -39,10 +37,12 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-
             <v-btn :disabled="!valid" color="success" @click="validate">Login</v-btn>
             <v-btn color="error" @click="reset">Reset Form</v-btn>
           </v-card-actions>
+          <v-card-text>
+            <p  class="pa-3">You don't have an account? <router-link to="/sign-up">Sign up</router-link></p>
+          </v-card-text>
         </v-card>
       </v-flex>
     </v-layout>
@@ -54,6 +54,7 @@ import firebase from "firebase";
 
 export default {
   data: () => ({
+    color:'rgba(255,255,255,0.9)',
     passwordShow: false,
     valid: true,
     email: "",

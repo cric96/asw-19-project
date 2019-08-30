@@ -1,19 +1,13 @@
 <template>
-  <v-container>
-    <v-layout row wrap align-center justify-center>
-              <image-upload></image-upload>
-      <v-avatar
-        :tile=true
-        :size="190"
-      >
-        <img
-          src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRVgz4hgpib-3i_F5aursqYTGp9O7yCwXvJQRo6jRXtQd0N0Oynyw"
-          alt="avatar"
-        >
-      </v-avatar>
+  <v-container fluid class="container_background" fill-height>
+    <v-layout row align-center justify-center>
+      <v-flex xs12 sm8 md4>
+        <v-img :src="require('../assets/logo.png')" class="my-3, centered_img" height="300" width="300" style="background-color:rgba(255,255,255,0.8);border-radius: 50%"></v-img>
+      </v-flex>
+      <v-flex xs12 sm8 md4>
+        <signup-form class="mx-auto"></signup-form>
+      </v-flex>
     </v-layout>
-          <signup-form></signup-form>
-    <p>Have you already an account? Log in </p>
   </v-container>
 </template>
 
@@ -21,11 +15,11 @@
 import firebase from "firebase";
 import usersapi from "../services/users.api";
 import User from "../model/user";
-import SignUpForm from '@/components/authentication/SignUpForm'
+import SignUpForm from "@/components/authentication/SignUpForm";
 
 export default {
   components: {
-    'signup-form': SignUpForm
+    "signup-form": SignUpForm
   }
 };
 </script>

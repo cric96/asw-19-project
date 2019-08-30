@@ -15,6 +15,7 @@ fb.auth.onAuthStateChanged(() => {
       router,
       vuetify,
       store,
+
       render: h => h(App)
     }).$mount('#app');
   }
