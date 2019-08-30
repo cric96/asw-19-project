@@ -1,7 +1,7 @@
 <template>
     <v-layout row wrap align-center justify-center>
         <barcode-animation :loading="waitingImage" size=70 :color=primaryColor></barcode-animation>
-        <!-- Qua pensa di fare un componente??-->        
+        <!-- Qua pensa di fare un componente??-->
         <v-card
             class="mx-auto"
             max-width="400"
@@ -53,7 +53,8 @@ export default {
         primaryColor : color.preset.theme.themes.light.primary,
         category : '',
         accept: false,
-        resNotFound : false
+        resNotFound : false,
+        imageURL: ''
     }),
     computed: {
         resultReceived: function() {
@@ -74,6 +75,7 @@ export default {
     },
     mounted() {
             console.log(this.img)
+            this.imageURL = URL.createObjectURL(this.img)
             BarcodeResearch.search(this.img).then(res => {
                 this.waitingImage = false 
                 if(!res) {

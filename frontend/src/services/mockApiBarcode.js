@@ -13,8 +13,10 @@ class MockApiBarcode {
               reject(new Error(`Failed to load image's URL: ${url}`));
             });
             img.src = URL.createObjectURL(imagePath);
-          }).then(img => codeReader.decodeFromImage(img)
-          ).then(res => alert(res)
+          }).then(img => {
+              img.style = "{grayscale=1}"
+              return codeReader.decodeFromImage(img)
+          }).then(res => alert(res)
           ).catch(err => alert(err))
 
     }
