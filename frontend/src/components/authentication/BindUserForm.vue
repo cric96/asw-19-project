@@ -2,17 +2,17 @@
   <v-dialog v-model="show" persistent max-width="600px">
     <v-card>
       <v-alert 
-      dismissable      
-      v-model="showSuccessAlert"
-      type="success">
-      Binding completed with success
-    </v-alert>
-    <v-alert  
-      v-model="showErrorAlert"
-      dismissable
-      type="error">
-      An error occurred; the insered password is not correct; try again with another password
-    </v-alert>
+        dismissable      
+        v-model="showSuccessAlert"
+        type="success">
+        Binding completed with success
+      </v-alert>
+      <v-alert  
+        v-model="showErrorAlert"
+        dismissable
+        type="error">
+        An error occurred; the insered password is not correct; try again with another password
+      </v-alert>
       <v-card-title>
         <span class="headline">An account already exists with the same email provided by facebook.
            Please provide the password for: {{existingEmail}}</span>
@@ -20,7 +20,7 @@
       <v-card-text>
         <v-container>
               <v-text-field 
-                :clearable="true"
+                clearable=true
                 v-model="password"
                 label="password" 
                 type="password"

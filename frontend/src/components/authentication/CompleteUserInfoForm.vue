@@ -8,7 +8,7 @@
         <v-container>
           <v-row v-for="(value, propertyName) in simpleUser" :key="propertyName">
             <v-col cols="12" sm="6" md="4">
-              <v-text-field :label="''+ propertyName" :value="''+value!=null?value:''" required></v-text-field>
+              <v-text-field :v-model="finalUser.propertyName" :label="''+ propertyName" :value="''+value!=null?value:''" required></v-text-field>
             </v-col>
           </v-row>
         </v-container>
@@ -24,6 +24,7 @@
 
 <script>
 import User from "../../model/user";
+import { functions } from 'firebase';
 export default {
   props: {
     user: {
@@ -31,6 +32,11 @@ export default {
       required: true
     },
     value: Boolean
+  },
+  data: function (){
+    return {
+      finalUser: this.user
+    }
   },
   computed: {
     show: {
@@ -43,17 +49,20 @@ export default {
     },
     simpleUser: function() {
       return {
-        name: this.user.surname,
-        surname: this.user.name,
-        email: this.user.email,
-        nickname: this.user.nickname
+        name: (this.user!=null)?this.user.name:'',
+        surname: (this.user!=null)?this.user.surname:'',
+        email: (this.user!=null)?this.user.email:'',
+        nickname: (this.user!=null)?this.user.nickname:''
       };
     }
   },
   methods:{
     continueSaving: function(){
-      console.log(usersapi.create_user(user));
-      show=false;
+      console.log(user)
+      //console.log(usersapi.create_user(user));
+      this.show=false;
+      //this.$router.replace("/dashboard");
+
     }
   }
 };

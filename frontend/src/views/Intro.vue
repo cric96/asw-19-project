@@ -30,12 +30,7 @@ export default {
 </script>
 
 <style>
-  .centered_img {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  width: 40%;
-}
+  
 </style>
 
 

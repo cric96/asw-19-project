@@ -7,9 +7,14 @@
       <button class="loginBtn loginBtn--google" @click="loginWithGoogle">Login with Google</button>
     </v-row>
     <complete-user-dialog-form
-            v-model="showCompleteDialog"
-            :user="this.incompleteUser"></complete-user-dialog-form>
-    <user-binding-dialog-form :existing-email="this.existingEmail" :pending-cred="this.pendingCred" v-model="showBindingDialog"></user-binding-dialog-form>
+      v-model="showCompleteDialog"
+      :user="this.incompleteUser"
+    ></complete-user-dialog-form>
+    <user-binding-dialog-form 
+      :existing-email="this.existingEmail" 
+      :pending-cred="this.pendingCred" 
+      v-model="showBindingDialog">
+    </user-binding-dialog-form>
   </div>
 </template>
 
@@ -29,7 +34,6 @@ export default {
     incompleteUser: null,
     existingEmail: null,
     pendingCred : null
-
   }),
   methods: {
     loginWithFb() {
@@ -39,9 +43,6 @@ export default {
     loginWithGoogle() {
       var provider = new firebase.auth.GoogleAuthProvider();
       this.providerLogin(provider);
-    },
-    showBindingDialog() {
-      this.showBindingDialog = true;
     },
     providerLogin(provider) {
       firebase
@@ -53,10 +54,12 @@ export default {
           if (result.additionalUserInfo.isNewUser) {
             //sand and save data user in backend
             var userLogged = result.user;
-            this.incompleteUser = new User(userLogged.uid, userLogged.displayName, userLogged.displayName, userLogged.email, 0,1,null)
+            this.incompleteUser = new User(userLogged.uid, userLogged.displayName.split(" ")[0], userLogged.displayName.split[1], userLogged.email, 0,1,null)
+            console.log(incompleteUser)
             this.showCompleteDialog = true;
+          }else{
+            this.$router.replace("/dashboard");
           }
-          this.$router.replace("/dashboard");
         })
         .catch((error) => {
           if (error.code == "auth/account-exists-with-different-credential") {

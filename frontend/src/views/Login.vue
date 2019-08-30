@@ -13,17 +13,17 @@
                 v-model="email"
                 label="E-mail"
                 prepend-icon="person"
-                outlined="true"
+                outlined=true
                 :rules="emailRules"
-                solo="true"
-                clearable="true"
+                solo=true
+                clearable=true
                 required
               ></v-text-field>
 
               <v-text-field
-                outlined="true"
-                solo="true"
-                clearable="true"
+                outlined=true
+                solo=true
+                clearable=true
                 v-model="password"
                 :rules="passwordRules"
                 prepend-icon="lock"
@@ -66,16 +66,16 @@ export default {
     passwordRules: [v => !!v || "Password is Required"]
   }),
   methods: {
-    validate() {
+    validate: function() {
       if (this.$refs.form.validate()) {
         this.snackbar = true;
         this.login();
       }
     },
-    reset() {
+    reset: function() {
       this.$refs.form.reset();
     },
-    login() {
+    login: function() {
       firebase
         .auth()
         .signInWithEmailAndPassword(this.email, this.password)
