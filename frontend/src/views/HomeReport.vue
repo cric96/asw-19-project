@@ -12,15 +12,16 @@
             <v-icon v-else>add</v-icon>
           </v-btn>
         </template>
-        <v-btn fab light @click='openCamera'>
+        <v-btn fab light @click='openCamera("camera")'>
             <v-icon>camera</v-icon>
-            <input id="camera" type="file" accept="image/*" @change="onPhotoSelected" capture="camera" hidden=true />
+            <input id="camera" type="file" accept="image/*" @change="onPhotoSelectedCamera" capture="camera" hidden=true />
         </v-btn>
         <v-btn fab light to="/manual">
             <v-icon>edit</v-icon>
         </v-btn>
-        <v-btn fab light>
+        <v-btn fab light @click='openCamera("barcode")'>
             <v-icon>fa-barcode</v-icon>
+            <input id="barcode" type="file" accept="image/*" @change="onPhotoSelectedBarcode" capture="camera" hidden=true />
         </v-btn>
       </v-speed-dial>
       
@@ -67,12 +68,14 @@ export default {
     goToManual() {
       this.$router.replace('/manual')
     },
-    openCamera() {
-      document.getElementById('camera').click()
+    openCamera(id) {
+      document.getElementById(id).click()
     },
-    onPhotoSelected(event) {
-      console.log(event.target.files[0])
+    onPhotoSelectedCamera(event) {
       this.$router.push({name : 'AiInsertion', params : {img : event.target.files[0]}})
+    },
+    onPhotoSelectedBarcode(event) {
+      this.$router.push({name : 'BarcodeInsertion', params : {img : event.target.files[0]}})
     }
   }
 }

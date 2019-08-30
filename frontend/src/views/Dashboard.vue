@@ -19,7 +19,7 @@
             v-model="newTrash"
             :timeout=2000
         >
-        <p> Hai guardagnato {{score}} punti </p>
+        <p> Hai guadagnato {{score}} punti </p>
       </v-snackbar>
   </v-app>
 </template>

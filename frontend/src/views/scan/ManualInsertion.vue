@@ -17,7 +17,7 @@
                 label="Digita..."
                 solo-inverted
             ></v-autocomplete>
-            <v-btn icon @click="onAccept">
+            <v-btn icon @click="onAccept" :disabled="confirmDisabled">
               <v-icon>done</v-icon>
             </v-btn>
     </v-toolbar>
@@ -35,12 +35,25 @@
           'Metal',
           'Paper',
         ],
-        category: ''
+        category: '',
+        confirmDisabled: true,
+        score : 8
+      }
+    },
+    watch: {
+      category: function(val) {
+        console.log(val)
+        if(!val) {
+          this.confirmDisabled = true
+        } else {
+          this.confirmDisabled = false
+        }
       }
     },
     methods: {
       onAccept() {
-        console.log(this.category)
+        this.$emit("score-received", this.score) 
+        this.$router.push("/dashboard")
       }
     }
   
