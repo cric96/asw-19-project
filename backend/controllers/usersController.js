@@ -5,9 +5,11 @@ var User = mongoose.model('User');
 
 exports.create_user = function(req, res) {
     var user = new User(req.body);
+    console.log(user)
     var error = user.validateSync();
     if(error){
-        utils.sendResponseMessage(res, 400, "Bad request; emailand firebase_uid are required fields");
+        console.log(error)
+        utils.sendResponseMessage(res, 400, "Bad request; email and firebase_uid are required fields");
     }else {
         user.save(function(err, newUser) {
             if(!err && newUser){
@@ -37,9 +39,7 @@ exports.get_user = function(req, res) {
 
 exports.update_user = function(req, res) {
     let uid = res.locals.uid;
-    console.log(req.body)
     let updateUser = User.prepareUpdate(req.body);
-    console.log(req.body)
     User.findOneAndUpdate({firebase_uid: uid}, updateUser, {new: true}, function(err, updatedUser){
         if (err){
             console.log(err)
