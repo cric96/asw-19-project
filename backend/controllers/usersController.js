@@ -7,7 +7,7 @@ exports.create_user = function(req, res) {
     var user = new User(req.body);
     var error = user.validateSync();
     if(error){
-        utils.sendResponseMessage(res, 400, "Bad request; email,name,surname,nickname and firebase_uid are required fields");
+        utils.sendResponseMessage(res, 400, "Bad request; emailand firebase_uid are required fields");
     }else {
         user.save(function(err, newUser) {
             if(!err && newUser){
@@ -38,15 +38,17 @@ exports.get_user = function(req, res) {
 exports.update_user = function(req, res) {
     let uid = res.locals.uid;
     let updateUser = new User(req.body);
-    User.findOneAndUpdate({firebase_uid: uid}, updateUser.prepareUpdate(), {new: true}, function(err, updateUser){
-        if (err)
+    console.log(uid)
+    User.findOneAndUpdate({firebase_uid: uid}, updateUser, {new: true}, function(err, updatedUser){
+        if (err){
+            console.log(err);
 			res.send(err);
-		else{
-			if(updateUser == null){
+        }else{
+			if(updatedUser == null){
                 utils.sendResponseMessage(res, 404, "User not found");
 			}
 			else{
-                utils.sendResponseMessage(res, 200, updateUser);
+                utils.sendResponseMessage(res, 200, updatedUser);
 			}
 		}
     });

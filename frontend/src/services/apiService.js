@@ -26,7 +26,7 @@ class ApiService {
     }
 
     put(resource, data, requireAuth= false) {
-        return axios.put(this.baseURL+resource, requireAuth ? this.getHeader() : {}, data)
+        return axios.put(this.baseURL+resource, data, requireAuth ? this.getHeader() : {})
     }
 
     delete(resource, requireAuth = false) {

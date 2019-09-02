@@ -1,28 +1,14 @@
 <template>
   <v-app>
-    <splash-screen v-if="loading"></splash-screen>
-    <router-view v-else/>
+    <router-view />
   </v-app>
 </template>
 
 <script>
-import SplashScreen from '@/components/SplashScreen'
-import authService from './auth.service'
 
 export default {
   name: 'App',
-  beforeCreate() {
-    authService.authState(user => {
-      this.$store.commit('setUserProfile', user);
-      this.loading = false;
-    })
-  },
-  data: () => ({
-    loading: true
-  }),
-  components: {
-    'splash-screen': SplashScreen
-  }
+  
 }
 </script>
 

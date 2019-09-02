@@ -16,14 +16,53 @@ const store = new Vuex.Store({
         userProfile: null
     },
     actions: {
-        autoSignIn({ commit }, data) {
-            commit('setUserProfile', (!data) ? null : data);
+        signUp({ commit }, user) {
+            return usersApi.create_user(user).then((user)=>{
+                return this.dispatch('signIn');
+            })
         },
-        signIn({ commit }, payload) {
-            commit('setUserProfile', payload);
+        signInAndUpdate({ commit }, user) {
+            let firebaseUser = fb.auth.currentUser
+            return new Promise((resolve, reject)=>{
+                firebaseUser.getIdToken(true).then(token => {
+                    if(token){
+                        commit('setToken', token);
+                        usersApi.update_user(user).then(updatedUser=>{
+                            commit('setUserProfile', updatedUser);
+                            resolve(updatedUser)
+                        }).catch((err)=>{
+                            reject(err);
+                            this.dispatch('logout');
+                        })
+                    }else{
+                        reject();
+                        this.dispatch('logout');
+                    }
+                })
+            })
+        },
+        signIn({ commit }) {
+            let firebaseUser = fb.auth.currentUser
+            return new Promise((resolve, reject)=>{
+                firebaseUser.getIdToken(true).then(token => {
+                    if(token){
+                        commit('setToken', token);
+                        usersApi.get_user().then(user=>{
+                            commit('setUserProfile', user);
+                            resolve(user)
+                        }).catch((err)=>{
+                            reject(err);
+                            this.dispatch('logout');
+                        })
+                    }else{
+                        reject();
+                        this.dispatch('logout');
+                    }
+                })
+            })
         },
         logout() {
-            fb.auth.signOut();//.then(() => { this.dispatch('clearData'); }, error => { });        
+            fb.auth.signOut().then(() => { this.dispatch('clearData'); }, error => { });        
         },
         clearData({ commit }) {
             commit('setToken', null);
@@ -32,7 +71,7 @@ const store = new Vuex.Store({
     },
     getters: {
         isAuthenticated(state) {
-            return state.userProfile !== null && state.userProfile !== undefined;
+            return fb.auth.currentUser!=null;
         },
         token(state){
             return state.token;
@@ -44,9 +83,6 @@ const store = new Vuex.Store({
         },
         setUserProfile(state, val) {
             state.userProfile = val;
-        },
-        setUserFirebase(state, val) {
-            state.userFirebase = val;
         }
     }
 })

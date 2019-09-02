@@ -23,7 +23,6 @@
   import CompleteUserInfoForm from '@/components/authentication/CompleteUserInfoForm'
   import BindUserForm from '@/components/authentication/BindUserForm'
   import User from '@/model/user'
-  import auth from '@/auth.service';
 
   import usersApi from '../../services/users.api.js'
 
@@ -59,12 +58,14 @@ export default {
               //sand and save data user in backend
               var userLogged = result.user;
               this.incompleteUser = new User(userLogged.uid, userLogged.displayName.split(" ")[0], userLogged.displayName.split(" ")[1], userLogged.email, "", 0, 1)
-              this.showCompleteDialog = true;
+              //this.showCompleteDialog = true;
+              this.$store.dispatch('signUp', this.incompleteUser).then((user)=>{
+                  this.$router.replace("/dashboard");
+                });
             }else{
-              auth.signIn().then(user => {
-                this.$store.dispatch('signIn', user);
-                this.$router.replace("/dashboard");
-              });
+                this.$store.dispatch('signIn').then((user)=>{
+                  this.$router.replace("/dashboard");
+                });
             } 
           }
         })
