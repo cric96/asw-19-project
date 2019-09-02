@@ -37,12 +37,13 @@ exports.get_user = function(req, res) {
 
 exports.update_user = function(req, res) {
     let uid = res.locals.uid;
-    let updateUser = new User(req.body);
-    console.log(uid)
+    console.log(req.body)
+    let updateUser = User.prepareUpdate(req.body);
+    console.log(req.body)
     User.findOneAndUpdate({firebase_uid: uid}, updateUser, {new: true}, function(err, updatedUser){
         if (err){
-            console.log(err);
-			res.send(err);
+            console.log(err)
+            utils.sendResponseMessage(res, 400, "Bad request");
         }else{
 			if(updatedUser == null){
                 utils.sendResponseMessage(res, 404, "User not found");

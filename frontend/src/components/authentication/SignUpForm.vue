@@ -129,9 +129,10 @@ export default {
     reset: function() {
       this.$refs.form.reset();
     },
-    createNewUser(uid) {
+    createNewUser(firebase_uid) {
       return new User(
-              uid,
+              null,
+              firebase_uid,
               this.name,
               this.surname,
               this.email,

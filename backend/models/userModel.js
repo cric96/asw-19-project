@@ -54,13 +54,13 @@ var userSchema = new Schema({
     }]
 });
 
-userSchema.methods.prepareUpdate = utils.exclude(this, 'email', 'level', 'score');
-
+userSchema.statics.prepareUpdate = function(obj){
+    return utils.exclude(obj, 'email', 'level', 'score');
+} 
 
 userSchema.options.toJSON = {
     transform: function(doc, ret, options) {
         delete ret.firebase_uid;
-        delete ret._id;
         return ret;
     },
 }
