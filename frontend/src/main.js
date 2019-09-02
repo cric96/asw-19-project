@@ -12,5 +12,8 @@ new Vue({
   router,
   vuetify,
   store,
+  beforeCreate() {
+    store.dispatch('autoSignIn');
+  },
   render: h => h(App)
 }).$mount('#app');

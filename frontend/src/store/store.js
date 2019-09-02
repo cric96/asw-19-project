@@ -3,7 +3,6 @@ import Vuex from 'vuex'
 import buildingModule from './module/building.js'
 import fb from '@/firebaseConfig.js'
 import usersApi from '../services/users.api.js'
-import User from '@/model/user'
 
 Vue.use(Vuex)
 
@@ -16,7 +15,10 @@ const store = new Vuex.Store({
         userProfile: null
     },
     actions: {
-        signUp({ commit }, user) {
+        autoSignIn() {
+            return this.dispatch('signIn');
+        },
+        signUp(user) {
             return usersApi.create_user(user).then(()=>{
                 return this.dispatch('signIn');
             }).catch(() => this.dispatch('logout'));
@@ -28,34 +30,34 @@ const store = new Vuex.Store({
             }).then(response => {
                 commit('setUserProfile', response.data);
                 return response.data
-            }).catch((err)=>{
-                console.log(err)
+            }).catch(()=>{
                 this.dispatch('logout');
             })
         },
         signIn({ commit }) {
-            let firebaseUser = fb.auth.currentUser
             return new Promise((resolve, reject)=>{
-                firebaseUser.getIdToken(true).then(token => {
-                    if(token){
-                        commit('setToken', token);
-                        usersApi.get_user().then(response => {
-                            commit('setUserProfile', response.data);
-                            resolve(response.data)
-                        }).catch((err)=>{
-                            reject(err);
+                retrieveFirebaseCurrentUser(firebaseUser => {
+                    firebaseUser.getIdToken(true).then(token => {
+                        if(token){
+                            commit('setToken', token);
+                            usersApi.get_user().then(response => {
+                                commit('setUserProfile', response.data);
+                                resolve(response.data)
+                            }).catch((err)=>{
+                                reject(err);
+                                this.dispatch('logout');
+                            })
+                        }else{
+                            reject();
                             this.dispatch('logout');
-                        })
-                    }else{
-                        reject();
-                        this.dispatch('logout');
-                    }
-                })
+                        }
+                    });
+                });
             })
         },
         logout() {
             return new Promise((resolve, reject) => {
-                fb.auth.signOut().then(() => { this.dispatch('clearData'); resolve(); }, error => { reject(); });        
+                fb.auth.signOut().then(() => { this.dispatch('clearData'); resolve(); }, () => { reject(); });        
             });
         },
         clearData({ commit }) {
@@ -64,7 +66,7 @@ const store = new Vuex.Store({
         }
     },
     getters: {
-        isAuthenticated(state) {
+        isAuthenticated() {
             return fb.auth.currentUser!=null;
         },
         token(state){
@@ -80,5 +82,12 @@ const store = new Vuex.Store({
         }
     }
 })
+
+function retrieveFirebaseCurrentUser(cb) {
+    const unsub = fb.auth.onAuthStateChanged(firebaseUser => {
+        unsub();
+        cb(firebaseUser);
+    })
+}
 
 export default store
