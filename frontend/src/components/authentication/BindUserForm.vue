@@ -3,19 +3,18 @@
     <v-card>
       <v-alert 
         dismissable      
-        v-model="showSuccessAlert"
+        v-if="showSuccessAlert"
         type="success">
-        Binding completed with success
+        Collegamento completato con successo
       </v-alert>
       <v-alert  
-        v-model="showErrorAlert"
+        v-if="showErrorAlert"
         dismissable
         type="error">
-        An error occurred; the insered password is not correct; try again with another password
+        ERRORE; la password inserita non è corretta; riprova inserendo una nuova password
       </v-alert>
       <v-card-title>
-        <span class="headline">An account already exists with the same email provided by facebook.
-           Please provide the password for: {{existingEmail}}</span>
+        <span class="headline">Esiste già un account (registrato con username e password) con la mail {{existingEmail}}; fornire la password per collegarlo all'account facebook con cui si vuole accedere:</span>
       </v-card-title>
       <v-card-text>
         <v-container>
@@ -29,8 +28,8 @@
       </v-card-text>
       <v-card-actions>
         <div class="flex-grow-1"></div>
-        <v-btn color="blue darken-1" text @click="show=false">Close</v-btn>
-        <v-btn color="blue darken-1" text @click="bind">Bind</v-btn>
+        <v-btn color="blue darken-1" text @click="show=false">Chiudi</v-btn>
+        <v-btn color="blue darken-1" text @click="bind">Collega</v-btn>
       </v-card-actions>
     </v-card>
     
@@ -48,7 +47,7 @@ export default {
   props: {
     pendingCred:String,
     existingEmail: String,
-    visible: Boolean
+    value: Boolean
   },
   computed: {
     showSuccessAlert: function(){
@@ -59,10 +58,10 @@ export default {
     },
     show: {
       get() {
-        return this.visible;
+        return this.value;
       },
-      set(visible) {
-        if(!visible){
+      set(value) {
+        if(!value){
           this.$emit('close');
         }
       }
@@ -78,11 +77,26 @@ export default {
         // Link Facebook OAuth credential to existing account.
         if (user) {
           //TODO show dialog
-          firebase.auth().currentUser.linkWithCredential(this.pendingCred);
-          this.error = false
-          this.show = false
+          firebase.auth().currentUser.linkWithCredential(this.pendingCred).then((userLinked)=>{
+            let newuser = this.createNewUser(userLinked.uid);
+            this.$store.dispatch('signIn').then((user)=>{
+              this.error = false
+              this.$router.replace("/dashboard");
+            }).catch(err=>{
+              //todo chack erros
+              console.log(err)
+            })
+          }).catch((err)=>{
+            console.log(err)
+          });
+          
         }else {
+          console.log("password errata 2")
           this.error = true
+        }
+      }).catch((err)=>{
+        if(err.code='auth/wrong-password'){
+            this.error = true
         }
       });
     }
