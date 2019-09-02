@@ -7,33 +7,6 @@ import User from '@/model/user'
 
 Vue.use(Vuex)
 
-fb.auth.onAuthStateChanged(user => {
-    console.log('onAuthStateChanged');
-    console.log(user);
-    if(user && !store.getters.isAuthenticated) {
-        store.dispatch('login');
-        
-    } else {
-        store.dispatch('logout');
-    }
-});
-/*
-fb.auth.onAuthStateChanged(user => {
-    if (user) {
-        store.commit('setCurrentUser', user)
-        store.commit('setIsAuthenticated', true)
-        fb.auth.currentUser.getIdToken(true).then(function(token){
-            if(token){
-                store.commit('setToken', token)
-                store.dispatch('fetchUserProfile')
-            }
-        });
-    }else{
-        store.commit('setIsAuthenticated', false)
-        store.commit('setToken', null)
-    }
-});*/
-
 const store = new Vuex.Store({
     modules: {
         building: buildingModule
@@ -43,19 +16,14 @@ const store = new Vuex.Store({
         userProfile: null
     },
     actions: {
-        login({ commit }) {
-            fb.auth.currentUser.getIdToken(/* forceRefresh */ true).then(function(token) {
-                if(token) {
-                    commit('setToken', token);
-                    usersApi.get_user().then(function(res) {
-                        commit('setUserProfile', User.fromJson(res.data));
-                        this.$router.replace("/dashboard");
-                    });
-                }
-            });
+        autoSignIn({ commit }, data) {
+            commit('setUserProfile', (!data) ? null : data);
+        },
+        signIn({ commit }, payload) {
+            commit('setUserProfile', payload);
         },
         logout() {
-            fb.auth.signOut().then(() => { this.dispatch('clearData'); }, error => { });        
+            fb.auth.signOut();//.then(() => { this.dispatch('clearData'); }, error => { });        
         },
         clearData({ commit }) {
             commit('setToken', null);
@@ -76,6 +44,9 @@ const store = new Vuex.Store({
         },
         setUserProfile(state, val) {
             state.userProfile = val;
+        },
+        setUserFirebase(state, val) {
+            state.userFirebase = val;
         }
     }
 })

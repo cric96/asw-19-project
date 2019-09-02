@@ -99,6 +99,8 @@
 import firebase from "firebase";
 import usersapi from "../../services/users.api";
 import User from "../../model/user";
+import auth from '@/auth.service';
+
 export default {
   data: () => ({
     color:'rgba(255,255,255,0.9)',
@@ -141,9 +143,15 @@ export default {
               this.email,
               this.nickname
             );
-            usersapi.create_user(newuser);
+
+            auth.registerUser(newuser).then(registredUser => {
+              console.log(registredUser);
+              this.$store.dispatch('signIn', registredUser);
+              this.$router.replace("/dashboard");
+            }).catch(err => {
+
+            });
             //TODO check if registration of new user is ok
-            this.$router.replace("/intro");
           }
         })
         .catch(err => {

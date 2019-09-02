@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import store from './store/store'
+import authService from './auth.service'
 import Router from 'vue-router'
 import Dashboard from './views/Dashboard.vue'
 import Login from './views/Login.vue'
@@ -85,9 +85,20 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
 
-  if (requiresAuth && !store.getters.isAuthenticated) next('intro');
-  else if (!requiresAuth && store.getters.isAuthenticated) next('dashboard');
-  else next();
+  authService.authState(currentUser => {
+    console.log(currentUser);
+    if(requiresAuth && !currentUser) {
+      // goto main page login
+      next('intro');
+    } else if(requiresAuth && currentUser.incomplete) {
+      // next to complete registration
+    } else if(requiresAuth && !currentUser.incomplete) {
+      next();
+    } else {
+      next();
+    }
+  });
+
 });
 
 export default router;

@@ -23,6 +23,7 @@
   import CompleteUserInfoForm from '@/components/authentication/CompleteUserInfoForm'
   import BindUserForm from '@/components/authentication/BindUserForm'
   import User from '@/model/user'
+  import auth from '@/auth.service';
 
   import usersApi from '../../services/users.api.js'
 
@@ -60,8 +61,10 @@ export default {
               this.incompleteUser = new User(userLogged.uid, userLogged.displayName.split(" ")[0], userLogged.displayName.split(" ")[1], userLogged.email, "", 0, 1)
               this.showCompleteDialog = true;
             }else{
-              this.$store.dispatch('login');
-              this.$router.replace("/dashboard");
+              auth.signIn().then(user => {
+                this.$store.dispatch('signIn', user);
+                this.$router.replace("/dashboard");
+              });
             } 
           }
         })
@@ -86,10 +89,10 @@ export default {
     socialRegister(finalUser) {
       // send to backend
       // when complete, store.login()
-      usersApi.create_user(finalUser).then(response => {
-        this.$store.dispatch('login');
+      auth.registerUser(finalUser).then(registredUser => {
+        this.$store.dispatch('signIn', registredUser);
         this.$router.replace("/dashboard");
-      })
+      }) 
       .catch(error => {
         // TODO: handle error
       });

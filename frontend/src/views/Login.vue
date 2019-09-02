@@ -51,6 +51,7 @@
 
 <script>
 import firebase from "firebase";
+import auth from '@/auth.service';
 
 export default {
   data: () => ({
@@ -79,11 +80,11 @@ export default {
       firebase
         .auth()
         .signInWithEmailAndPassword(this.email, this.password)
-        .then(user => {
-          if (user) {
-            this.$store.commit("setCurrentUser", user.user);
-            this.$router.replace("/home");
-          }
+        .then(response => {
+          auth.signIn().then(user => {
+            this.$store.dispatch('signIn', user);
+            this.$router.replace("/dashboard");
+          });
         })
         .catch(err => {
           if (err.code == "auth/account-exists-with-different-credential") {
