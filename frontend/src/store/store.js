@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import buildingModule from './module/building.js'
 import fb from '@/firebaseConfig.js'
 import usersApi from '../services/users.api.js'
+import User from '../model/user'
 
 Vue.use(Vuex)
 
@@ -18,7 +19,8 @@ const store = new Vuex.Store({
         autoSignIn() {
             return this.dispatch('signIn');
         },
-        signUp(user) {
+        // eslint-disable-next-line no-empty-pattern
+        signUp({}, user) {
             return usersApi.create_user(user).then(()=>{
                 return this.dispatch('signIn');
             }).catch(() => this.dispatch('logout'));
@@ -71,6 +73,9 @@ const store = new Vuex.Store({
         },
         token(state){
             return state.token;
+        },
+        currentUser(state) {
+            return User.fromJson(state.userProfile);
         }
     },
     mutations: {

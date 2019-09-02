@@ -57,8 +57,9 @@ export default {
             if (result.additionalUserInfo.isNewUser) {
               //sand and save data user in backend
               var userLogged = result.user;
-              this.incompleteUser = new User(null, userLogged.uid, userLogged.displayName.split(" ")[0], userLogged.displayName.split(" ")[1], userLogged.email, "", 0, 1)
+              this.incompleteUser = new User(undefined, userLogged.uid, userLogged.displayName.split(" ")[0], userLogged.displayName.split(" ")[1], userLogged.email)
               //this.showCompleteDialog = true;
+              console.log(this.incompleteUser);
               this.$store.dispatch('signUp', this.incompleteUser).then((user)=>{
                   this.$router.replace("/dashboard");
                 });

@@ -46,15 +46,8 @@ export default {
     ]
   }),
   computed: {
-    isAuth: function(){
-      return this.$store.state.isAuthenticated;
-    }
-  },
-  watch: {
-    isAuth: function (val) {
-      if(!val){
-        this.$router.replace('/intro')
-      }
+    currentUser: function() {
+      return this.$store.getters.currentUser();
     }
   },
   components: {
