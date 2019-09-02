@@ -3,7 +3,13 @@
     <v-layout row align-center justify-center>
       <!--TODO. use src set for dimension-->
       <v-flex xs12 sm8 md4>
-        <v-img :src="require('../assets/logo.png')" class="my-3, centered_img" height="300" width="300" style="background-color:rgba(255,255,255,0.8);border-radius: 50%"></v-img>
+        <v-img
+          :src="require('../assets/logo.png')"
+          class="my-3, centered_img"
+          height="300"
+          width="300"
+          style="background-color:rgba(255,255,255,0.8);border-radius: 50%"
+        ></v-img>
       </v-flex>
       <v-flex xs12 sm8 md4 wrap>
         <v-card v-bind:style="{ backgroundColor: color}" class="mx-auto, ma-3, mp-5">
@@ -13,17 +19,17 @@
                 v-model="email"
                 label="E-mail"
                 prepend-icon="person"
-                outlined=true
+                outlined="true"
                 :rules="emailRules"
-                solo=true
-                clearable=true
+                solo="true"
+                clearable="true"
                 required
               ></v-text-field>
 
               <v-text-field
-                outlined=true
-                solo=true
-                clearable=true
+                outlined="true"
+                solo="true"
+                clearable="true"
                 v-model="password"
                 :rules="passwordRules"
                 prepend-icon="lock"
@@ -41,7 +47,10 @@
             <v-btn color="error" @click="reset">Reset Form</v-btn>
           </v-card-actions>
           <v-card-text>
-            <p  class="pa-3">You don't have an account? <router-link to="/sign-up">Sign up</router-link></p>
+            <p class="pa-3">
+              You don't have an account?
+              <router-link to="/sign-up">Sign up</router-link>
+            </p>
           </v-card-text>
         </v-card>
       </v-flex>
@@ -51,11 +60,10 @@
 
 <script>
 import firebase from "firebase";
-import auth from '@/auth.service';
 
 export default {
   data: () => ({
-    color:'rgba(255,255,255,0.9)',
+    color: "rgba(255,255,255,0.9)",
     passwordShow: false,
     valid: true,
     email: "",
@@ -81,16 +89,14 @@ export default {
         .auth()
         .signInWithEmailAndPassword(this.email, this.password)
         .then(response => {
-          auth.signIn().then(user => {
-            this.$store.dispatch('signIn', user);
+          this.$store.dispatch("signIn").then(user=>{
             this.$router.replace("/dashboard");
+          }).catch(()=>{
+            this.$router.replace("/intro");
           });
-        })
-        .catch(err => {
-          if (err.code == "auth/account-exists-with-different-credential") {
-            var provider = new firebase.auth.FacebookAuthProvider();
-            firebase.auth().currentUser.linkWithPopup(provider);
-          }
+        }).catch(err => {
+          console.log(err)
+          //TODO CHECK ERRORS
         });
     }
   }

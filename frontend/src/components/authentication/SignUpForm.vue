@@ -99,7 +99,6 @@
 import firebase from "firebase";
 import usersapi from "../../services/users.api";
 import User from "../../model/user";
-import auth from '@/auth.service';
 
 export default {
   data: () => ({
@@ -130,28 +129,27 @@ export default {
     reset: function() {
       this.$refs.form.reset();
     },
-    signUp: function() {
-      firebase
-        .auth()
-        .createUserWithEmailAndPassword(this.email, this.password)
-        .then(user => {
-          if (user) {
-            let newuser = new User(
-              user.user.uid,
+    createNewUser(uid) {
+      return new User(
+              uid,
               this.name,
               this.surname,
               this.email,
               this.nickname
             );
-
-            auth.registerUser(newuser).then(registredUser => {
-              console.log(registredUser);
-              this.$store.dispatch('signIn', registredUser);
+    },
+    signUp: function() {
+      firebase
+        .auth()
+        .createUserWithEmailAndPassword(this.email, this.password)
+        .then(response => {
+          if (response) {
+            let newuser = this.createNewUser(response.user.uid);
+            this.$store.dispatch('signUp').then((user)=>{
               this.$router.replace("/dashboard");
-            }).catch(err => {
-
-            });
-            //TODO check if registration of new user is ok
+            }).catch(()=>{
+              //TODO check error
+            })
           }
         })
         .catch(err => {
@@ -178,20 +176,17 @@ export default {
                     });
                 }
               })
-              .then(function(user) {
+              .then((user) =>{
                 if (user) {
-                  if (
-                    firebase
-                      .auth()
-                      .currentUser.linkWithCredential(
-                        firebase.auth.EmailAuthProvider.credential(
-                          existingEmail,
-                          password
-                        )
-                      )
-                  ) {
-                    this.$router.replace("/login");
-                  }
+                  user.linkWithCredential(firebase.auth.EmailAuthProvider.credential(existingEmail,password)).then((userLinked)=>{
+                    let newuser = this.createNewUser(userLinked.uid);
+                    this.$store.dispatch('signInAndUpdate', newuser).then((user)=>{
+                      this.$router.replace("/dashboard");
+                    }).catch(err=>{
+                      //todo chack erros
+                      console.log(err)
+                    })
+                  })
                 }
               });
           } else {

@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import authService from './auth.service'
+import fb from './firebaseConfig'
 import Router from 'vue-router'
 import Dashboard from './views/Dashboard.vue'
 import Login from './views/Login.vue'
@@ -85,18 +85,12 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
 
-  authService.authState(currentUser => {
-    console.log(currentUser);
-    if(requiresAuth && !currentUser) {
-      // goto main page login
-      next('intro');
-    } else if(requiresAuth && currentUser.incomplete) {
-      // next to complete registration
-    } else if(requiresAuth && !currentUser.incomplete) {
-      next();
-    } else {
-      next();
-    }
+  const unsub = fb.auth.onAuthStateChanged(currentUser => {
+    if (requiresAuth && !currentUser) next('intro');
+    else if (!requiresAuth && currentUser) next('dashboard');
+    else next();
+
+    unsub();
   });
 
 });
