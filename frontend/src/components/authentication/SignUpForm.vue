@@ -131,7 +131,7 @@ export default {
     },
     createNewUser(firebase_uid) {
       return new User(
-              null,
+              undefined,
               firebase_uid,
               this.name,
               this.surname,
@@ -146,7 +146,7 @@ export default {
         .then(response => {
           if (response) {
             let newuser = this.createNewUser(response.user.uid);
-            this.$store.dispatch('signUp').then((user)=>{
+            this.$store.dispatch('signUp', newuser).then((user)=>{
               this.$router.replace("/dashboard");
             }).catch(()=>{
               //TODO check error
