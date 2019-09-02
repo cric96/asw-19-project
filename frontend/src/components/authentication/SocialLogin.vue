@@ -12,7 +12,7 @@
     <user-binding-dialog-form 
       :existing-email="this.existingEmail" 
       :pending-cred="this.pendingCred" 
-      :visible="showBindingDialog"
+      v-model="showBindingDialog"
       @close="showBindingDialog=false">
     </user-binding-dialog-form>
   </div>
