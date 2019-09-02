@@ -54,7 +54,9 @@ const store = new Vuex.Store({
             })
         },
         logout() {
-            fb.auth.signOut().then(() => { this.dispatch('clearData'); }, error => { });        
+            return new Promise((resolve, reject) => {
+                fb.auth.signOut().then(() => { this.dispatch('clearData'); resolve(); }, error => { reject(); });        
+            });
         },
         clearData({ commit }) {
             commit('setToken', null);

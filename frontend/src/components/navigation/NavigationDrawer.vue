@@ -38,7 +38,9 @@ export default {
     },
     methods: {
         logout : function(){
-            this.$store.dispatch('logout')
+            this.$store.dispatch('logout').then(() => {
+                this.$router.replace("/intro");
+            })
         }
     },
     computed: {
