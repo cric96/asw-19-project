@@ -16,7 +16,8 @@ class User {
 
     isCompleteProfile() {
         let values = [this.name, this.surname, this.nickname];
-        return values.every(value => value !== null || value !== undefined || value !== '');
+        console.log(values);
+        return values.every(value => value !== null && value !== undefined && value !== '');
     }
 
     /* Create the related User object starting from json object */

@@ -1,24 +1,32 @@
 <template>
   <v-app>
-    <complete-user-info v-model="needCompleteProfile"></complete-user-info>
+    <complete-user-info 
+      v-model="needCompletation" 
+      :user="currentUser"/>
     <router-view />
   </v-app>
 </template>
 
 <script>
 import CompleteUserInfoForm from '@/components/authentication/CompleteUserInfoForm'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'App',
   components: {
     'complete-user-info': CompleteUserInfoForm
   },
+  data: () => ({
+    needCompletation: false
+  }),
   computed: {
-    currentUser: function() {
-      return this.$store.getters.currentUser();
-    },
-    isCompleteProfile: function() {
-      return currentUser.isCompleteProfile;
+    ...mapGetters([
+      'currentUser'
+    ])
+  },
+  watch: {
+    currentUser: function(val) {
+      this.needCompletation = !val.isCompleteProfile();
     }
   }
 }

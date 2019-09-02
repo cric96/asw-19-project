@@ -89,15 +89,7 @@ export default {
       })
     },
     socialRegister(finalUser) {
-      // send to backend
-      // when complete, store.login()
-      auth.registerUser(finalUser).then(registredUser => {
-        this.$store.dispatch('signIn', registredUser);
-        this.$router.replace("/dashboard");
-      }) 
-      .catch(error => {
-        // TODO: handle error
-      });
+      
     }  
   }
 }
