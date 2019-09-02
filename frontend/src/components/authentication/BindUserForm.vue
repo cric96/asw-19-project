@@ -4,14 +4,13 @@
       <v-alert 
         dismissable      
         v-if="showSuccessAlert"
-        type="success">
-        Collegamento completato con successo
+        type="success">{{successMessage}}
       </v-alert>
       <v-alert  
         v-if="showErrorAlert"
         dismissable
         type="error">
-        ERRORE; la password inserita non è corretta; riprova inserendo una nuova password
+        {{errorMessage}}
       </v-alert>
       <v-card-title>
         <span class="headline">Esiste già un account (registrato con username e password) con la mail {{existingEmail}}; fornire la password per collegarlo all'account facebook con cui si vuole accedere:</span>
@@ -42,7 +41,9 @@
 export default {
   data: () => ({
     password: null,
-    error: null
+    error: null,
+    errorMessage: "",
+    successMessage:""
   }),
   props: {
     pendingCred:String,
@@ -76,27 +77,31 @@ export default {
         // Existing email/password or Google user signed in.
         // Link Facebook OAuth credential to existing account.
         if (user) {
+          this.successMessage = "La password inserita è corretta. I due account verranno immediatamente collegati"
+          this.error = false
           //TODO show dialog
           firebase.auth().currentUser.linkWithCredential(this.pendingCred).then((userLinked)=>{
-            let newuser = this.createNewUser(userLinked.uid);
             this.$store.dispatch('signIn').then((user)=>{
-              this.error = false
+              this.successMessage = "Collegamento completato con successo"
               this.$router.replace("/dashboard");
             }).catch(err=>{
               //todo chack erros
               console.log(err)
+              this.error = true
+              this.errorMessage = "Errore nel collegamento dei due account"
             })
           }).catch((err)=>{
             console.log(err)
           });
           
         }else {
-          console.log("password errata 2")
           this.error = true
+          this.errorMessage = "Attenzione, si è veirificato un errore nel login"
         }
       }).catch((err)=>{
         if(err.code='auth/wrong-password'){
             this.error = true
+            this.errorMessage = "ERRORE; la password inserita non è corretta; riprova inserendo una nuova password"
         }
       });
     }
