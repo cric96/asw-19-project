@@ -1,36 +1,47 @@
 import axios from 'axios'
 import store from '../store/store'
 
-class ApiService {
-
-    constructor(baseURL){
-        this.baseURL = baseURL
+function makeRequest(resource, axiosFunction, authorization = false, body = undefined) {
+    let headers = authorization ? getHeader() : { };
+    if(body != undefined) {
+        return axiosFunction(resource, body, headers);
+    } else {
+        return axiosFunction(resource, headers);
     }
+}
 
-    getHeader() {
-        let token = store.getters.token;
-        return {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': token
-            }
+function getHeader() {
+    let token = store.getters.token;
+    return {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token
         }
+    }
+}
+
+class ApiService {
+    
+    constructor(baseURL = ""){
+        this.axios = axios.create({
+            baseURL: baseURL
+        });
     }
 
     get(resource, requireAuth = false) {
-        return axios.get(this.baseURL+ resource, requireAuth ? this.getHeader() : {})
+        return makeRequest(resource, this.axios.get, requireAuth)
     }
 
     post(resource, data, requireAuth= false) {
-        return axios.post(this.baseURL+resource, data, requireAuth ? this.getHeader() : {})
+        return makeRequest(resource, this.axios.post, requireAuth, data);
     }
 
     put(resource, data, requireAuth= false) {
-        return axios.put(this.baseURL+resource, requireAuth ? this.getHeader() : {}, data)
+        return makeRequest(resource, this.axios.put, requireAuth, data);
     }
 
     delete(resource, requireAuth = false) {
-        return axios.delete(this.baseURL+ resource, requireAuth ? this.getHeader() : {})
+        return makeRequest(resource, this.axios.delete, requireAuth);
     }
 
     /**

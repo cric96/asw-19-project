@@ -1,5 +1,6 @@
 import ApiService from './apiService'
 
+// TODO: change the base url, retrieving it from .env
 let apiService = new ApiService("http://localhost:3000/api");
 
 export default{

@@ -14,9 +14,9 @@ export default {
                     firebaseUser.getIdToken(true).then(token => {
                         store.commit('setToken', token);
                         if(token) {
-                            usersApi.get_user().then(user => {
+                            usersApi.get_user().then(response => {
                                 resolve({
-                                    user: user,
+                                    user: response.data,
                                     incomplete: false
                                 })
                             }).catch(() => resolve({
