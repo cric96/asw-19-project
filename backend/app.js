@@ -9,6 +9,8 @@ var admin = require('firebase-admin');
 
 var userModel = require("./models/userModel");
 var usersRouter = require('./routes/usersRoutes');
+var buildingModel = require('./models/buildingModel');
+var buildingRouter = require('./routes/buildingsRoutes');
 
 var app = express();
 
@@ -27,6 +29,8 @@ app.use(cookieParser());
 app.use(cors());
 app.use(express.static(path.join(__dirname, '../frontend/dist')))
 app.use('/api', usersRouter);
+app.use('/api', buildingRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
