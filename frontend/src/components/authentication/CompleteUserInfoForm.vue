@@ -1,6 +1,9 @@
 <template>
   <v-dialog v-model="show" persistent max-width="600px">
     <v-card>
+      <v-alert color="primary" :type="alert.type" dense v-model="alert.visible">
+        {{ alert.message }}
+      </v-alert>
       <v-card-title>
         <span class="headline">Completa la registrazione</span>
       </v-card-title>
@@ -45,13 +48,21 @@ export default {
       'surname',
       'nickname'
     ],
-    finalUser: {},
+    alert: {
+      visible: false,
+      message: "",
+      type: undefined
+    },
+    finalUser: null,
     generalRules: [v => !!v || "Questo campo è obbligatorio"],
     valid: true
   }),
   watch: {
-    user: function(val) {
-      this.finalUser = val;
+    user: {
+      immediate: true,
+      handler: function(val) {
+        this.finalUser = val;
+      }
     }
   },
   computed: {
@@ -67,9 +78,17 @@ export default {
   methods:{
     save: function() {
       if(this.$refs.form.validate()) {
-        this.show = false;
-        // TODO: perform update.
-        this.$store.dispatch('updateUserData').then()
+        this.$store.dispatch('updateUserData', this.finalUser).then(response => {
+          console.log('sadasd');
+          this.alert.type = "success";
+          this.alert.visible = true;
+          this.alert.message = "Informazioni aggiornate";
+          this.value = false;
+        }).catch(err => {
+          this.alert.type = "error"
+          this.alert.message = "Errore durante l'aggiornamento. Riprovare"
+          this.alert.visible = true
+        });
       }
     }
   }
