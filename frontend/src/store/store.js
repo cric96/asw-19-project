@@ -1,4 +1,3 @@
-/* eslint-disable no-empty-pattern */
 import Vue from 'vue'
 import Vuex from 'vuex'
 import buildingModule from './module/building.js'
@@ -27,14 +26,14 @@ const store = new Vuex.Store({
         autoSignIn() {
             return this.dispatch('signIn');
         },
+        // eslint-disable-next-line no-empty-pattern
         signUp({}, user) {
-            return usersApi.create_user(user).then(()=>{
-                return this.dispatch('signIn');
-            }).catch((err) => {
-                console.log(err)
-                reject(err)
-                this.dispatch('logout');
-            });
+                return usersApi.create_user(user).then(()=>{
+                    return this.dispatch('signIn');
+                }).catch((err) => {
+                    this.dispatch('logout');
+                    return Promise.reject(err);
+                });
         },
         signInAndUpdate({ commit }, userToUpdate) {
             return this.dispatch('signIn').then((user)=>{
@@ -43,14 +42,15 @@ const store = new Vuex.Store({
             }).then(response => {
                 commit('setUserProfile', response.data);
                 return response.data
-            }).catch(()=>{
+            }).catch((err)=>{
                 this.dispatch('logout');
+                return Promise.reject(err);
             })
         },
         signIn({ commit }) {
             return new Promise((resolve, reject)=>{
                 retrieveFirebaseCurrentUser(firebaseUser => {
-                    if(firebaseUser) {
+                    if(firebaseUser) {                    
                         firebaseUser.getIdToken(true).then(token => {
                             if(token){
                                 commit('setToken', token);
@@ -66,7 +66,7 @@ const store = new Vuex.Store({
                                 this.dispatch('logout');
                             }
                         });
-                    }
+                    }    
                 });
             })
         },
