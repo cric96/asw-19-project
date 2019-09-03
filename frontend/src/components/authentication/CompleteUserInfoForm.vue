@@ -1,22 +1,31 @@
 <template>
   <v-dialog v-model="show" persistent max-width="600px">
     <v-card>
+      <v-alert color="primary" :type="alert.type" dense v-model="alert.visible">
+        {{ alert.message }}
+      </v-alert>
       <v-card-title>
-        <span class="headline">Complete User Profile info</span>
+        <span class="headline">Completa la registrazione</span>
       </v-card-title>
       <v-card-text>
-        <v-container v-if="user">
-          <v-row v-for="(value, propertyName) in simpleUser" :key="propertyName">
-            <v-col cols="12" sm="6" md="4">
-              <v-text-field v-model="finalUser[propertyName]" :label="''+ propertyName" :value="''+value!=null?value:''" required></v-text-field>
-            </v-col>
-          </v-row>
+        <v-container v-if="finalUser" fluid>
+          <v-form ref="form" v-model="valid" lazy-validation>
+              <v-row v-for="propertyName in userProperties" :key="propertyName">
+                <v-col cols="12">
+                  <v-text-field v-model="finalUser[propertyName]" 
+                    :label="propertyName"
+                    :rules="generalRules" 
+                    :value="finalUser[propertyName]" 
+                    required></v-text-field>
+                </v-col>
+              </v-row>
+          </v-form>
         </v-container>
       </v-card-text>
       <v-card-actions>
         <div class="flex-grow-1"></div>
-        <v-btn color="blue darken-1" text @click="show = false">Close</v-btn>
-        <v-btn color="blue darken-1" text @click="continueSaving">Continue</v-btn>
+        <v-btn color="blue darken-1" text @click="show = false">Chiudi</v-btn>
+        <v-btn color="blue darken-1" :disabled="!valid" text @click="save">Completa</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -24,7 +33,7 @@
 
 <script>
 import User from "../../model/user";
-import { functions } from 'firebase';
+
 export default {
   props: {
     user: {
@@ -33,14 +42,27 @@ export default {
     },
     value: Boolean
   },
-  data: function (){
-    return {
-      finalUser: {}
-    }
-  },
-  mounted: function () {
-    if(this.user != null){
-      this.finalUser = this.user
+  data: () => ({
+    userProperties: [
+      'name',
+      'surname',
+      'nickname'
+    ],
+    alert: {
+      visible: false,
+      message: "",
+      type: undefined
+    },
+    finalUser: null,
+    generalRules: [v => !!v || "Questo campo è obbligatorio"],
+    valid: true
+  }),
+  watch: {
+    user: {
+      immediate: true,
+      handler: function(val) {
+        this.finalUser = val;
+      }
     }
   },
   computed: {
@@ -51,20 +73,23 @@ export default {
       set(value) {
         this.$emit('input', value);
       }
-    },
-    simpleUser: function() {
-      return {
-        name: (this.user!=null)?this.user.name:'',
-        surname: (this.user!=null)?this.user.surname:'',
-        email: (this.user!=null)?this.user.email:'',
-        nickname: (this.user!=null)?this.user.nickname:''
-      };
     }
   },
   methods:{
-    continueSaving: function() {
-      this.value = false;
-      this.$emit('save', this.finalUser);
+    save: function() {
+      if(this.$refs.form.validate()) {
+        this.$store.dispatch('updateUserData', this.finalUser).then(response => {
+          console.log('sadasd');
+          this.alert.type = "success";
+          this.alert.visible = true;
+          this.alert.message = "Informazioni aggiornate";
+          this.value = false;
+        }).catch(err => {
+          this.alert.type = "error"
+          this.alert.message = "Errore durante l'aggiornamento. Riprovare"
+          this.alert.visible = true
+        });
+      }
     }
   }
 };

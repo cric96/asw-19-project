@@ -27,16 +27,16 @@
             v-model="email"
             label="E-mail"
             prepend-icon="person"
-            outlined=true
+            outlined
             :rules="emailRules"
-            solo=true
-            clearable=true
+            solo
+            clearable
             required>
           </v-text-field>
           <v-text-field
-            outlined=true
-            solo=true
-            clearable=true
+            outlined
+            solo
+            clearable
             prepend-icon="lock"
             v-model="password"
             :rules="passwordRules"
@@ -49,9 +49,9 @@
 
           <v-text-field
             v-model="confirmPassword"
-            outlined=true
-            solo=true
-            clearable=true
+            outlined
+            solo
+            clearable
             prepend-icon="lock"
             label="Confirm Password"
             :rules="passwordRules"
@@ -63,9 +63,9 @@
 
           <v-text-field 
             v-model="name" 
-            outlined=true
-            solo=true
-            clearable=true
+            outlined
+            solo
+            clearable
             prepend-icon="perm_identity"
             label="Name" 
             :rules="generalRules" 
@@ -75,9 +75,9 @@
           <v-text-field 
             v-model="surname" 
             label="Surname" 
-            outlined=true
-            solo=true
-            clearable=true
+            outlined
+            solo
+            clearable
             prepend-icon="perm_identity"
             :rules="generalRules" 
             required>
@@ -86,9 +86,9 @@
           <v-text-field 
             v-model="nickname" 
             label="Nickname" 
-            outlined=true
-            solo=true
-            clearable=true
+            outlined
+            solo
+            clearable
             prepend-icon="perm_identity"
             :rules="generalRules" 
             required>

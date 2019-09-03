@@ -1,5 +1,10 @@
 <template>
     <v-app light>
+      
+      <complete-user-info v-if="currentUser"
+        :value="needCompletation" 
+        :user="currentUser"/>
+
       <v-app-bar app clipped-left>
         <v-app-bar-nav-icon @click="drawer = !drawer"/>
         <v-toolbar-title>Scanbage</v-toolbar-title>
@@ -10,6 +15,7 @@
 
       <v-content>
           <v-container fluid>
+            
             <!-- TODO: insert v-breadcrumbs?? -->
             <!-- Replaced with the childrend view -->
             <router-view v-on:score-received="onScoreReceived"/>
@@ -26,6 +32,8 @@
 
 <script>
 import NavigationDrawer from '@/components/navigation/NavigationDrawer'
+import CompleteUserInfoForm from '@/components/authentication/CompleteUserInfoForm'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'Dashboard',
@@ -46,12 +54,16 @@ export default {
     ]
   }),
   computed: {
-    currentUser: function() {
-      return this.$store.getters.currentUser();
+    ...mapGetters([
+      'currentUser'
+    ]),
+    needCompletation: function() {
+      return (this.currentUser !== undefined) ? !this.currentUser.isCompleteProfile() : false;
     }
   },
   components: {
-    'navigation-drawer': NavigationDrawer
+    'navigation-drawer': NavigationDrawer,
+    'complete-user-info': CompleteUserInfoForm
   },
   methods: {
     onScoreReceived(scoreReceived) {

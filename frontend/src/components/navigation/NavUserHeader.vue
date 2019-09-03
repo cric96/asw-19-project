@@ -1,5 +1,5 @@
 <template >
-    <v-list>
+    <v-list v-if="user">
         <v-list-item>
             <v-list-item-avatar color="secondary">
                 <span>{{user.level}}</span>
@@ -7,7 +7,7 @@
         </v-list-item>
         <v-list-item>
             <v-list-item-content>
-                <v-list-item-title>{{user.nickname}}</v-list-item-title>
+                <v-list-item-title>{{user.displayName()}}</v-list-item-title>
                 <v-list-item-subtitle>{{score}} <!-- add an icon for "trash point" or similar --></v-list-item-subtitle>
             </v-list-item-content>
         </v-list-item>

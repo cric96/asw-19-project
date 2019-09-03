@@ -14,14 +14,21 @@ class User {
         this.nickname = nickname;
     }
 
+    displayName() {
+        return this.nickname || (this.name + this.surname) || this.email; 
+    }
+
     isCompleteProfile() {
         let values = [this.name, this.surname, this.nickname];
-        return values.every(value => value !== null || value !== undefined || value !== '');
+        return values.every(value => value !== null && value !== undefined && value !== '');
     }
 
     /* Create the related User object starting from json object */
     static fromJson(json) {
-        return Object.assign(new User(), json);
+        if(json !== null && json !== undefined)
+            return Object.assign(new User(), json);
+        else
+            return undefined;
     }
 }
 

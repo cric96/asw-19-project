@@ -19,17 +19,17 @@
                 v-model="email"
                 label="E-mail"
                 prepend-icon="person"
-                outlined="true"
+                outlined
                 :rules="emailRules"
-                solo="true"
-                clearable="true"
+                solo
+                clearable
                 required
               ></v-text-field>
 
               <v-text-field
-                outlined="true"
-                solo="true"
-                clearable="true"
+                outlined
+                solo
+                clearable
                 v-model="password"
                 :rules="passwordRules"
                 prepend-icon="lock"

@@ -45,7 +45,7 @@ export default {
     },
     computed: {
         userProfile: function() {
-            return this.$store.state.userProfile;
+            return this.$store.getters.currentUser;
         }
     },
     props: {

@@ -1,3 +1,4 @@
+/* eslint-disable no-empty-pattern */
 import Vue from 'vue'
 import Vuex from 'vuex'
 import buildingModule from './module/building.js'
@@ -16,10 +17,16 @@ const store = new Vuex.Store({
         userProfile: null
     },
     actions: {
+        updateUserData({}, user) {
+            return usersApi.update_user(user);
+            // TODO: move to right module
+            /*  return new Promise((resolve) => {
+                resolve();
+            });*/
+        },
         autoSignIn() {
             return this.dispatch('signIn');
         },
-        // eslint-disable-next-line no-empty-pattern
         signUp({}, user) {
             return usersApi.create_user(user).then(()=>{
                 return this.dispatch('signIn');
@@ -43,21 +50,23 @@ const store = new Vuex.Store({
         signIn({ commit }) {
             return new Promise((resolve, reject)=>{
                 retrieveFirebaseCurrentUser(firebaseUser => {
-                    firebaseUser.getIdToken(true).then(token => {
-                        if(token){
-                            commit('setToken', token);
-                            usersApi.get_user().then(response => {
-                                commit('setUserProfile', response.data);
-                                resolve(response.data)
-                            }).catch((err)=>{
-                                reject(err);
+                    if(firebaseUser) {
+                        firebaseUser.getIdToken(true).then(token => {
+                            if(token){
+                                commit('setToken', token);
+                                usersApi.get_user().then(response => {
+                                    commit('setUserProfile', response.data);
+                                    resolve(response.data)
+                                }).catch((err)=>{
+                                    reject(err);
+                                    this.dispatch('logout');
+                                })
+                            }else{
+                                reject();
                                 this.dispatch('logout');
-                            })
-                        }else{
-                            reject();
-                            this.dispatch('logout');
-                        }
-                    });
+                            }
+                        });
+                    }
                 });
             })
         },
