@@ -18,11 +18,8 @@ const store = new Vuex.Store({
     },
     actions: {
         updateUserData({}, user) {
-            return usersApi.update_user(user);
+           return usersApi.update_user(user);
             // TODO: move to right module
-            /*  return new Promise((resolve) => {
-                resolve();
-            });*/
         },
         autoSignIn() {
             return this.dispatch('signIn');
@@ -94,7 +91,6 @@ const store = new Vuex.Store({
     mutations: {
         setToken(state, val) {
             state.token = val;
-            console.log("Token "+val)
         },
         setUserProfile(state, val) {
             state.userProfile = val;

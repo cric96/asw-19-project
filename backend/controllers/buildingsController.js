@@ -12,7 +12,6 @@ exports.create_buildings = function(req, res) {
         console.log(error)
         utils.sendResponseMessage(res, 400, "Bad request; email and firebase_uid are required fields");
     }else {
-        userccontroller.addBuild.then
         newBuilding.save(function(err, inseredBuilding) {
             if(!err && inseredBuilding){
 

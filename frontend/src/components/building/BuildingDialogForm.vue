@@ -100,10 +100,7 @@ export default {
             if (this.$refs.form.validate()) {
                 let newBuilding = Object.assign({}, this.building);
                 this.createBuilding(newBuilding).then(() => {
-                    this.alert = {
-                        type: 'success',
-                        message: 'Abitazione aggiunta!'
-                    }
+                    this.$refs.form.reset();
                     this.value = false;
                 }).catch(err => {
                     this.alert = {
