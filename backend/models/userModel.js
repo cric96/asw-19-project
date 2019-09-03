@@ -38,7 +38,8 @@ var userSchema = new Schema({
     nickname: {
         type: String,
         trim: true,
-        default: null
+        default: null,
+        unique: true
     },
     rewards: [{
         type: mongoose.Schema.Types.ObjectId,
@@ -53,6 +54,10 @@ var userSchema = new Schema({
         ref: 'Trash'
     }]
 });
+
+userSchema.virtual.nameId = function(obj){
+    return (this.nickname!=null) ? this.nickname : this.email;
+} 
 
 userSchema.statics.prepareUpdate = function(obj){
     return utils.exclude(obj, 'email', 'level', 'score');

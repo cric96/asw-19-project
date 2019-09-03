@@ -23,7 +23,11 @@ const store = new Vuex.Store({
         signUp({}, user) {
             return usersApi.create_user(user).then(()=>{
                 return this.dispatch('signIn');
-            }).catch(() => this.dispatch('logout'));
+            }).catch((err) => {
+                console.log(err)
+                reject(err)
+                this.dispatch('logout');
+            });
         },
         signInAndUpdate({ commit }, userToUpdate) {
             return this.dispatch('signIn').then((user)=>{

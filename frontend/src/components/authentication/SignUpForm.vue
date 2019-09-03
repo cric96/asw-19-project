@@ -1,6 +1,17 @@
 <template>
   <v-container>
     <v-card v-bind:style="{ backgroundColor: color}">
+      <v-alert 
+        dismissable      
+        v-if="showSuccessAlert"
+        type="success">{{successMessage}}
+      </v-alert>
+      <v-alert  
+        v-if="showErrorAlert"
+        dismissable
+        type="error">
+        {{errorMessage}}
+      </v-alert>
       <v-card-text >
         <v-form  ref="form" v-model="valid" lazy-validation>
           <v-flex xs12 sm8 md4 class="mb-4">
@@ -102,6 +113,9 @@ import User from "../../model/user";
 
 export default {
   data: () => ({
+    error: null,
+    errorMessage: "",
+    successMessage:"",
     color:'rgba(255,255,255,0.9)',
     passwordShow: false,
     confirmPasswordShow: false,
@@ -145,28 +159,25 @@ export default {
         .createUserWithEmailAndPassword(this.email, this.password)
         .then(response => {
           if (response) {
-            let newuser = this.createNewUser(response.user.uid);
-            this.$store.dispatch('signUp', newuser).then((user)=>{
-              this.$router.replace("/dashboard");
-            }).catch(()=>{
-              //TODO check error
-            })
+              let newuser = this.createNewUser(response.user.uid);
+              this.$store.dispatch('signUp', newuser)
+              .then((user)=>{
+                this.error = false
+                this.successMessage = "Registrazione effettuata con successo. In pochi secondi verrai ridirezionato alla home page"
+                setTimeout(() => { this.$router.replace("/dashboard"); }, 2000);
+              }).catch((err)=>{
+                this.error = true
+                this.errorMessage = err
+              })
           }
         })
         .catch(err => {
           if (err.code == "auth/email-already-in-use") {
             const existingEmail = this.email;
             const password = this.password;
-            firebase
-              .auth()
-              .fetchSignInMethodsForEmail(existingEmail)
-              .then(function(providers) {
+            firebase.auth().fetchSignInMethodsForEmail(existingEmail).then((providers) =>{
                 const fbProvider = new firebase.auth.FacebookAuthProvider();
-                if (
-                  providers.indexOf(
-                    firebase.auth.FacebookAuthProvider.PROVIDER_ID
-                  ) != -1
-                ) {
+                if (providers.indexOf(firebase.auth.FacebookAuthProvider.PROVIDER_ID) != -1) {
                   // Sign in user to fb with same account.
                   fbProvider.setCustomParameters({ login_hint: existingEmail });
                   return firebase
@@ -175,13 +186,17 @@ export default {
                     .then(function(result) {
                       return result.user;
                     });
+                }else{
+                  this.error = true
+                  this.errorMessage = "Email già in uso"
                 }
               })
               .then((user) =>{
                 if (user) {
                   user.linkWithCredential(firebase.auth.EmailAuthProvider.credential(existingEmail,password)).then((userLinked)=>{
                     let newuser = this.createNewUser(userLinked.uid);
-                    this.$store.dispatch('signInAndUpdate', newuser).then((user)=>{
+                    this.$store.dispatch('signInAndUpdate', newuser)
+                    .then((user)=>{
                       this.$router.replace("/dashboard");
                     }).catch(err=>{
                       //todo chack erros
@@ -192,9 +207,16 @@ export default {
               });
           } else {
             console.log(err);
-            alert(err);
           }
         });
+    }
+  },
+  computed: {
+    showSuccessAlert: function(){
+      return !this.error && this.error!=null
+    },
+    showErrorAlert: function(){
+      return this.error && this.error!=null
     }
   }
 };
