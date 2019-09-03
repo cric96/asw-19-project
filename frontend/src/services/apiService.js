@@ -3,11 +3,8 @@ import store from '../store/store'
 
 function makeRequest(resource, axiosFunction, authorization = false, body = undefined) {
     let headers = authorization ? getHeader() : { };
-    if(body != undefined) {
-        return axiosFunction(resource, body, headers);
-    } else {
-        return axiosFunction(resource, headers);
-    }
+    let request = (body != undefined) ? axiosFunction(resource, body, headers) : axiosFunction(resource, headers);
+    return request.then(response => Promise.resolve(response.data)).catch(err => Promise.reject(err));
 }
 
 function getHeader() {
@@ -61,3 +58,6 @@ class ApiService {
 }
 
 export default ApiService
+
+// TODO: change the base url, retrieving it from .env
+export const apiService = new ApiService("http://localhost:3000/api");

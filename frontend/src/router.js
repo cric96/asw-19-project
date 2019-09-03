@@ -3,6 +3,7 @@ import fb from './firebaseConfig'
 import Router from 'vue-router'
 import Dashboard from './views/Dashboard.vue'
 import Login from './views/Login.vue'
+import Building from './views/building/Building.vue'
 import SignUp from './views/SignUp.vue'
 import HomeReport from './views/HomeReport.vue'
 import Intro from './views/Intro.vue'
@@ -54,6 +55,11 @@ const router = new Router({
           component: HomeReport
         },
         {
+          path: '/buildings',
+          name: 'Buildings',
+          component: Building
+        },
+        {
           path: '/ai',
           name: 'AiInsertion',
           component: AiInsertion,
@@ -68,14 +74,6 @@ const router = new Router({
           path: '/manual',
           name: 'Manual',
           component: ManualInsertion
-        },
-        {
-          path: 'other', // TODO: replace it with a main home page.
-          name: 'Other',
-          component: Login,
-          meta: {
-            title: 'Other'
-          },
         }
       ]
     }
@@ -85,9 +83,10 @@ const router = new Router({
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
 
+  console.log(requiresAuth);
   const unsub = fb.auth.onAuthStateChanged(currentUser => {
     if (requiresAuth && !currentUser) next('intro');
-    else if (!requiresAuth && currentUser) next('dashboard');
+    else if (!requiresAuth && currentUser) { console.log('bbbb'); next('dashboard');}
     else next();
 
     unsub();

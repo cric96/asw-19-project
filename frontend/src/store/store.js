@@ -1,3 +1,4 @@
+/* eslint-disable no-empty-pattern */
 import Vue from 'vue'
 import Vuex from 'vuex'
 import buildingModule from './module/building.js'
@@ -26,7 +27,6 @@ const store = new Vuex.Store({
         autoSignIn() {
             return this.dispatch('signIn');
         },
-        // eslint-disable-next-line no-empty-pattern
         signUp({}, user) {
                 return usersApi.create_user(user).then(()=>{
                     return this.dispatch('signIn');
@@ -39,9 +39,9 @@ const store = new Vuex.Store({
             return this.dispatch('signIn').then((user)=>{
                 userToUpdate._id = user._id;
                 return usersApi.update_user(userToUpdate)
-            }).then(response => {
-                commit('setUserProfile', response.data);
-                return response.data
+            }).then(updatedUser => {
+                commit('setUserProfile', updatedUser);
+                return updatedUser
             }).catch((err)=>{
                 this.dispatch('logout');
                 return Promise.reject(err);
@@ -54,9 +54,9 @@ const store = new Vuex.Store({
                         firebaseUser.getIdToken(true).then(token => {
                             if(token){
                                 commit('setToken', token);
-                                usersApi.get_user().then(response => {
-                                    commit('setUserProfile', response.data);
-                                    resolve(response.data)
+                                usersApi.get_user().then(user => {
+                                    commit('setUserProfile', user);
+                                    resolve(user)
                                 }).catch((err)=>{
                                     reject(err);
                                     this.dispatch('logout');

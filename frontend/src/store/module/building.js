@@ -1,4 +1,5 @@
-import { ApiBuilding } from '@/services/mockApiBuilding'
+// import { ApiBuilding } from '@/services/mockApiBuilding'
+import ApiBuilding from '@/services/buildings.api'
 import * as types from '../mutationTypes'
 
 function setActiveAndAvailableBuilding(state, newAvailableBuildings) {
@@ -25,10 +26,15 @@ export default {
             commit(types.SET_ACTIVE_BUILDING, newBuildingId);
         },
         fetchBuildings({commit}) {
-            // TODO: replace it with an API service request, ex. with axios
-            ApiBuilding.getAll().then(result => {
-                commit(types.SET_ACTIVE_AND_AVAILABLE_BUILDING, result);
+            ApiBuilding.getAll().then(buildings => {
+                commit(types.SET_ACTIVE_AND_AVAILABLE_BUILDING, buildings);
             });
+        },
+        createBuilding({ commit }, building) {
+            return ApiBuilding.createBuilding(building).then(newBuilding => {
+                commit(types.APPEND_AVAILABLE_BUILDING, newBuilding);
+                return Promise.resolve();
+            }).catch(err => Promise.reject(err));
         }
     },
     mutations: {
@@ -42,6 +48,10 @@ export default {
         },
         [types.SET_AVAILABLE_BUILDING](state, newAvailableBuildings) {
             setActiveAndAvailableBuilding(state, newAvailableBuildings);
+        },
+        [types.APPEND_AVAILABLE_BUILDING](state, newBuilding) {
+            state.availableBuildings.push(newBuilding);
+            setActiveAndAvailableBuilding(state, state.availableBuildings);
         }
     }
 };

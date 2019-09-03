@@ -48,8 +48,9 @@ export default {
         title: 'Dashboard'
       },
       {
-        path: '/dashboard/other',
-        title: 'Other'
+        path: '/buildings',
+        title: 'Manage Buldings',
+        icon: 'settings'
       }
     ]
   }),

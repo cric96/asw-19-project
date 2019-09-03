@@ -1,11 +1,8 @@
-import ApiService from './apiService'
+import { apiService } from './apiService'
 
-// TODO: change the base url, retrieving it from .env
-let apiService = new ApiService("http://localhost:3000/api");
-
-export default{
+export default {
     create_user: function(user){
-        return apiService.post("/users",user)
+        return apiService.post("/users", user)
     },
     get_user : function(){
         return apiService.get("/users", true) 

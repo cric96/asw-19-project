@@ -5,7 +5,6 @@ import store  from './store/store.js'
 import vuetify from './plugins/vuetify';
 import fb from './firebaseConfig'
 
-
 Vue.config.productionTip = false;
 
 new Vue({

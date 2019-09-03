@@ -17,6 +17,13 @@ class MockApiBuilding {
     getById(id) {
         return this.apiHelper.query((entry) => entry.id == id)
     }
+
+    createBuilding(building) {
+        return this.apiHelper.query(() => true).then(results => {
+            building._id = results.length + 1;
+            return this.apiHelper.insert(building);
+        });
+    }
 }
 
 export const ApiBuilding = new MockApiBuilding(new MockApiHelper([
