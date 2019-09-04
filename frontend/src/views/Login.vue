@@ -43,7 +43,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn :disabled="!valid" color="success" @click="validate">Login</v-btn>
+            <v-btn :disabled="!valid" color="success" :loading="loggingIn" @click="validate">Login</v-btn>
             <v-btn color="error" @click="reset">Reset Form</v-btn>
           </v-card-actions>
           <v-card-text>
@@ -66,6 +66,7 @@ export default {
     color: "rgba(255,255,255,0.9)",
     passwordShow: false,
     valid: true,
+    loggingIn: false,
     email: "",
     emailRules: [
       v => !!v || "E-mail is required",
@@ -85,14 +86,25 @@ export default {
       this.$refs.form.reset();
     },
     login: function() {
+      this.loggingIn = true;
       firebase
         .auth()
         .signInWithEmailAndPassword(this.email, this.password)
         .then(response => {
           this.$store.dispatch("signIn").then(user=>{
-            this.$router.replace("/dashboard");
+            //TODO show success (with timeout)
+            this.showAlert = true;
+            this.message = "Login effettuato con successo";
+            this.type = "success";
+            this.$refs.alert.changeConfig(this.message, this.type);
+            setTimeout(() => { this.loggingIn = false; this.$router.replace("/dashboard"); }, 2000);
           }).catch(()=>{
-            this.$router.replace("/intro");
+            //TODO show error (general error in login)
+            this.loggingIn = false;
+            this.showAlert = true;
+            this.message = "Si è verificato un errore nel login";
+            this.type = "error";
+            this.$refs.alert.changeConfig(this.message, this.type);
           });
         }).catch(err => {
           console.log(err)
