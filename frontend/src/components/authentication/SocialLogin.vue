@@ -1,21 +1,20 @@
 <template>
-  <div>
-    <v-row justify="center">
-      <button class="loginBtn loginBtn--facebook" @click="loginWithFb">Login with Facebook</button>
+  <v-container justify-center align-center class="">
+    <v-row>
+      <v-col align="center" cols="12"><v-btn class="loginBtn loginBtn--facebook" block @click="loginWithFb">Login with Facebook</v-btn></v-col>
     </v-row>
-    <v-row justify="center">
-      <button class="loginBtn loginBtn--google" @click="loginWithGoogle">Login with Google</button>
+    <v-row>
+      <v-col align="center" cols="12"><v-btn class="loginBtn loginBtn--google" block @click="loginWithGoogle">Login with Google</v-btn></v-col>
     </v-row>
     <complete-user-dialog-form v-if="incompleteUser" v-model="showCompleteDialog"
-      :user="incompleteUser" @save="socialRegister"
-    ></complete-user-dialog-form>
+      :user="incompleteUser" @save="socialRegister"></complete-user-dialog-form>
     <user-binding-dialog-form 
       :existing-email="this.existingEmail" 
       :pending-cred="this.pendingCred" 
       v-model="showBindingDialog"
       @close="showBindingDialog=false">
     </user-binding-dialog-form>
-  </div>
+  </v-container>
 </template>
 
  <script>
@@ -102,11 +101,11 @@ body {
   box-sizing: border-box;
   position: relative;
   /* width: 13em;  - apply for fixed size */
-  margin: 0.2em;
-  padding: 0 15px 0 46px;
+  /*margin: 0.2em;
+  padding: 0 15px 0 46px;*/
   border: none;
   text-align: left;
-  line-height: 34px;
+  /*line-height: 34px;*/
   white-space: nowrap;
   border-radius: 0.2em;
   font-size: 16px;
@@ -145,6 +144,8 @@ body {
   background-color: #5b7bd5;
   background-image: linear-gradient(#5b7bd5, #4864b1);
 }
+
+
 
 /* Google */
 .loginBtn--google {
