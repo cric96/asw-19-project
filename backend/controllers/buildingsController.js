@@ -14,7 +14,6 @@ exports.create_buildings = function(req, res) {
     }else {
         newBuilding.save(function(err, inseredBuilding) {
             if(!err && inseredBuilding){
-
                 utils.sendResponseMessage(res, 201, inseredBuilding);
             }else{
                 console.log(err)
@@ -30,14 +29,32 @@ exports.create_buildings = function(req, res) {
 };
 
 exports.list_buildings = function(req, res) {
-    let uid = res.locals.uid;
-    User.findOne({firebase_uid: uid}, function(err, user) {
-        if(user && !err) {
-            utils.sendResponseMessage(res, 200, user); 
-        } else {
-            utils.sendResponseMessage(res, 404, "User not found");
+    const userId = res.locals.userAuth._id;
+    Building.aggregate([
+        { 
+            $unwind: { 
+                path: "$members", 
+                preserveNullAndEmptyArrays: true 
+            }
+        },
+        { 
+            $match: { 
+                $or: [
+                  { members: new mongoose.Types.ObjectId(userId) }, 
+                  { owner: new mongoose.Types.ObjectId(userId) }
+                ] 
+            } 
         }
-    }); 
+    ])
+    .allowDiskUse(true)
+    .exec(function (err, buildings) {
+        console.log(err, buildings);
+        if(!err){
+            utils.sendResponseMessage(res, 200, buildings);
+        }else{
+            utils.sendResponseMessage(res, 404, buildings);
+        }
+    });
 }
 /*
 

@@ -13,6 +13,7 @@
       </v-flex>
       <v-flex xs12 sm8 md4 wrap>
         <v-card v-bind:style="{ backgroundColor: color}" class="mx-auto, ma-3, mp-5">
+          <alert v-model="showAlert" ref="alert"/>
           <v-card-text>
             <v-form ref="form" v-model="valid" lazy-validation>
               <v-text-field
@@ -60,9 +61,16 @@
 
 <script>
 import firebase from "firebase";
+import AlertMessageComponent from '@/components/AlertMessageComponent'
 
 export default {
+  components: {
+    "alert": AlertMessageComponent 
+  },
   data: () => ({
+    showAlert: false,
+    alertMessage:"",
+    alertType:"",
     color: "rgba(255,255,255,0.9)",
     passwordShow: false,
     valid: true,
@@ -90,13 +98,26 @@ export default {
         .signInWithEmailAndPassword(this.email, this.password)
         .then(response => {
           this.$store.dispatch("signIn").then(user=>{
-            this.$router.replace("/dashboard");
+            //TODO show success (with timeout)
+            this.showAlert = true;
+            this.message = "Login effettuato con successo";
+            this.type = "success";
+            this.$refs.alert.changeConfig(this.message, this.type);
+            setTimeout(() => { this.$router.replace("/dashboard"); }, 2000);
           }).catch(()=>{
-            this.$router.replace("/intro");
+            //TODO show error (general error in login)
+            this.showAlert = true;
+            this.message = "Si è verificato un errore nel login";
+            this.type = "error";
+            this.$refs.alert.changeConfig(this.message, this.type);
           });
         }).catch(err => {
-          console.log(err)
-          //TODO CHECK ERRORS
+          if(err.code="auth/wrong-password"){
+            this.showAlert = true;
+            this.message = "La password inserita non è corretta";
+            this.type = "error";
+            this.$refs.alert.changeConfig(this.message, this.type);
+          }
         });
     }
   }
