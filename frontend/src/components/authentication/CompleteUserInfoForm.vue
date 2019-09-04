@@ -1,7 +1,7 @@
 <template>
-  <v-dialog v-model="show" persistent max-width="600px">
+  <v-dialog :value="opened"  @input="opened = $event.target.value; emit('input', $event.target.value)" persistent max-width="600px">
     <v-card>
-      <v-alert color="primary" :type="alert.type" dense v-model="alert.visible">
+      <v-alert v-if="alert" :type="alert.type" dense v-model="alert.visible">
         {{ alert.message }}
       </v-alert>
       <v-card-title>
@@ -14,8 +14,7 @@
                 <v-col cols="12">
                   <v-text-field v-model="finalUser[propertyName]" 
                     :label="propertyName"
-                    :rules="generalRules" 
-                    :value="finalUser[propertyName]" 
+                    :rules="generalRules"
                     required></v-text-field>
                 </v-col>
               </v-row>
@@ -24,7 +23,7 @@
       </v-card-text>
       <v-card-actions>
         <div class="flex-grow-1"></div>
-        <v-btn color="blue darken-1" text @click="show = false">Chiudi</v-btn>
+        <v-btn color="blue darken-1" text @click="opened = false">Chiudi</v-btn>
         <v-btn color="blue darken-1" :disabled="!valid" text @click="save">Completa</v-btn>
       </v-card-actions>
     </v-card>
@@ -48,16 +47,19 @@ export default {
       'surname',
       'nickname'
     ],
-    alert: {
-      visible: false,
-      message: "",
-      type: undefined
-    },
+    alert: null,
     finalUser: null,
     generalRules: [v => !!v || "Questo campo è obbligatorio"],
-    valid: true
+    valid: true,
+    opened: false
   }),
   watch: {
+    value: {
+      immediate: true,
+      handler: function(val) {
+        this.opened = val;
+      }
+    },
     user: {
       immediate: true,
       handler: function(val) {
@@ -65,29 +67,20 @@ export default {
       }
     }
   },
-  computed: {
-    show: {
-      get() {
-        return this.value;
-      },
-      set(value) {
-        this.$emit('input', value);
-      }
-    }
-  },
   methods:{
     save: function() {
       if(this.$refs.form.validate()) {
         this.$store.dispatch('updateUserData', this.finalUser).then(response => {
-          console.log('sadasd');
-          this.alert.type = "success";
-          this.alert.visible = true;
-          this.alert.message = "Informazioni aggiornate";
-          this.value = false;
+          this.alert = {
+            type: 'success',
+            message: "Informazioni aggiornate"
+          };
+          this.opened = false;
         }).catch(err => {
-          this.alert.type = "error"
-          this.alert.message = "Errore durante l'aggiornamento. Riprovare"
-          this.alert.visible = true
+          this.alert = {
+            type: 'error',
+            message: "Errore durante l'aggiornamento. Riprovare"
+          };
         });
       }
     }

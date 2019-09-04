@@ -1,8 +1,7 @@
 <template>
     <v-app light>
       
-      <complete-user-info v-if="currentUser"
-        :value="needCompletation" 
+      <complete-user-info v-if="currentUser" :value="needCompletation"
         :user="currentUser"/>
 
       <v-app-bar app clipped-left>
