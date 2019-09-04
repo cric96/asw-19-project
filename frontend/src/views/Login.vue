@@ -60,9 +60,16 @@
 
 <script>
 import firebase from "firebase";
+import AlertMessageComponent from '@/components/AlertMessageComponent'
 
 export default {
+  components: {
+    "alert": AlertMessageComponent 
+  },
   data: () => ({
+    showAlert: false,
+    alertMessage:"",
+    alertType:"",
     color: "rgba(255,255,255,0.9)",
     passwordShow: false,
     valid: true,
@@ -107,8 +114,12 @@ export default {
             this.$refs.alert.changeConfig(this.message, this.type);
           });
         }).catch(err => {
-          console.log(err)
-          //TODO CHECK ERRORS
+          if(err.code="auth/wrong-password"){
+            this.showAlert = true;
+            this.message = "La password inserita non è corretta";
+            this.type = "error";
+            this.$refs.alert.changeConfig(this.message, this.type);
+          }
         });
     }
   }
