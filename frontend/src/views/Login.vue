@@ -61,16 +61,14 @@
 
 <script>
 import firebase from "firebase";
-import AlertMessageComponent from '@/components/AlertMessageComponent'
-
+import AlertMessageComponent from '@/components/AlertMessageComponent';
+import messages from '@/resource/messages';
 export default {
   components: {
     "alert": AlertMessageComponent 
   },
   data: () => ({
     showAlert: false,
-    alertMessage:"",
-    alertType:"",
     color: "rgba(255,255,255,0.9)",
     passwordShow: false,
     valid: true,
@@ -85,7 +83,6 @@ export default {
   methods: {
     validate: function() {
       if (this.$refs.form.validate()) {
-        this.snackbar = true;
         this.login();
       }
     },
@@ -100,23 +97,17 @@ export default {
           this.$store.dispatch("signIn").then(user=>{
             //TODO show success (with timeout)
             this.showAlert = true;
-            this.message = "Login effettuato con successo";
-            this.type = "success";
-            this.$refs.alert.changeConfig(this.message, this.type);
-            setTimeout(() => { this.$router.replace("/dashboard"); }, 2000);
+            this.$refs.alert.changeConfig(messages.LOGIN_SUCCESS, "success");
+            setTimeout(() => { this.$router.replace("/dashboard"); }, 1500);
           }).catch(()=>{
             //TODO show error (general error in login)
             this.showAlert = true;
-            this.message = "Si è verificato un errore nel login";
-            this.type = "error";
-            this.$refs.alert.changeConfig(this.message, this.type);
+            this.$refs.alert.changeConfig(messages.LOGIN_ERROR, "error");
           });
         }).catch(err => {
           if(err.code="auth/wrong-password"){
             this.showAlert = true;
-            this.message = "La password inserita non è corretta";
-            this.type = "error";
-            this.$refs.alert.changeConfig(this.message, this.type);
+            this.$refs.alert.changeConfig(messages.LOGIN_WRONG_PASSWORD, "error");
           }
         });
     }

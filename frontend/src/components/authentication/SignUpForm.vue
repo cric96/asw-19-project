@@ -136,7 +136,6 @@ export default {
   methods: {
     validate: function() {
       if (this.$refs.form.validate()) {
-        this.snackbar = true;
         this.signUp();
       }
     },
