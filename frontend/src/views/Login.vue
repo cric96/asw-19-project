@@ -13,6 +13,7 @@
       </v-flex>
       <v-flex xs12 sm8 md4 wrap>
         <v-card v-bind:style="{ backgroundColor: color}" class="mx-auto ma-3 mp-5">
+          <alert v-model="showAlert" ref="alert"/>
           <v-card-text>
             <v-form ref="form" v-model="valid" lazy-validation>
               <v-text-field
