@@ -1,11 +1,17 @@
 <template>
-  <div >
+  <v-container fluid>
     <v-row>
-      <v-col align="center" cols="12">
-        <v-btn class="loginBtn loginBtn--facebook" block @click="loginWithFb">Login with Facebook</v-btn>
+      <v-col align="center" class="py-1">
+        <v-btn class="loginBtn loginBtn--facebook" block @click="loginWithFb" dense>
+          <v-icon left dense>fab fa-facebook-f pr-1</v-icon>Login with Facebook
+        </v-btn>
       </v-col>
-      <v-col align="center" cols="12">
-        <v-btn class="loginBtn loginBtn--google" block @click="loginWithGoogle">Login with Google</v-btn>
+    </v-row>
+    <v-row>
+      <v-col align="center" class="py-1">
+        <v-btn class="loginBtn loginBtn--google" block @click="loginWithGoogle">
+          <v-icon left dense>fab fa-google pr-1</v-icon>Login with Google
+        </v-btn>
       </v-col>
     </v-row>
     <complete-user-dialog-form v-if="incompleteUser" v-model="showCompleteDialog"
@@ -16,7 +22,7 @@
       v-model="showBindingDialog"
       @close="showBindingDialog=false">
     </user-binding-dialog-form>
-  </div>
+  </v-container>
 </template>
 
  <script>
@@ -95,58 +101,20 @@ export default {
 </script>
 
 <style scoped>
-body {
-  padding: 2em;
-}
-.expand {
-
-}
 /* Shared */
 .loginBtn {
-  box-sizing: border-box;
-  position: relative;
-  /* width: 13em;  - apply for fixed size */
-  /* margin: 0.2em;
-  padding: 0 15px 0 46px; */
-  border: none;
-  text-align: left;
-  /*line-height: 34px;*/
-  white-space: nowrap;
-  border-radius: 0.2em;
-  font-size: 16px;
+  /*text-align: left;*/
   color: #fff;
-}
-.loginBtn:before {
-  content: "";
-  box-sizing: border-box;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 34px;
-  height: 100%;
-}
-.loginBtn:focus {
-  outline: none;
-}
-.loginBtn:active {
-  box-shadow: inset 0 0 0 32px rgba(0, 0, 0, 0.1);
 }
 
 /* Facebook */
 .loginBtn--facebook {
-  background-color: #4c69ba;
+  background-color: #4c69ba !important;
   background-image: linear-gradient(#4c69ba, #3b55a0);
-  /*font-family: "Helvetica neue", Helvetica Neue, Helvetica, Arial, sans-serif;*/
-  text-shadow: 0 -1px 0 #354c8c;
-}
-.loginBtn--facebook:before {
-  border-right: #364e92 1px solid;
-  background: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/14082/icon_facebook.png")
-    6px 6px no-repeat;
 }
 .loginBtn--facebook:hover,
 .loginBtn--facebook:focus {
-  background-color: #5b7bd5;
+  background-color: #5b7bd5 !important;
   background-image: linear-gradient(#5b7bd5, #4864b1);
 }
 
@@ -154,16 +122,10 @@ body {
 
 /* Google */
 .loginBtn--google {
-  /*font-family: "Roboto", Roboto, arial, sans-serif;*/
-  background: #dd4b39;
-}
-.loginBtn--google:before {
-  border-right: #bb3f30 1px solid;
-  background: url("https://s3-us-west-2.amazonaws.com/s.cdpn.io/14082/icon_google.png")
-    6px 6px no-repeat;
+  background-color: #dd4b39 !important;
 }
 .loginBtn--google:hover,
 .loginBtn--google:focus {
-  background: #e74b37;
+  background-color: #e74b37 !important;
 }
 </style>
