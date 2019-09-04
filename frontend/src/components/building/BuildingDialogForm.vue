@@ -2,7 +2,7 @@
     <!-- TODO: ? fullscreen hide-overlay -->
     <div>
         <slot name="activator" v-bind:on="activatorListener"></slot>
-        <v-dialog v-model="value" persistent transition="dialog-bottom-transition">
+        <v-dialog v-model="value" persistent transition="dialog-bottom-transition" max-width="600px">
             <v-card>
                 <v-alert v-if="alert" :type="alert.type">{{ alert.message }}</v-alert>
                 <v-card-title>
@@ -62,7 +62,7 @@
                 <v-card-actions>
                     <div class="flex-grow-1"></div>
                     <v-btn color="blue darken-1" text @click="value = false">Chiudi</v-btn>
-                    <v-btn color="blue darken-1" text @click="pressSaveBuilding">Salva</v-btn>
+                    <v-btn color="blue darken-1" text :loading="pendingOperation" @click="pressSaveBuilding">Salva</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -80,6 +80,7 @@ export default {
         validForm: true,
         building: { },
         alert: null,
+        pendingOperation: false,
         baseRule: [v => !!v || "Questo campo è obbligatorio"]
     }),
     computed: {
@@ -99,6 +100,7 @@ export default {
         pressSaveBuilding() {
             if (this.$refs.form.validate()) {
                 let newBuilding = Object.assign({}, this.building);
+                this.pendingOperation = true;
                 this.createBuilding(newBuilding).then(() => {
                     this.$refs.form.reset();
                     this.value = false;
@@ -107,6 +109,8 @@ export default {
                         type: 'error',
                         message: err
                     }
+                }).finally(() => {
+                    this.pendingOperation = false;
                 });
             }
         }

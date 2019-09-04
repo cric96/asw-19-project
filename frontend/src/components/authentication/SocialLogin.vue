@@ -26,12 +26,10 @@
 </template>
 
  <script>
-  import firebase from "firebase";
-  import CompleteUserInfoForm from '@/components/authentication/CompleteUserInfoForm'
-  import BindUserForm from '@/components/authentication/BindUserForm'
-  import User from '@/model/user'
-
-  import usersApi from '../../services/users.api.js'
+import firebase from "firebase";
+import CompleteUserInfoForm from '@/components/authentication/CompleteUserInfoForm'
+import BindUserForm from '@/components/authentication/BindUserForm'
+import User from '@/model/user'
 
 export default {
   components: { 
@@ -92,10 +90,7 @@ export default {
               })
           } 
       })
-    },
-    socialRegister(finalUser) {
-      
-    }  
+    }
   }
 }
 </script>
