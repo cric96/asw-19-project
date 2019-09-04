@@ -62,7 +62,7 @@
 <script>
 import firebase from "firebase";
 import AlertMessageComponent from '@/components/AlertMessageComponent';
-import messages from '@/resource/messages';
+import * as messages from '@/resource/messages';
 export default {
   components: {
     "alert": AlertMessageComponent 
@@ -97,18 +97,17 @@ export default {
         .signInWithEmailAndPassword(this.email, this.password)
         .then(response => {
           this.$store.dispatch("signIn").then(user=>{
-            //TODO show success (with timeout)
             this.showAlert = true;
             this.$refs.alert.changeConfig(messages.LOGIN_SUCCESS, "success");
             setTimeout(() => { this.$router.replace("/dashboard"); }, 1500);
           }).catch(()=>{
-            //TODO show error (general error in login)
             this.loggingIn = false;
             this.showAlert = true;
             this.$refs.alert.changeConfig(messages.LOGIN_ERROR, "error");
           });
         }).catch(err => {
           if(err.code="auth/wrong-password"){
+            this.loggingIn = false;
             this.showAlert = true;
             this.$refs.alert.changeConfig(messages.LOGIN_WRONG_PASSWORD, "error");
           }
