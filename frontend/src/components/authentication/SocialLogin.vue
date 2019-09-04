@@ -1,10 +1,12 @@
 <template>
-  <v-container justify-center align-center class="">
+  <div >
     <v-row>
-      <v-col align="center" cols="12"><v-btn class="loginBtn loginBtn--facebook" block @click="loginWithFb">Login with Facebook</v-btn></v-col>
-    </v-row>
-    <v-row>
-      <v-col align="center" cols="12"><v-btn class="loginBtn loginBtn--google" block @click="loginWithGoogle">Login with Google</v-btn></v-col>
+      <v-col align="center" cols="12">
+        <v-btn class="loginBtn loginBtn--facebook" block @click="loginWithFb">Login with Facebook</v-btn>
+      </v-col>
+      <v-col align="center" cols="12">
+        <v-btn class="loginBtn loginBtn--google" block @click="loginWithGoogle">Login with Google</v-btn>
+      </v-col>
     </v-row>
     <complete-user-dialog-form v-if="incompleteUser" v-model="showCompleteDialog"
       :user="incompleteUser" @save="socialRegister"></complete-user-dialog-form>
@@ -14,7 +16,7 @@
       v-model="showBindingDialog"
       @close="showBindingDialog=false">
     </user-binding-dialog-form>
-  </v-container>
+  </div>
 </template>
 
  <script>
@@ -96,13 +98,16 @@ export default {
 body {
   padding: 2em;
 }
+.expand {
+
+}
 /* Shared */
 .loginBtn {
   box-sizing: border-box;
   position: relative;
   /* width: 13em;  - apply for fixed size */
-  /*margin: 0.2em;
-  padding: 0 15px 0 46px;*/
+  /* margin: 0.2em;
+  padding: 0 15px 0 46px; */
   border: none;
   text-align: left;
   /*line-height: 34px;*/
