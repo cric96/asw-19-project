@@ -3,7 +3,7 @@ var buildingsController = require('../controllers/buildingsController');
 var auth = require('../authMiddleware');
 
 router.route('/buildings')
-	//.get(auth, buildingsController.list_buildings)
+	.get(auth, buildingsController.list_buildings)
 	.post(auth, buildingsController.create_buildings);
 
 /*router.route('/buildings/:id')
