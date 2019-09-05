@@ -1,6 +1,8 @@
 <template>
     <v-app light>
       
+      <snackbar-notification></snackbar-notification>
+
       <complete-user-info v-if="currentUser" :value="needCompletation"
         :user="currentUser"/>
 
@@ -32,6 +34,7 @@
 <script>
 import NavigationDrawer from '@/components/navigation/NavigationDrawer'
 import CompleteUserInfoForm from '@/components/authentication/CompleteUserInfoForm'
+import SnackbarNotification from '@/components/SnackbarNotification'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -63,7 +66,8 @@ export default {
   },
   components: {
     'navigation-drawer': NavigationDrawer,
-    'complete-user-info': CompleteUserInfoForm
+    'complete-user-info': CompleteUserInfoForm,
+    'snackbar-notification': SnackbarNotification
   },
   methods: {
     onScoreReceived(scoreReceived) {

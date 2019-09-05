@@ -82,11 +82,9 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-
-  console.log(requiresAuth);
   const unsub = fb.auth.onAuthStateChanged(currentUser => {
     if (requiresAuth && !currentUser) next('intro');
-    else if (!requiresAuth && currentUser) { console.log('bbbb'); next('dashboard');}
+    else if (!requiresAuth && currentUser) { next('dashboard');}
     else next();
 
     unsub();

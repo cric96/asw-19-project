@@ -104,6 +104,7 @@ export default {
                 this.createBuilding(newBuilding).then(() => {
                     this.$refs.form.reset();
                     this.value = false;
+                    this.$store.dispatch('msg/addMessage', 'Nuova abitazione creata');
                 }).catch(err => {
                     this.alert = {
                         type: 'error',

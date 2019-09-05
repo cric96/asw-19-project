@@ -1,14 +1,16 @@
 /* eslint-disable no-empty-pattern */
 import Vue from 'vue'
 import Vuex from 'vuex'
-import buildingModule from './module/building.js'
+import buildingModule from './module/building'
 import fb from '@/firebaseConfig.js'
 import usersApi from '../services/users.api.js'
 import User from '../model/user'
+import messagesPlugin from '../plugins/messages'
 
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
+    plugins: [messagesPlugin],
     modules: {
         building: buildingModule
     },
