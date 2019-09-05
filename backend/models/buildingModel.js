@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var utils = require("../utils/utils");
 var Schema = mongoose.Schema;
 var BinSchema = require('./binModel').schema;
 
