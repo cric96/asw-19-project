@@ -1,8 +1,8 @@
 var mongoose = require("mongoose")
 var TrashCategory = require("../models/trashCategoryModel");
 var Reward = require("../models/rewardModel");
-
-mongoose.connect('mongodb://localhost/dbtrash', { useNewUrlParser: true, useFindAndModify: false });
+const uri = "mongodb+srv://admin:codingASW2019@scanbage-fd95g.mongodb.net/test?retryWrites=true&w=majority";
+mongoose.connect(uri, { useNewUrlParser: true, useFindAndModify: false });
 
 
 var trashCategories = require("./trashCategories.json");
