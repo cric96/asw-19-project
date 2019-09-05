@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var utils = require("../utils/utils");
 var Building = mongoose.model('Building');
 var BinCategory = require("../models/binCategoryModel");
+var City = require("../models/cityModel");
 var Bin = require("../models/binModel");
 
 
@@ -22,18 +23,21 @@ exports.create_buildings = function(req, res) {
     var newBuilding = new Building(req.body)
     newBuilding.owner = res.locals.userAuth._id
     newBuilding.members = [res.locals.userAuth._id]
-    
+
+    // TODO: add support for city, now this is the default city.
+    newBuilding.city = new mongoose.Types.ObjectId("5d70c36c928ae939588c4993")
+
     var error = newBuilding.validateSync()
-    if(error){
+    if (error) {
         console.log(error)
         utils.sendResponseMessage(res, 400, "Bad request; email and firebase_uid are required fields");
     } else {
-        BinCategory.find({ city: new mongoose.Types.ObjectId(newBuilding.city) }).exec()
-        .then(binCategories => {
-            console.log(binCategories);
-            return binCategories.map(element => new Bin({ binCategory: element, trash: [] }))
+        City.findById(newBuilding.city)
+            .populate('binCategories')
+            .exec()
+        .then(city => {
+            return city.binCategories.map(element => new Bin({ binCategory: element, trash: [] }))
         }).then(bins => {
-            console.log(bins);
             newBuilding.bins = bins
             newBuilding.active = true
             return newBuilding.save()
