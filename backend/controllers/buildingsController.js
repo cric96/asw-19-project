@@ -21,7 +21,7 @@ exports.create_buildings = function(req, res) {
         }).then(bins => {
             console.log(bins);
             newBuilding.bins = bins;
-            return newBuilding.save();
+            return newBuilding.save(); 
         }).then(insertBuilding => {
             utils.sendResponseMessage(res, 201, insertBuilding);
         }).catch(err => {
