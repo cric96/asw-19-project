@@ -92,6 +92,7 @@ const store = new Vuex.Store({
     },
     mutations: {
         setToken(state, val) {
+            console.log(val);
             state.token = val;
         },
         setUserProfile(state, val) {

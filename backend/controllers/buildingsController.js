@@ -1,30 +1,41 @@
 var mongoose = require('mongoose');
 var utils = require("../utils/utils");
 var Building = mongoose.model('Building');
-
+var BinCategory = require("../models/binCategoryModel");
+var Bin = require("../models/binModel");
 
 exports.create_buildings = function(req, res) {
     var newBuilding = new Building(req.body);
     newBuilding.owner = res.locals.userAuth._id;
-    newBuilding.members = []
+    newBuilding.members = [res.locals.userAuth._id];
+    
     var error = newBuilding.validateSync();
     if(error){
         console.log(error)
         utils.sendResponseMessage(res, 400, "Bad request; email and firebase_uid are required fields");
-    }else {
-        newBuilding.save(function(err, inseredBuilding) {
-            if(!err && inseredBuilding){
-                utils.sendResponseMessage(res, 201, inseredBuilding);
-            }else{
+    } else {
+        console.log(newBuilding.city);
+        BinCategory.find({ city: mongoose.Types.ObjectId(newBuilding.city)}, function(err, results){
+            console.log(results);
+        });/*
+        BinCategory.find({ city: new mongoose.Types.ObjectId(newBuilding.city) }).exec()
+        .then(binCategories => {
+            console.log(binCategories);
+            return binCategories.map(element => new Bin({ binCategory: element, trash: [] }));
+        }).then(bins => {
+            console.log(bins);
+            newBuilding.bins = bins;
+            return newBuilding.save();
+        }).then(insertBuilding => {
+            utils.sendResponseMessage(res, 201, insertBuilding);
+        }).catch(err => {
+            if(err.code == 11000) {
+                utils.sendResponseMessage(res, 409, "Conflict: " + err.errmsg); 
+            } else {
                 console.log(err)
-                if(err.code == 11000) {
-                    utils.sendResponseMessage(res, 409, "Conflict: " + err.errmsg); 
-                } else {
-                    console.log(err)
-                    utils.sendResponseMessage(res, 500, "Internal Error"); 
-                }
+                utils.sendResponseMessage(res, 500, "Internal Error"); 
             }
-        });
+        });*/
     }    
 };
 

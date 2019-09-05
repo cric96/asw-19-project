@@ -2,10 +2,6 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var binSchema = new Schema({
-    building: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Building'
-    },
     binCategory: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'BinCategory'
@@ -17,3 +13,4 @@ var binSchema = new Schema({
 });
 
 module.exports = mongoose.model('Bin', binSchema);
+module.exports.schema = binSchema;

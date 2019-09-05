@@ -1,5 +1,6 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
+var BinSchema = require('./binModel').schema;
 
 var buildingSchema = new Schema({
     name: {
@@ -30,10 +31,7 @@ var buildingSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
-    bins: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Bin'
-    }]
+    bins: [BinSchema]
 });
 
 module.exports = mongoose.model('Building', buildingSchema);
