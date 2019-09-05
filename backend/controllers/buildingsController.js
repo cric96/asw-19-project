@@ -14,10 +14,6 @@ exports.create_buildings = function(req, res) {
         console.log(error)
         utils.sendResponseMessage(res, 400, "Bad request; email and firebase_uid are required fields");
     } else {
-        console.log(newBuilding.city);
-        BinCategory.find({ city: mongoose.Types.ObjectId(newBuilding.city)}, function(err, results){
-            console.log(results);
-        });/*
         BinCategory.find({ city: new mongoose.Types.ObjectId(newBuilding.city) }).exec()
         .then(binCategories => {
             console.log(binCategories);
@@ -35,7 +31,7 @@ exports.create_buildings = function(req, res) {
                 console.log(err)
                 utils.sendResponseMessage(res, 500, "Internal Error"); 
             }
-        });*/
+        });
     }    
 };
 
