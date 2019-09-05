@@ -8,6 +8,11 @@ var buildingSchema = new Schema({
         trim: true,
         required: 'A name is required'
     },
+    active: {
+        type: Boolean,
+        required: "active is required",
+        default: true
+    },
     address: {
         type: String,
         trim: true,
@@ -34,4 +39,7 @@ var buildingSchema = new Schema({
     bins: [BinSchema]
 });
 
+buildingSchema.statics.prepareUpdate = function(obj){
+    return utils.exclude(obj, 'members', 'owner', 'bins');
+}
 module.exports = mongoose.model('Building', buildingSchema);
