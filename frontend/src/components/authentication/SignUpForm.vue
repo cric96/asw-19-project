@@ -1,17 +1,7 @@
 <template>
   <v-container>
     <v-card v-bind:style="{ backgroundColor: color}">
-      <v-alert 
-        dismissable      
-        v-if="showSuccessAlert"
-        type="success">{{successMessage}}
-      </v-alert>
-      <v-alert  
-        v-if="showErrorAlert"
-        dismissable
-        type="error">
-        {{errorMessage}}
-      </v-alert>
+      <alert v-model="showAlert" ref="alert"/>
       <v-card-text >
         <v-form  ref="form" v-model="valid" lazy-validation>
           <v-flex xs12 sm8 md4 class="mb-4">
@@ -96,7 +86,8 @@
         </v-form>
       </v-card-text>
       <v-card-actions>
-        <v-btn :disabled="!valid" color="success" @click="validate">Register</v-btn>
+        <v-spacer/>
+        <v-btn :disabled="!valid" :loading="inRegistration" color="success" @click="validate">Register</v-btn>
         <v-btn color="error" @click="reset">Reset Form</v-btn>
       </v-card-actions>
       <v-card-text>
@@ -110,12 +101,16 @@
 import firebase from "firebase";
 import usersapi from "../../services/users.api";
 import User from "../../model/user";
+import * as messages from '@/resource/messages';
+import AlertMessageComponent from '@/components/AlertMessageComponent';
 
 export default {
+  components: {
+    "alert": AlertMessageComponent 
+  },
   data: () => ({
-    error: null,
-    errorMessage: "",
-    successMessage:"",
+    showAlert: false,
+    inRegistration: false,
     color:'rgba(255,255,255,0.9)',
     passwordShow: false,
     confirmPasswordShow: false,
@@ -136,7 +131,6 @@ export default {
   methods: {
     validate: function() {
       if (this.$refs.form.validate()) {
-        this.snackbar = true;
         this.signUp();
       }
     },
@@ -154,20 +148,24 @@ export default {
             );
     },
     signUp: function() {
+      this.inRegistration = true;
       firebase
         .auth()
         .createUserWithEmailAndPassword(this.email, this.password)
         .then(response => {
           if (response) {
-              let newuser = this.createNewUser(response.user.uid);
+              let newuser = this.createNewUser(response.user.uid)
               this.$store.dispatch('signUp', newuser)
               .then((user)=>{
-                this.error = false
-                this.successMessage = "Registrazione effettuata con successo. In pochi secondi verrai ridirezionato alla home page"
-                setTimeout(() => { this.$router.replace("/dashboard"); }, 2000);
+                this.showAlert = true
+                this.$refs.alert.changeConfig(messages.SIGNUP_SUCCESS, "success")
+                setTimeout(() => { this.$router.replace("/dashboard"); }, 1500);
               }).catch((err)=>{
-                this.error = true
-                this.errorMessage = err
+                // TODO -- check server response (409...)
+                this.inRegistration = false
+                this.showAlert = true
+                this.$refs.alert.changeConfig(err, "error")
+                //this.$refs.alert.changeConfig(messages.SIGNUP_ERR_NICKNAME_CONFLICT, "error")
               })
           }
         })
@@ -187,8 +185,8 @@ export default {
                       return result.user;
                     });
                 }else{
-                  this.error = true
-                  this.errorMessage = "Email già in uso"
+                  this.showAlert = true
+                  this.$refs.alert.changeConfig(messages.SIGNUP_ERR_EMAIL_CONFLICT, "error")
                 }
               })
               .then((user) =>{
@@ -199,8 +197,10 @@ export default {
                     .then((user)=>{
                       this.$router.replace("/dashboard");
                     }).catch(err=>{
-                      //todo chack erros
-                      console.log(err)
+                      // TODO -- check server response (409...)
+                      this.showAlert = true
+                      this.$refs.alert.changeConfig(err, "error")
+                      //this.$refs.alert.changeConfig(messages.SIGNUP_ERR_NICKNAME_CONFLICT, "error")                      console.log(err)
                     })
                   })
                 }
@@ -209,14 +209,6 @@ export default {
             console.log(err);
           }
         });
-    }
-  },
-  computed: {
-    showSuccessAlert: function(){
-      return !this.error && this.error!=null
-    },
-    showErrorAlert: function(){
-      return this.error && this.error!=null
     }
   }
 };
