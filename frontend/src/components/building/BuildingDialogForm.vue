@@ -49,9 +49,20 @@
                                         required/>
                                 </v-col>
                             </v-row>
-                            <v-row v-if="cityEnabled">
+                            <v-row>
                                 <v-col cols="12">
-                                    <v-text-field name="city" label="Città"></v-text-field>
+                                    <v-select :value="building.city" @input="mapCityId($event)" 
+                                        :items="cities.data"
+                                        :loading="cities.loading"
+                                        label="Seleziona la città" 
+                                        clearable return-object>
+                                            <template v-slot:selection="{item, index}">
+                                                <span>{{item.name}}</span>
+                                            </template>
+                                            <template slot="item" slot-scope="data">
+                                                {{data.item.name}}
+                                            </template>
+                                    </v-select>
                                 </v-col>
                             </v-row>
                         </v-form>
@@ -71,12 +82,20 @@
 
 <script>
 import { createNamespacedHelpers } from 'vuex'
+import citiesApi from '@/services/cities.api'
+import { functions } from 'firebase';
 const { mapGetters, mapActions } = createNamespacedHelpers('building');
 
 export default {
+    mounted() {
+        this.initialize()
+    },
     data: () => ({
         value: false,
-        cityEnabled: false,
+        cities: {
+            loading: true,
+            data: []
+        },
         validForm: true,
         building: { },
         alert: null,
@@ -97,23 +116,34 @@ export default {
          ...mapActions([
             'createBuilding' 
         ]),
+        initialize() {
+            this.cities.loading = true
+            citiesApi.getAll().then(data => {
+                this.cities.data = data
+            }).finally(() => this.cities.loading = false)
+        },
+        mapCityId(event) {
+            this.building.city = (event !== undefined) ? event._id : undefined
+        },
+        closeDialog() {
+            this.value = false
+        },
         pressSaveBuilding() {
             if (this.$refs.form.validate()) {
                 let newBuilding = Object.assign({}, this.building);
-                this.pendingOperation = true;
-                this.createBuilding(newBuilding).then(() => {
-                    this.$refs.form.reset();
-                    this.value = false;
-                    this.$store.dispatch('msg/addMessage', 'Nuova abitazione creata');
+                let promise = this.createBuilding(newBuilding).then(() => {
+                    this.$refs.form.reset()
+                    this.closeDialog()
+                    this.$store.dispatch('msg/addMessage', 'Nuova abitazione creata')
                 }).catch(err => {
-                    this.alert = {
-                        type: 'error',
-                        message: err
-                    }
-                }).finally(() => {
-                    this.pendingOperation = false;
-                });
+                    this.alert = { type: 'error', message: err }
+                })
+                this.handleLoading(promise)
             }
+        },
+        handleLoading(promise) {
+            this.pendingOperation = true
+            promise.finally(() => this.pendingOperation = false)
         }
     }
 }

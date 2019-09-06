@@ -2,6 +2,8 @@
 import ApiBuilding from '@/services/buildings.api'
 import * as types from '../mutationTypes'
 
+const ACTIVE_BUILDING_KEY = 'activeBuilding' 
+
 function setActiveAndAvailableBuilding(state, newAvailableBuildings) {
     state.availableBuildings = newAvailableBuildings;
     if(state.activeBuildingId == null && newAvailableBuildings.length > 0) {
@@ -12,7 +14,7 @@ function setActiveAndAvailableBuilding(state, newAvailableBuildings) {
 export default {
     namespaced: true,
     state: {
-        activeBuildingId: null,
+        activeBuildingId: localStorage.getItem(ACTIVE_BUILDING_KEY) || null,
         availableBuildings: []
     },
     getters: {
@@ -40,6 +42,8 @@ export default {
     mutations: {
         [types.SET_ACTIVE_BUILDING](state, newBuildingId) {
             if(state.activeBuildingId != newBuildingId) {
+                // save on localStorage
+                localStorage.setItem(ACTIVE_BUILDING_KEY, newBuildingId)
                 state.activeBuildingId = newBuildingId;
             }
         },
