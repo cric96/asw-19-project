@@ -45,10 +45,6 @@ var userSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Reward'
     }],
-    buildings: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Building'
-    }],
     trash: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Trash'

@@ -15,10 +15,6 @@ var citySchema = new Schema({
     binCategories: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'BinCategory'
-    }],
-    buildings: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Building'
     }]
 });
 

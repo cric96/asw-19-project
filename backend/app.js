@@ -14,12 +14,13 @@ var buildingRouter = require('./routes/buildingsRoutes');
 
 var app = express();
 
+let mongooseConfig = require('./mongoose-config.json')
 let serviceAccount = require('./scanbage-firebase-adminsdk-itzje-52ab1c019c.json')
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
 
-mongoose.connect('mongodb://localhost/dbtrash', { useNewUrlParser: true, useFindAndModify: false });
+mongoose.connect(`mongodb+srv://${mongooseConfig.username}:${mongooseConfig.password}@scanbage-fd95g.mongodb.net/test?retryWrites=true&w=majority`, { useNewUrlParser: true, useFindAndModify: false });
 
 app.use(logger('dev'));
 app.use(express.json());
