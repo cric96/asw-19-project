@@ -8,19 +8,23 @@
             </template>
         </building-dialog-form>
 
-        <v-list two-line>
+        <v-expansion-panels>
             <template v-for="building in buildings">
-                <v-list-tile avatar :key="building._id">
-                    <v-list-tile-avatar>
-                        <img src="src">
-                    </v-list-tile-avatar>
-                    <v-list-tile-content>
-                        <v-list-tile-title>{{building.name}}</v-list-tile-title>
-                        <v-list-tile-sub-title>{{building.address}}</v-list-tile-sub-title>
-                    </v-list-tile-content>
-                </v-list-tile>
+                <v-expansion-panel :key="building._id">
+                    <v-expansion-panel-header v-slot="{ open }">
+                        <v-list-item avatar>
+                            <v-list-item-avatar>
+                                <v-icon centered>home</v-icon>
+                            </v-list-item-avatar>
+                            <v-list-item-content>
+                                <v-list-item-title>{{building.name}}</v-list-item-title>
+                                <v-list-item-subtitle>{{building.address}}</v-list-item-subtitle>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </v-expansion-panel-header>
+                </v-expansion-panel>
             </template>
-        </v-list>
+        </v-expansion-panels>
     </v-container>
 </template>
 
