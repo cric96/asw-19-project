@@ -31,6 +31,22 @@
                                 </v-col>
                             </v-row>
                             <v-row>
+                                <v-col cols="12">
+                                    <v-select :value="building.city" @input="mapCityLink($event)" 
+                                        :items="cities.data"
+                                        :loading="cities.loading"
+                                        label="Seleziona la città" 
+                                        clearable return-object>
+                                            <template v-slot:selection="{item, index}">
+                                                <span>{{item.name}}</span>
+                                            </template>
+                                            <template slot="item" slot-scope="data">
+                                                {{data.item.name}}
+                                            </template>
+                                    </v-select>
+                                </v-col>
+                            </v-row>
+                            <v-row>
                                 <v-col cols="12" md="6">
                                     <v-text-field 
                                         name="floor" 
@@ -47,22 +63,6 @@
                                         :rules="baseRule"
                                         v-model="building.apartmentNumber"
                                         required/>
-                                </v-col>
-                            </v-row>
-                            <v-row>
-                                <v-col cols="12">
-                                    <v-select :value="building.city" @input="mapCityId($event)" 
-                                        :items="cities.data"
-                                        :loading="cities.loading"
-                                        label="Seleziona la città" 
-                                        clearable return-object>
-                                            <template v-slot:selection="{item, index}">
-                                                <span>{{item.name}}</span>
-                                            </template>
-                                            <template slot="item" slot-scope="data">
-                                                {{data.item.name}}
-                                            </template>
-                                    </v-select>
                                 </v-col>
                             </v-row>
                         </v-form>
@@ -122,8 +122,8 @@ export default {
                 this.cities.data = data
             }).finally(() => this.cities.loading = false)
         },
-        mapCityId(event) {
-            this.building.city = (event !== undefined) ? event._id : undefined
+        mapCityLink(event) {
+            this.building.city = (event !== undefined) ? event.link : undefined
         },
         closeDialog() {
             this.value = false

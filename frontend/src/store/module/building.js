@@ -6,26 +6,27 @@ const ACTIVE_BUILDING_KEY = 'activeBuilding'
 
 function setActiveAndAvailableBuilding(state, newAvailableBuildings) {
     state.availableBuildings = newAvailableBuildings;
-    if(state.activeBuildingId == null && newAvailableBuildings.length > 0) {
-        state.activeBuildingId = newAvailableBuildings[0]._id;
+    if(state.activeBuilding == null && newAvailableBuildings.length > 0) {
+        state.activeBuilding = newAvailableBuildings[0].link;
     } 
 }
 
 export default {
     namespaced: true,
     state: {
-        activeBuildingId: localStorage.getItem(ACTIVE_BUILDING_KEY) || null,
+        // retrieve selection from localStorage
+        activeBuilding: localStorage.getItem(ACTIVE_BUILDING_KEY) || null,
         availableBuildings: []
     },
     getters: {
         activeBuilding: state => {
-            return state.availableBuildings.find(building => building._id == state.activeBuildingId);
+            return state.availableBuildings.find(building => building.link == state.activeBuilding);
         },
         buildings: state => state.availableBuildings
     },
     actions: {
-        changeActiveBuildingId({commit}, newBuildingId) {
-            commit(types.SET_ACTIVE_BUILDING, newBuildingId);
+        changeActiveBuilding({commit}, newBuilding) {
+            commit(types.SET_ACTIVE_BUILDING, newBuilding);
         },
         fetchBuildings({commit}) {
             ApiBuilding.getAll().then(buildings => {
@@ -40,11 +41,11 @@ export default {
         }
     },
     mutations: {
-        [types.SET_ACTIVE_BUILDING](state, newBuildingId) {
-            if(state.activeBuildingId != newBuildingId) {
+        [types.SET_ACTIVE_BUILDING](state, newBuilding) {
+            if(state.activeBuilding != newBuilding) {
                 // save on localStorage
-                localStorage.setItem(ACTIVE_BUILDING_KEY, newBuildingId)
-                state.activeBuildingId = newBuildingId;
+                localStorage.setItem(ACTIVE_BUILDING_KEY, newBuilding)
+                state.activeBuilding = newBuilding;
             }
         },
         [types.SET_ACTIVE_AND_AVAILABLE_BUILDING](state, newAvailableBuildings) {

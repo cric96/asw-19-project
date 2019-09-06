@@ -45,7 +45,7 @@ export default {
     },
     methods: {
         ...mapActions([
-            'changeActiveBuildingId',
+            'changeActiveBuilding',
             'fetchBuildings'
         ]),
         init() {

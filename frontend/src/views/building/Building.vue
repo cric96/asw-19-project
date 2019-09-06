@@ -14,7 +14,7 @@
                     <v-expansion-panel-header v-slot="{ open }">
                         <v-list-item avatar>
                             <v-list-item-avatar>
-                                <v-icon centered>home</v-icon>
+                                <v-icon centered x-large>home</v-icon>
                             </v-list-item-avatar>
                             <v-list-item-content>
                                 <v-list-item-title>{{building.name}}</v-list-item-title>
@@ -22,6 +22,9 @@
                             </v-list-item-content>
                         </v-list-item>
                     </v-expansion-panel-header>
+                    <v-expansion-panel-content>
+
+                    </v-expansion-panel-content>
                 </v-expansion-panel>
             </template>
         </v-expansion-panels>

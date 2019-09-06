@@ -5,9 +5,9 @@ const resourceEndpoint = "/cities";
 
 const mockApi = new MockApiHelper([
     {
-        _id: "sadasdeasd",
         name: 'Cesena',
-        country: 'Italy'
+        country: 'Italy',
+        link: '/cities/sadasdeasd'
     }
 ]);
 
