@@ -1,0 +1,593 @@
+swagger: "2.0"
+info:
+  description: "Scanbage is an application used to help people recycling waste"
+  version: "1.0.0"
+  title: "Scanbage"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "scanbage.ml"
+basePath: "/api"
+tags:
+- name: "user"
+  description: "Operations about users"
+- name: "building"
+  description: "Everything about your buildings"
+- name: "member"
+  description: "Operations on building's members"
+- name: "bin"
+  description: "Access to building's bins"
+- name: "trash"
+  description: ""
+- name: "city"
+  description: "Operations about cities"
+- name: "trash category"
+  description: "Access to trash categeries"
+- name: "bin category"
+  description: "Access to bin categories"
+- name: "reward"
+  description: "Access to reward"
+schemes:
+- "http"
+
+paths:
+  /users:
+    get:
+      tags:
+      - "user"
+      summary: "Retreive all users"
+      description: "who wants to see all the users of the application"
+      operationId: "createUser"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      security: &security
+      - credentials: []
+      responses:
+        200:
+          description: "Users found"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/User"
+        401: &response401
+          description: "Unauthorized. Your session has been expired or you didn't submit your credentials."
+        500: &response500 
+          description: "Internal Server Error."
+    post:
+      tags:
+      - "user"
+      summary: "Create user"
+      description: "This can only be done by the logged in user."
+      operationId: "GetAllUser"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "Create user object: The link field must be undefined"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      responses:
+        201: 
+          description: "Successful creation."
+          schema: 
+            $ref: "#/definitions/Building"
+        400: &response400
+          description: "Bad request. You have to insert correctly all the required fields."
+        401: *response401
+        500: *response500 
+  /users/{user_id}:
+    parameters:
+      - in: path
+        name: user_id
+        type: string
+        required: true
+        description: ""
+    get:
+      tags: 
+      - "user"
+      summary: "Get the specified user."
+      description: "This can only be done by a logged user who wants to see one of all users."
+      produces:
+      - "application/json"
+      security: *security    
+      responses:
+        200:
+          description: "User found"
+          schema:
+            $ref: "#/definitions/User"
+        401: *response401
+        #controllare che se un building è inattivo non lo devo mostrare
+        404: &response404
+          description: "Not Found"
+        500: *response500
+    put: 
+      tags:
+      - "user"
+      summary: "Update the selected user."
+      description: "This can only be done if the logged user is the user's id specified as a uri parameters."
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "The user object to be updated."
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+      security: *security
+      responses:
+        200:
+          description: "Successful Update"
+          schema: 
+            $ref: "#/definitions/User"
+        400: *response400
+        401: *response401
+        403: &response403
+          description: "You are not authorized to do this action; probably do you not have the permission"
+        404: *response404
+        500: *response500    
+  /buildings:
+    get:
+      tags: 
+      - "building"
+      summary: "Get all the buildings."
+      description: "This can only be done by a logged user who wants to see all the buildings of the application."
+      produces:
+      - "application/json"
+      security: *security
+      responses:
+        200:
+          description: "Buildings found"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Building"
+        401: *response401
+        500: *response500 
+    post:
+      tags:
+      - "building"
+      summary: "Create a building."
+      description: "This can only be done by the logged user who become the building's owner."
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "The building object to be created. The properties link and bins must be undefined"
+        required: true
+        schema:
+          $ref: "#/definitions/Building"
+      security: *security
+      responses:
+        201: 
+          description: "Successful creation."
+          schema: 
+            $ref: "#/definitions/Building"
+        400: *response400
+        401: *response401
+        403: 
+          description: "Forbidden. You must specify yourself as the owner of the building."
+        500: *response500 
+        
+  /users/{user_id}/buildings:
+    parameters:
+      - in: path
+        name: user_id
+        type: string
+        required: true
+        description: "It represents the id of the user who's making the request."
+    get:
+      tags: 
+      - "building"
+      summary: "Get buildings from the logged user"
+      description: "This can only be done by a logged in user who wants to see his own buildings."
+      produces:
+      - "application/json"
+      security: *security    
+      responses:
+        200:
+          description: "Buildings found"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Building"
+        401: *response401
+        403: *response403
+        500: *response500
+        
+  /buildings/{building_id}:
+    parameters: &idParameters
+      - in: path
+        name: building_id
+        type: string
+        required: true
+        description: "It represents the building's identifier"
+    get:
+      tags: 
+      - "building"
+      summary: "Get the specified building."
+      description: "This can only be done by a logged user who wants to see one of his buildings."
+      produces:
+      - "application/json"
+      security: *security    
+      responses:
+        200:
+          description: "Building found"
+          schema:
+            $ref: "#/definitions/Building"
+        401: *response401
+        403: *response403
+        #controllare che se un building è inattivo non lo devo mostrare
+        404: *response404
+        500: *response500
+    put: 
+      tags:
+      - "building"
+      summary: "Update the selected building."
+      description: "This can only be done by the logged user who is the building's owner."
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "The building object to be updated."
+        required: true
+        schema:
+          $ref: "#/definitions/Building"
+      security: *security
+      responses:
+        200:
+          description: "Successful Update"
+          schema: 
+            $ref: "#/definitions/Building"
+        400: *response400
+        401: *response401
+        403: *response403
+        404: *response404
+        500: *response500
+    delete: 
+      tags:
+      - "building"
+      summary: "Delete the selected building."
+      description: "This can only be done by the logged user who is the building's owner."
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      security: *security
+      responses:
+        200:
+          description: "Successful Delete"
+        400: *response400
+        401: *response401
+        403: *response403
+        404: *response404
+        500: *response500
+        
+  /buildings/{building_id}/members:
+    parameters: *idParameters
+    get:
+      tags: 
+      - "member"
+      summary: "Get members of the selected building"
+      description: "This can only be done by a logged user who wants to see who is in one of his buildings."
+      produces:
+      - "application/json"
+      security: *security    
+      responses:
+        200:
+          description: "Members retrieved"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/User"
+        401: *response401
+        403: *response403
+        404: *response404
+        500: *response500
+    post:
+      tags:
+      - "member"
+      summary: "Add a member to the specified building"
+      description: "This can only be done by the owner of the building."
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "The member object to be created. Nickname or email must be defined"
+        required: true
+        schema:
+          type: array
+          items:
+            $ref: "#/definitions/User"
+      security: *security
+      responses:
+        201: 
+          description: "Successful creation."
+          schema: 
+            $ref: "#/definitions/Building"
+        400: *response400
+        401: *response401
+        403: *response403
+        404: *response404
+        409: 
+          description: "Conflict. You cannot re-add this member."
+        500: *response500 
+    
+  /buildings/{building_id}/members/{member_id}:
+    parameters: 
+      - in: path
+        name: building_id
+        type: string
+        required: true
+        description: "It represents the building's identifier"
+      - in: path
+        name: member_id
+        type: string
+        required: true
+        description: "It represents the member's identifier"
+    delete:
+      tags:
+      - "member"
+      summary: "Delete the specified member for the specified building"
+      description: "The owner can delete every member of the building except for himself. A generic member can only delete himself. "
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      security: *security
+      responses:
+        200: 
+          description: "Successfully delete."
+        401: *response401
+        403: *response403
+        404: *response404
+        500: *response500 
+        
+  /buildings/{building_id}/bins:
+    parameters:
+      - in: path
+        name: building_id
+        type: string
+        required: true
+        description: "It represents the building's identifier"
+      - in: query
+        name: email
+        type: string
+        description: "It represents the user's identifier and it is used to filter bins by a specific user."
+      - in: query
+        name: from
+        type: string
+        format: date
+        description: "You can specify from what day you can get the results. If you don't specify the 'to' parameter you will get results until today."
+      - in: query
+        name: to
+        type: string
+        format: date
+        description: "You can specify to what day you can get the results"
+    get:
+      tags: 
+      - "bin"
+      summary: "Get all the bins for the specified building."
+      description: "This can only be done by a logged user who wants to see all the bins in one of his buildings. If a valid email is specified you'll get all the bins for that user."
+      produces:
+      - "application/json"
+      security: *security
+      responses:
+        200:
+          description: "Bins found"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Bin"
+        401: *response401
+        403: *response403
+        404: *response404
+        500: *response500
+  
+  /building/{building_id}/trashes:
+    parameters:
+      - in: path
+        name: building_id
+        type: string
+        required: true
+        description: "It represents the building's identifier"
+    post:
+      tags: 
+      - "trash"
+      summary: "Add trash for the specified building."
+      description: "This can only be done by a logged user who wants to add trash in one of his buildings."
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      security: *security
+      responses:
+        201:
+          description: "Trash added."
+        401: *response401
+        403: *response403
+        404: *response404
+        500: *response500
+    
+securityDefinitions:
+  credentials: 
+    type: apiKey
+    in: header
+    name: Authorization
+    
+definitions:
+  User:
+    type: "object"
+    properties:
+      firebase_uid:
+        type: "string"
+        uniqueItems: true
+      _id:
+        type: "string"
+        uniqueItems: true
+      link:
+        $ref: "#/definitions/Link"
+      name:
+        type: "string"
+      surname:
+        type: "string"
+      nickname:
+        type: "string"
+        uniqueItems: true
+      score:
+        type: "integer"
+        format: "int32"
+      level:
+        type: "integer"
+        format: "int32"
+      email:
+        type: "string"
+        uniqueItems: true
+      rewards:
+        type: array
+        items:
+          $ref: "#/definitions/Reward"
+    required:
+      - firebase_uid
+      - _id
+      - email
+  Building:
+    type: "object"
+    properties:
+    # non usareeeeeeeeee
+      _id:
+        type: "string"
+        uniqueItems: true
+      link:
+        $ref: "#/definitions/Link"
+      name:
+        type: "string"
+      address:
+        type: "string"
+      active:
+        type: "boolean"
+        default: true
+      floor:
+        type: "integer"
+        format: "int32"
+      apartmentNumber:
+        type: "integer"
+        format: "int32"
+      city:
+        $ref: "#/definitions/City"
+      owner:
+        $ref: "#/definitions/User"
+      bins: 
+        type: array
+        items:
+          $ref: "#/definitions/Link"
+      members:
+        type: array
+        items: 
+          $ref: "#/definitions/Link"
+        
+    required:
+      - _id
+      - name
+      - address
+      - active
+      - city
+      - bins
+      - members
+  Bin:
+    type: "object"
+    properties:
+      collectedTrashes:
+        type: "array"
+        items: 
+          $ref: "#/definitions/CollectedTrash"
+      binCategory:
+        $ref: "#/definitions/BinCategory"
+    required:
+      - binCategory
+      - collectedTrashes
+  CollectedTrash:
+    type: "object"
+    properties:
+      trashCategory: 
+        $ref: "#/definitions/TrashCategory"
+      quantity:
+        type: "integer"
+        format: "int32"
+    required:
+      - trashCategory
+      - quantity
+  TrashCategory:
+    type: "object"
+    properties:
+      name: 
+        type: "string"
+      score:
+        type: "integer"
+        format: "int32"
+      imageUrl:
+        $ref: "#/definitions/Link"
+    required:
+      - name
+      - score
+      - imageUrl
+  City:
+    type: "object"
+    properties:
+      name: 
+        type: "string"
+      country:
+        type: "string"
+    required:
+      - name
+      - country
+  BinCategory:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      colour:
+        type: "string"
+    required:
+      - name
+      - colour
+  Reward:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+      picture:
+        $ref: "#/definitions/Link"
+      description:
+        type: "string"
+      availableAtLevel:
+        type: "integer"
+        format: "int32"
+      video: 
+        $ref : "#/definitions/Link"
+    required:
+      - name
+      - picture
+      - description
+      - availableAtLevel
+  Link:
+    type: "string"
+    format: "url"
+  
