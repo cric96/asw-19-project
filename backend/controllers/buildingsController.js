@@ -2,32 +2,42 @@ var mongoose = require('mongoose');
 var utils = require("../utils/utils");
 var Building = mongoose.model('Building');
 var BinCategory = require("../models/binCategoryModel");
+var City = require("../models/cityModel");
 var Bin = require("../models/binModel");
 
+
+
 //TO CHECK
-function execIfUserIsInBuilding(mongooseId, building, callback) {
-    if(buildings.members.find(user => mongooseId == user._id)) {
+function execIfUserIsInBuilding(mongooseId, building, callback, res) {
+    if(building.members.find(user => JSON.stringify(mongooseId) == JSON.stringify(user._id))) {
         callback()
     } else {
-        utils.sendResponseMessage(res, 403, "You are not member or owner of this building")
+        if(JSON.stringify(building.owner) != JSON.stringify(mongooseId)) {
+            utils.sendResponseMessage(res, 403, "This operation is allowed only to owner.")
+        } else {
+            utils.sendResponseMessage(res, 403, "You are not member of this building")
+        }
     }
 }
 exports.create_buildings = function(req, res) {
     var newBuilding = new Building(req.body)
     newBuilding.owner = res.locals.userAuth._id
     newBuilding.members = [res.locals.userAuth._id]
-    
+
+    // TODO: add support for city, now this is the default city.
+    newBuilding.city = new mongoose.Types.ObjectId("5d70c36c928ae939588c4993")
+
     var error = newBuilding.validateSync()
-    if(error){
+    if (error) {
         console.log(error)
         utils.sendResponseMessage(res, 400, "Bad request; email and firebase_uid are required fields");
     } else {
-        BinCategory.find({ city: new mongoose.Types.ObjectId(newBuilding.city) }).exec()
-        .then(binCategories => {
-            console.log(binCategories);
-            return binCategories.map(element => new Bin({ binCategory: element, trash: [] }))
+        City.findById(newBuilding.city)
+            .populate('binCategories')
+            .exec()
+        .then(city => {
+            return city.binCategories.map(element => new Bin({ binCategory: element, trash: [] }))
         }).then(bins => {
-            console.log(bins);
             newBuilding.bins = bins
             newBuilding.active = true
             return newBuilding.save()
@@ -71,41 +81,42 @@ exports.list_buildings = function(req, res) {
 }
 
 exports.read_building = function(req, res) {
-    building_id = req.params.id
+    let building_id = req.params.id
     Building.findById(building_id)
             .exec()
             .then(building => {
                 if(building == null) {
                     utils.sendResponseMessage(res, 404, "Building " + building_id + " not found")
                 } else {
-                    execIfUserIsInBuilding(res.locals.userAuth._id, building, () => utils.sendResponseMessage(res, 200, building))
+                    execIfUserIsInBuilding(res.locals.userAuth._id, building, () => utils.sendResponseMessage(res, 200, building), res)
                 }
             })
             .catch(err => {
+                console.log(err);
                 utils.sendResponseMessage(res, 500, "Internal error")
             })
 }
 
 exports.update_building = function(req, res) {
-    buildings_id = req.params.id
+    let building_id = req.params.id
+    let mongoose_id = res.locals.userAuth._id
     let updatedBuilding = Building.prepareUpdate(req.body);
     Building.findByIdAndUpdate(building_id, updatedBuilding)
+        .populate('members')    
         .exec()
-        .populate(members)
         .then(buildingReturned => {
             if(buildingReturned == null) {
-                utils.sendResponseMessage(buildingReturned, 404, "Building not found")
+                utils.sendResponseMessage(res, 404, "Building not found")
             } else {
-                execIfUserIsInBuilding(res.locals.uid, buildings, () => utils.sendResponseMessage(res, 200, buildingReturned))
+                execIfUserIsInBuilding(mongoose_id, buildingReturned, () => utils.sendResponseMessage(res, 200, buildingReturned), res)
             }
-            utils.sendResponseMessage(res, 200, res)
         }).catch(err => utils.sendResponseMessage(res, 500, "Internal error"))
 }
 
 exports.add_building_member = function(req, res) {
-    building_id = req.params.id
-    mongoose_id = res.locals.userAuth._id
-    Building.findById(buildings_id).exec()
+    let building_id = req.params.id
+    let mongoose_id = res.locals.userAuth._id
+    Building.findById(building_id).exec()
         .then(building => {
 
         })
