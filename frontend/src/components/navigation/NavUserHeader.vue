@@ -1,8 +1,8 @@
 <template >
     <v-list v-if="user">
         <v-list-item>
-            <v-list-item-avatar color="secondary">
-                <span>{{user.level}}</span>
+            <v-list-item-avatar color="secondary" class="headline font-weight-light white--text">
+               {{user.level}}
             </v-list-item-avatar>
         </v-list-item>
         <v-list-item>

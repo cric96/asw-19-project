@@ -53,7 +53,7 @@ export default {
         },
         selectBuilding(building) {
             this.expanded = false; /* trick for collpase the dropdown after selection */
-            this.changeActiveBuildingId(building._id);
+            this.changeActiveBuilding(building._id);
         }
     },
     mounted() {

@@ -38,10 +38,10 @@
                                         label="Seleziona la città" 
                                         clearable return-object>
                                             <template v-slot:selection="{item, index}">
-                                                <span>{{item.name}}</span>
+                                                <span>{{item.name}}, {{item.country}}</span>
                                             </template>
                                             <template slot="item" slot-scope="data">
-                                                {{data.item.name}}
+                                                {{data.item.name}}, {{data.item.country}}
                                             </template>
                                     </v-select>
                                 </v-col>
@@ -65,8 +65,10 @@
                                         required/>
                                 </v-col>
                             </v-row>
+                            <v-row>
+                                <member-manager></member-manager>
+                            </v-row>
                         </v-form>
-                        
                         <!-- TODO: preview google maps -->
                     </v-container>
                 </v-card-text>
@@ -86,9 +88,14 @@ import citiesApi from '@/services/cities.api'
 import { functions } from 'firebase';
 const { mapGetters, mapActions } = createNamespacedHelpers('building');
 
+import MemberManager from '@/components/MemberManager'
+
 export default {
     mounted() {
         this.initialize()
+    },
+    components: {
+        'member-manager': MemberManager
     },
     data: () => ({
         value: false,
@@ -98,6 +105,7 @@ export default {
         },
         validForm: true,
         building: { },
+        members: [],
         alert: null,
         pendingOperation: false,
         baseRule: [v => !!v || "Questo campo è obbligatorio"]
