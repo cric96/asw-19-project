@@ -8,7 +8,7 @@
                 </v-list-item-content>
             </template>
 
-            <v-list-item-group :value="activeItem" mandatory>
+            <v-list-item-group :value="activeBuilding" mandatory>
                 <template v-for="(building, i) in buildings">
                     <v-list-item :key="i" @click="selectBuilding(building)">
                         <template v-slot:default="{active}">
@@ -38,10 +38,7 @@ export default {
         ...mapGetters([
             'activeBuilding',
             'buildings'
-        ]),
-        activeItem() {
-            return this.buildings.indexOf(this.activeBuilding);
-        }
+        ])
     },
     methods: {
         ...mapActions([
@@ -53,7 +50,7 @@ export default {
         },
         selectBuilding(building) {
             this.expanded = false; /* trick for collpase the dropdown after selection */
-            this.changeActiveBuilding(building._id);
+            this.changeActiveBuilding(building.link);
         }
     },
     mounted() {
