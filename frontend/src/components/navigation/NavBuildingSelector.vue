@@ -1,5 +1,5 @@
 <template>
-    <v-list app nav dense v-if="availableBuildings.length > 0">
+    <v-list app nav dense v-if="buildings.length > 0">
         <v-list-group prepend-icon="home" append-icon="mdi-menu-down" v-model="expanded">
             <template slot="activator" v-if="activeBuilding != null">
                 <v-list-item-content>
@@ -8,8 +8,8 @@
                 </v-list-item-content>
             </template>
 
-            <v-list-item-group :value="activeItem" mandatory>
-                <template v-for="(building, i) in availableBuildings">
+            <v-list-item-group :value="activeBuilding" mandatory>
+                <template v-for="(building, i) in buildings">
                     <v-list-item :key="i" @click="selectBuilding(building)">
                         <template v-slot:default="{active}">
                             <v-list-item-content >
@@ -19,16 +19,7 @@
                         </template>
                     </v-list-item>
                 </template>
-            </v-list-item-group>
-            
-            <v-list-item >
-                <v-list-item-icon>
-                    <v-icon>settings</v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                    <v-list-item-title>Manage Buildings</v-list-item-title>
-                </v-list-item-content>
-            </v-list-item>  
+            </v-list-item-group> 
         </v-list-group>
     </v-list>
 </template>
@@ -36,7 +27,7 @@
 
 <script>
 import { createNamespacedHelpers } from 'vuex'
-const { mapState, mapActions } = createNamespacedHelpers('building');
+const { mapGetters, mapActions } = createNamespacedHelpers('building');
 
 export default {
     name: 'NavBuildingSelector',
@@ -44,13 +35,10 @@ export default {
         expanded: false
     }),
     computed: {
-        ...mapState([
+        ...mapGetters([
             'activeBuilding',
-            'availableBuildings'
-        ]),
-        activeItem() {
-            return this.availableBuildings.indexOf(this.activeBuilding);
-        }
+            'buildings'
+        ])
     },
     methods: {
         ...mapActions([
@@ -62,7 +50,7 @@ export default {
         },
         selectBuilding(building) {
             this.expanded = false; /* trick for collpase the dropdown after selection */
-            this.changeActiveBuilding(building);
+            this.changeActiveBuilding(building.link);
         }
     },
     mounted() {

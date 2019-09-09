@@ -12,10 +12,6 @@ var binCategorySchema = new Schema({
         trim: true,
         required: 'We need a colour for bin category'
     },
-    city: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'City'
-    },
     trashCategories: [{type: mongoose.Schema.Types.ObjectId, ref: 'TrashCategory'}]
 });
 

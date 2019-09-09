@@ -1,22 +1,18 @@
 import Vue from 'vue';
 import App from './App.vue';
 import router from './router';
-import  store  from './store/store.js'
-import fb from './firebaseConfig.js'
+import store  from './store/store.js'
 import vuetify from './plugins/vuetify';
+import fb from './firebaseConfig'
 
 Vue.config.productionTip = false;
 
-let app = '';
-
-fb.auth.onAuthStateChanged(() => {
-  if (!app) {
-    app = new Vue({
-      router,
-      vuetify,
-      store,
-
-      render: h => h(App)
-    }).$mount('#app');
-  }
-});
+new Vue({
+  router,
+  vuetify,
+  store,
+  beforeCreate() {
+    store.dispatch('autoSignIn');
+  },
+  render: h => h(App)
+}).$mount('#app');
