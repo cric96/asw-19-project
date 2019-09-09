@@ -1,11 +1,18 @@
 var mongoose = require('mongoose');
+var utils = require("../utils/utils");
 var Schema = mongoose.Schema;
+var BinSchema = require('./binModel').schema;
 
 var buildingSchema = new Schema({
     name: {
         type: String,
         trim: true,
         required: 'A name is required'
+    },
+    active: {
+        type: Boolean,
+        required: "active is required",
+        default: true
     },
     address: {
         type: String,
@@ -30,10 +37,10 @@ var buildingSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
-    bins: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Bin'
-    }]
+    bins: [BinSchema]
 });
 
+buildingSchema.statics.prepareUpdate = function(obj){
+    return utils.exclude(obj, 'members', 'owner', 'bins');
+}
 module.exports = mongoose.model('Building', buildingSchema);

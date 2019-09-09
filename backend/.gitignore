@@ -61,4 +61,5 @@ typings/
 .next
 
 
-.scanbage-firebase-adminsdk-itzje-52ab1c019c.json
+/scanbage-firebase-adminsdk-itzje-52ab1c019c.json
+/mongoose-config.json

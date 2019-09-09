@@ -1,4 +1,6 @@
+var mongoose = require('mongoose');
 var admin = require('firebase-admin');
+var User = mongoose.model('User');
 
 module.exports = function(req, res, next) {
     if(req.headers.authorization) {
@@ -6,7 +8,12 @@ module.exports = function(req, res, next) {
         admin.auth().verifyIdToken(idToken, true)
         .then(function(decodedToken) {
             res.locals.uid = decodedToken.uid;
-            next();
+            fetchLoggedUser(decodedToken.uid).then((user)=>{
+                res.locals.userAuth = user;
+                next();
+            }).catch((err)=>{
+                //fetch user failed; user not logged and not existing in db
+            });
         })
         .catch(function(error) {
             res.status(401).json({
@@ -19,3 +26,17 @@ module.exports = function(req, res, next) {
         })
     }
 };
+
+function fetchLoggedUser(firebase_id){
+    return new Promise((resolve, reject)=>{
+        User.findOne({firebase_uid: firebase_id}, function(err, user) {
+            if(user && !err) {
+                resolve(user); 
+                console.log("BB")
+            } else {
+                reject(err)
+            }
+        });
+    });
+    
+}

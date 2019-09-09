@@ -1,6 +1,7 @@
 <template>
   <v-container>
     <v-card v-bind:style="{ backgroundColor: color}">
+      <alert v-model="showAlert" ref="alert"/>
       <v-card-text >
         <v-form  ref="form" v-model="valid" lazy-validation>
           <v-flex xs12 sm8 md4 class="mb-4">
@@ -16,16 +17,16 @@
             v-model="email"
             label="E-mail"
             prepend-icon="person"
-            outlined="true"
+            outlined
             :rules="emailRules"
-            solo="true"
-            clearable="true"
+            solo
+            clearable
             required>
           </v-text-field>
           <v-text-field
-            outlined="true"
-            solo="true"
-            clearable="true"
+            outlined
+            solo
+            clearable
             prepend-icon="lock"
             v-model="password"
             :rules="passwordRules"
@@ -38,9 +39,9 @@
 
           <v-text-field
             v-model="confirmPassword"
-            outlined="true"
-            solo="true"
-            clearable="true"
+            outlined
+            solo
+            clearable
             prepend-icon="lock"
             label="Confirm Password"
             :rules="passwordRules"
@@ -52,9 +53,9 @@
 
           <v-text-field 
             v-model="name" 
-            outlined="true"
-            solo="true"
-            clearable="true"
+            outlined
+            solo
+            clearable
             prepend-icon="perm_identity"
             label="Name" 
             :rules="generalRules" 
@@ -64,9 +65,9 @@
           <v-text-field 
             v-model="surname" 
             label="Surname" 
-            outlined="true"
-            solo="true"
-            clearable="true"
+            outlined
+            solo
+            clearable
             prepend-icon="perm_identity"
             :rules="generalRules" 
             required>
@@ -75,9 +76,9 @@
           <v-text-field 
             v-model="nickname" 
             label="Nickname" 
-            outlined="true"
-            solo="true"
-            clearable="true"
+            outlined
+            solo
+            clearable
             prepend-icon="perm_identity"
             :rules="generalRules" 
             required>
@@ -85,7 +86,8 @@
         </v-form>
       </v-card-text>
       <v-card-actions>
-        <v-btn :disabled="!valid" color="success" @click="validate">Register</v-btn>
+        <v-spacer/>
+        <v-btn :disabled="!valid" :loading="inRegistration" color="success" @click="validate">Register</v-btn>
         <v-btn color="error" @click="reset">Reset Form</v-btn>
       </v-card-actions>
       <v-card-text>
@@ -99,8 +101,16 @@
 import firebase from "firebase";
 import usersapi from "../../services/users.api";
 import User from "../../model/user";
+import * as messages from '@/resource/messages';
+import AlertMessageComponent from '@/components/AlertMessageComponent';
+
 export default {
+  components: {
+    "alert": AlertMessageComponent 
+  },
   data: () => ({
+    showAlert: false,
+    inRegistration: false,
     color:'rgba(255,255,255,0.9)',
     passwordShow: false,
     confirmPasswordShow: false,
@@ -119,49 +129,53 @@ export default {
     passwordRules: [v => !!v || "La Password e la sua conferma sono obbligatorie"],
   }),
   methods: {
-    validate() {
+    validate: function() {
       if (this.$refs.form.validate()) {
-        this.snackbar = true;
         this.signUp();
       }
     },
-    reset() {
+    reset: function() {
       this.$refs.form.reset();
     },
-    signUp: function() {
-      firebase
-        .auth()
-        .createUserWithEmailAndPassword(this.email, this.password)
-        .then(user => {
-          if (user) {
-            let newuser = new User(
-              user.user.uid,
+    createNewUser(firebase_uid) {
+      return new User(
+              undefined,
+              firebase_uid,
               this.name,
               this.surname,
               this.email,
-              null,
-              null,
               this.nickname
             );
-            usersapi.create_user(newuser);
-            //TODO check if registration of new user is ok
-            this.$router.replace("/intro");
+    },
+    signUp: function() {
+      this.inRegistration = true;
+      firebase
+        .auth()
+        .createUserWithEmailAndPassword(this.email, this.password)
+        .then(response => {
+          if (response) {
+              let newuser = this.createNewUser(response.user.uid)
+              this.$store.dispatch('signUp', newuser)
+              .then((user)=>{
+                this.showAlert = true
+                this.$refs.alert.changeConfig(messages.SIGNUP_SUCCESS, "success")
+                setTimeout(() => { this.$router.replace("/dashboard"); }, 1500);
+              }).catch((err)=>{
+                // TODO -- check server response (409...)
+                this.inRegistration = false
+                this.showAlert = true
+                this.$refs.alert.changeConfig(err, "error")
+                //this.$refs.alert.changeConfig(messages.SIGNUP_ERR_NICKNAME_CONFLICT, "error")
+              })
           }
         })
         .catch(err => {
           if (err.code == "auth/email-already-in-use") {
             const existingEmail = this.email;
             const password = this.password;
-            firebase
-              .auth()
-              .fetchSignInMethodsForEmail(existingEmail)
-              .then(function(providers) {
+            firebase.auth().fetchSignInMethodsForEmail(existingEmail).then((providers) =>{
                 const fbProvider = new firebase.auth.FacebookAuthProvider();
-                if (
-                  providers.indexOf(
-                    firebase.auth.FacebookAuthProvider.PROVIDER_ID
-                  ) != -1
-                ) {
+                if (providers.indexOf(firebase.auth.FacebookAuthProvider.PROVIDER_ID) != -1) {
                   // Sign in user to fb with same account.
                   fbProvider.setCustomParameters({ login_hint: existingEmail });
                   return firebase
@@ -170,27 +184,29 @@ export default {
                     .then(function(result) {
                       return result.user;
                     });
+                }else{
+                  this.showAlert = true
+                  this.$refs.alert.changeConfig(messages.SIGNUP_ERR_EMAIL_CONFLICT, "error")
                 }
               })
-              .then(function(user) {
+              .then((user) =>{
                 if (user) {
-                  if (
-                    firebase
-                      .auth()
-                      .currentUser.linkWithCredential(
-                        firebase.auth.EmailAuthProvider.credential(
-                          existingEmail,
-                          password
-                        )
-                      )
-                  ) {
-                    this.$router.replace("/login");
-                  }
+                  user.linkWithCredential(firebase.auth.EmailAuthProvider.credential(existingEmail,password)).then((userLinked)=>{
+                    let newuser = this.createNewUser(userLinked.uid);
+                    this.$store.dispatch('signInAndUpdate', newuser)
+                    .then((user)=>{
+                      this.$router.replace("/dashboard");
+                    }).catch(err=>{
+                      // TODO -- check server response (409...)
+                      this.showAlert = true
+                      this.$refs.alert.changeConfig(err, "error")
+                      //this.$refs.alert.changeConfig(messages.SIGNUP_ERR_NICKNAME_CONFLICT, "error")                      console.log(err)
+                    })
+                  })
                 }
               });
           } else {
             console.log(err);
-            alert(err);
           }
         });
     }

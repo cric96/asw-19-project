@@ -13,17 +13,19 @@ var userSchema = new Schema({
     name: {
         type: String,
         trim: true,
-        required: 'A name is required'
+        default: null
     },
     surname: {
         type: String,
         trim: true,
-        required: 'A surname is required'
+        default: null
     },
     email: {
         type: String,
         match: regex.email,
-        required: 'We need an email'
+        required: 'We need an email',
+        unique: true,
+        immutable: true
     },
     level: {
         type: Number,
@@ -36,15 +38,12 @@ var userSchema = new Schema({
     nickname: {
         type: String,
         trim: true,
-        required: 'A nickname is required'
+        default: null,
+        unique: true
     },
     rewards: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Reward'
-    }],
-    buildings: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Building'
     }],
     trash: [{
         type: mongoose.Schema.Types.ObjectId,
@@ -52,13 +51,19 @@ var userSchema = new Schema({
     }]
 });
 
-userSchema.methods.prepareUpdate = utils.exclude(this, 'email', 'level', 'score');
+userSchema.virtual.nameId = function(obj){
+    return (this.nickname!=null) ? this.nickname : this.email;
+} 
+
+userSchema.statics.prepareUpdate = function(obj){
+    return utils.exclude(obj, 'email', 'level', 'score');
+} 
 
 userSchema.options.toJSON = {
     transform: function(doc, ret, options) {
         delete ret.firebase_uid;
         return ret;
-    }
+    },
 }
 
 module.exports = mongoose.model('User', userSchema);

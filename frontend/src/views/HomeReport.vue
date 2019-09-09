@@ -24,7 +24,7 @@
             <input id="barcode" type="file" accept="image/*" @change="onPhotoSelectedBarcode" capture="camera" hidden=true />
         </v-btn>
       </v-speed-dial>
-      
+
       <v-row dense v-if="!loading">
           <v-col v-for="(bin, index) in bins" :key="index" cols="12" md="3" sm="4">
             <bin :bin="bin"></bin>
@@ -36,7 +36,7 @@
 
 <script>
 import DynamicBin from '@/components/DynamicBin.vue'
-import {ApiBin} from '../services/mockApiBin'
+import { ApiBin } from '../services/mockApiBin'
 import { ScaleLoader } from '@saeris/vue-spinners'
 
 export default {

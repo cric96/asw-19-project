@@ -9,15 +9,18 @@ var admin = require('firebase-admin');
 
 var userModel = require("./models/userModel");
 var usersRouter = require('./routes/usersRoutes');
+var buildingModel = require('./models/buildingModel');
+var buildingRouter = require('./routes/buildingsRoutes');
 
 var app = express();
 
+let mongooseConfig = require('./mongoose-config.json')
 let serviceAccount = require('./scanbage-firebase-adminsdk-itzje-52ab1c019c.json')
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
 
-mongoose.connect('mongodb://localhost/dbtrash', { useNewUrlParser: true, useFindAndModify: false });
+mongoose.connect(`mongodb+srv://${mongooseConfig.username}:${mongooseConfig.password}@scanbage-fd95g.mongodb.net/test?retryWrites=true&w=majority`, { useNewUrlParser: true, useFindAndModify: false });
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -27,6 +30,8 @@ app.use(cookieParser());
 app.use(cors());
 app.use(express.static(path.join(__dirname, '../frontend/dist')))
 app.use('/api', usersRouter);
+app.use('/api', buildingRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

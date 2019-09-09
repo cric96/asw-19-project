@@ -2,25 +2,23 @@
   <v-dialog v-model="show" persistent max-width="600px">
     <v-card>
       <v-alert 
-      dismissable      
-      v-model="showSuccessAlert"
-      type="success">
-      Binding completed with success
-    </v-alert>
-    <v-alert  
-      v-model="showErrorAlert"
-      dismissable
-      type="error">
-      An error occurred; the insered password is not correct; try again with another password
-    </v-alert>
+        dismissable      
+        v-if="showSuccessAlert"
+        type="success">{{successMessage}}
+      </v-alert>
+      <v-alert  
+        v-if="showErrorAlert"
+        dismissable
+        type="error">
+        {{errorMessage}}
+      </v-alert>
       <v-card-title>
-        <span class="headline">An account already exists with the same email provided by facebook.
-           Please provide the password for: {{existingEmail}}</span>
+        <span class="headline">Esiste già un account (registrato con username e password) con la mail {{existingEmail}}; fornire la password per collegarlo all'account facebook con cui si vuole accedere:</span>
       </v-card-title>
       <v-card-text>
         <v-container>
               <v-text-field 
-                :clearable="true"
+                clearable=true
                 v-model="password"
                 label="password" 
                 type="password"
@@ -29,8 +27,8 @@
       </v-card-text>
       <v-card-actions>
         <div class="flex-grow-1"></div>
-        <v-btn color="blue darken-1" text @click="show = false">Close</v-btn>
-        <v-btn color="blue darken-1" text @click="bind">Bind</v-btn>
+        <v-btn color="blue darken-1" text @click="show=false">Chiudi</v-btn>
+        <v-btn color="blue darken-1" text @click="bind">Collega</v-btn>
       </v-card-actions>
     </v-card>
     
@@ -43,7 +41,9 @@
 export default {
   data: () => ({
     password: null,
-    error: null
+    error: null,
+    errorMessage: "",
+    successMessage:""
   }),
   props: {
     pendingCred:String,
@@ -62,7 +62,9 @@ export default {
         return this.value;
       },
       set(value) {
-        this.$emit("input", value);
+        if(!value){
+          this.$emit('close');
+        }
       }
     }
   },
@@ -75,12 +77,31 @@ export default {
         // Existing email/password or Google user signed in.
         // Link Facebook OAuth credential to existing account.
         if (user) {
-          //TODO show dialog
-          firebase.auth().currentUser.linkWithCredential(this.pendingCred);
+          this.successMessage = "La password inserita è corretta. I due account verranno immediatamente collegati"
           this.error = false
-          this.show = false
+          //TODO show dialog
+          firebase.auth().currentUser.linkWithCredential(this.pendingCred).then((userLinked)=>{
+            this.$store.dispatch('signIn').then((user)=>{
+              this.successMessage = "Collegamento completato con successo"
+              this.$router.replace("/dashboard");
+            }).catch(err=>{
+              //todo chack erros
+              console.log(err)
+              this.error = true
+              this.errorMessage = "Errore nel collegamento dei due account"
+            })
+          }).catch((err)=>{
+            console.log(err)
+          });
+          
         }else {
           this.error = true
+          this.errorMessage = "Attenzione, si è veirificato un errore nel login"
+        }
+      }).catch((err)=>{
+        if(err.code='auth/wrong-password'){
+            this.error = true
+            this.errorMessage = "ERRORE; la password inserita non è corretta; riprova inserendo una nuova password"
         }
       });
     }
