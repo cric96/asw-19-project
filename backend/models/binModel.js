@@ -2,15 +2,17 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var binSchema = new Schema({
-    binCategory: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'BinCategory'
+    name: {
+        type: String,
+        trim: true,
+        required: 'We need a name for bin category'
     },
-    trash: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Trash'
-    }]
+    colour: {
+        type: String,
+        trim: true,
+        required: 'We need a colour for bin category'
+    },
+    trashCategories: [{ type: mongoose.Schema.Types.ObjectId, ref: 'TrashCategory' }]
 });
 
 module.exports = mongoose.model('Bin', binSchema);
-module.exports.schema = binSchema;
