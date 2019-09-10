@@ -1,42 +1,51 @@
-[
-    {
+[{
         "name": "Plastica",
-        "score": 8
+        "score": 8,
+        "image": "http://www.bronistradellapubblica.it/site/wp-content/uploads/2018/03/plastica.png"
     },
     {
         "name": "Carta",
-        "score": 4
+        "score": 4,
+        "image": "http://www.bronistradellapubblica.it/site/wp-content/uploads/2018/03/plastica.png"
     },
     {
         "name": "Vetro",
-        "score": 9
+        "score": 9,
+        "image": "http://www.bronistradellapubblica.it/site/wp-content/uploads/2018/03/plastica.png"
     },
     {
         "name": "Alluminio",
-        "score": 5
+        "score": 5,
+        "image": "http://www.bronistradellapubblica.it/site/wp-content/uploads/2018/03/plastica.png"
     },
     {
         "name": "Organico",
-        "score": 2
+        "score": 2,
+        "image": "http://www.bronistradellapubblica.it/site/wp-content/uploads/2018/03/plastica.png"
     },
     {
         "name": "Indifferenziato",
-        "score": 0
+        "score": 0,
+        "image": "http://www.bronistradellapubblica.it/site/wp-content/uploads/2018/03/plastica.png"
     },
     {
         "name": "Medicinali",
-        "score": 10
+        "score": 10,
+        "image": "http://www.bronistradellapubblica.it/site/wp-content/uploads/2018/03/plastica.png"
     },
     {
         "name": "Pile",
-        "score": 10
+        "score": 10,
+        "image": "http://www.bronistradellapubblica.it/site/wp-content/uploads/2018/03/plastica.png"
     },
     {
         "name": "Olio Esausto",
-        "score": 7
+        "score": 7,
+        "image": "http://www.bronistradellapubblica.it/site/wp-content/uploads/2018/03/plastica.png"
     },
     {
         "name": "Potature",
-        "score": 3
+        "score": 3,
+        "image": "http://www.bronistradellapubblica.it/site/wp-content/uploads/2018/03/plastica.png"
     }
 ]
