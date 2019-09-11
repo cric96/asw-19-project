@@ -50,7 +50,7 @@ const store = new Vuex.Store({
             return new Promise((resolve, reject)=>{
                 retrieveFirebaseCurrentUser(firebaseUser => {
                     if(firebaseUser) {                    
-                        firebaseUser.getIdToken(true).then(token => {
+                        firebaseUser.getIdToken(false).then(token => {
                             if(token){
                                 commit('setToken', token);
                                 usersApi.get_user().then(user => {

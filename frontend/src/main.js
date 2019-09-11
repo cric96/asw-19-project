@@ -12,7 +12,7 @@ new Vue({
   vuetify,
   store,
   beforeCreate() {
-    store.dispatch('autoSignIn');
+    store.dispatch('autoSignIn')
   },
   render: h => h(App)
 }).$mount('#app');
