@@ -1,38 +1,32 @@
 var createError = require('http-errors');
 var express = require('express');
-require("./decore-express").decore(express);
+require("./decoreExpress").decore(express);
 var path = require('path');
-var mongoose = require('mongoose')
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors');
 var admin = require('firebase-admin');
-
-var userModel = require("./models/userModel");
-var usersRouter = require('./routes/usersRoutes');
-var buildingModel = require('./models/buildingModel');
-var buildingRouter = require('./routes/buildingsRoutes');
-
+    
 var app = express();
 
-let mongooseConfig = require('./mongoose-config.json')
 let serviceAccount = require('./scanbage-firebase-adminsdk-itzje-52ab1c019c.json')
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount)
 });
+//mongo connection
 
-mongoose.connect(`mongodb+srv://${mongooseConfig.username}:${mongooseConfig.password}@scanbage-fd95g.mongodb.net/v1?retryWrites=true&w=majority`, { useNewUrlParser: true, useFindAndModify: false });
-
+require("./mongo").setupCloud()
+//express config
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-
 app.use(cors());
+//link frontend with the backend, that the site generated with npm run build
 app.use(express.static(path.join(__dirname, '../frontend/dist')))
-app.use('/api', usersRouter);
-app.use('/api', buildingRouter);
 
+//link routes to app
+require("./routes").setup(app)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

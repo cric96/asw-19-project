@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 
 var utils = require("../utils/utils");
 var regex = require("../utils/regex");
-
+//TODO put link in user returned object
 var userSchema = new Schema({
     firebase_uid: {
         type: String,

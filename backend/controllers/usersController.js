@@ -28,13 +28,10 @@ exports.create_user = function(req, res) {
 
 exports.get_user = function(req, res) {
     let uid = res.locals.uid;
-    User.findOne({ firebase_uid: uid }, function(err, user) {
-        if (user && !err) {
-            res.setOk(user);
-        } else {
-            res.setNotFound("User not found");
-        }
-    });
+    User.findOne({ firebase_uid: uid })
+        .exec()
+        .then(user => res.setOkIfNotNull(user, "User not found"))
+        .catch(err => res.setInternalError(err))
 }
 
 exports.update_user = function(req, res) {
@@ -55,5 +52,7 @@ exports.update_user = function(req, res) {
 };
 
 exports.get_all_users = function(req, res) {
-    
+    User.find().exec()
+        .then(users => res.setOk(users))
+        .catch(err => res.setInternalError(err))
 }

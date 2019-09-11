@@ -43,6 +43,22 @@ module.exports.decore = (express) => {
         this.setResponse(200, responseBody)
     }
 
+    express.response.setOkIfNotNull = function(responseBody, msgNotFound = "Not found") {
+        if(bodyOk == null) {
+            this.setOk(responseBody)
+        } else {
+            this.setNotFound(msgNotFound)
+        }
+    }
+
+    express.response.setCreatedIfNotNull = function(responseBody, msgNotFound = "Not found") {
+        if(bodyOk == null) {
+            this.setCreated(responseBody)
+        } else {
+            this.setNotFound(msgNotFound)
+        }
+    }
+
     express.response.setNoContent = function() {
         this.setResponse(204, "")
     }
