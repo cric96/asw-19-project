@@ -15,7 +15,11 @@ var citySchema = new Schema({
     binCategories: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'BinCategory'
-    }]
+    }],
+    cap: {
+        type: Number,
+        require: true
+    }
 });
 
 module.exports = mongoose.model('City', citySchema);

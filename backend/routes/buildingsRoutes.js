@@ -10,6 +10,11 @@ router.route('/buildings')
 router.route('/buildings/:id')
 	.get(auth, validateObjectId, buildingsController.read_building)
 	.put(auth, validateObjectId, buildingsController.update_building)
+	.delete(auth, validateObjectId, buildingsController.delete_building)
+
+router.route('user/:userId/buildings')
+	.get(auth, buildingsController.get_buildings_of_user)
+
 /*    
 router.route('/buildings/:id/members')
     .post(auth, buildingsController.add_building_member)

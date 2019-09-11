@@ -27,6 +27,7 @@ var buildingSchema = new Schema({
     },
     city: {
         type: mongoose.Schema.Types.ObjectId,
+        required: true,
         ref: 'City'
     },
     members: [{
@@ -35,12 +36,12 @@ var buildingSchema = new Schema({
     }],
     owner: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User'
-    },
-    bins: [BinSchema]
+        ref: 'User',
+        required: true
+    }
 });
 
-buildingSchema.statics.prepareUpdate = function(obj){
+buildingSchema.statics.prepareUpdate = function(obj) {
     return utils.exclude(obj, 'members', 'owner', 'bins');
 }
 module.exports = mongoose.model('Building', buildingSchema);
