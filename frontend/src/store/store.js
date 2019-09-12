@@ -16,7 +16,7 @@ const store = new Vuex.Store({
     },
     state: {
         token: null,
-        userProfile: null
+        userProfile: undefined,
     },
     actions: {
         updateUserData({}, user) {
@@ -50,10 +50,10 @@ const store = new Vuex.Store({
             return new Promise((resolve, reject)=>{
                 retrieveFirebaseCurrentUser(firebaseUser => {
                     if(firebaseUser) {                    
-                        firebaseUser.getIdToken(false).then(token => {
+                        firebaseUser.getIdToken(true).then(token => {
                             if(token){
                                 commit('setToken', token);
-                                usersApi.get_user().then(user => {
+                                usersApi.get_user(firebaseUser.uid).then(user => {
                                     commit('setUserProfile', user);
                                     resolve(user)
                                 }).catch((err)=>{
@@ -65,7 +65,9 @@ const store = new Vuex.Store({
                                 this.dispatch('logout');
                             }
                         });
-                    }    
+                    } else {
+                        commit('setUserProfile', null);
+                    }   
                 });
             })
         },
@@ -80,8 +82,14 @@ const store = new Vuex.Store({
         }
     },
     getters: {
-        isAuthenticated() {
-            return fb.auth.currentUser!=null;
+        isAuthenticated(state) {
+            return state.userProfile != undefined && state.userProfile != null
+        },
+        userProfile(state) {
+            return state.userProfile
+        },
+        isUserLoading(state) {
+            return state.userProfile === undefined
         },
         token(state){
             return state.token;
