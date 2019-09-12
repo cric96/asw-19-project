@@ -58,6 +58,5 @@ class ApiService {
 }
 
 export default ApiService
-
 // TODO: change the base url, retrieving it from .env
 export const apiService = new ApiService("http://localhost:3000/api");

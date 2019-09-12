@@ -2,6 +2,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import buildingModule from './module/building'
+import trashCategoriesModule from './module/trashCategory'
 import fb from '@/firebaseConfig.js'
 import usersApi from '../services/users.api.js'
 import User from '../model/user'
@@ -12,11 +13,12 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
     plugins: [messagesPlugin],
     modules: {
-        building: buildingModule
+        building: buildingModule,
+        trashCategories : trashCategoriesModule
     },
     state: {
         token: null,
-        userProfile: null
+        userProfile: null,
     },
     actions: {
         updateUserData({}, user) {

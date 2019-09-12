@@ -8,7 +8,7 @@
             <v-autocomplete
                 v-model="category"
                 :loading="loading"
-                :items="categories"
+                :items="categories.map(category => category.name)"
                 cache-items
                 class="mx-4"
                 flat
@@ -24,21 +24,22 @@
     </v-layout>
 </template>
 <script>
+  import { createNamespacedHelpers } from 'vuex'
+  const { mapGetters } = createNamespacedHelpers('trashCategories');
+
   export default {
     data () {
       return {
         loading: false,
-        //mockup, remember to load right trash categories via store(?)
-        categories: [
-          'Plastic',
-          'Glass',
-          'Metal',
-          'Paper',
-        ],
         category: '',
         confirmDisabled: true,
         score : 8
       }
+    },
+    computed: {
+      ...mapGetters([
+        'categories'
+      ])
     },
     watch: {
       category: function(val) {

@@ -43,10 +43,14 @@
     </v-layout>
 </template>
 <script>
-import { Prediction} from '@/services/mockApiPrediction'
+import prediction from '@/services/predictionApi'
 import  color  from '@/plugins/vuetify'
 import { PacmanLoader } from '@saeris/vue-spinners'
 import { functions } from 'firebase';
+import { createNamespacedHelpers } from 'vuex'
+const { mapActions } = createNamespacedHelpers('trashCategories');
+
+const CATEGORY_FOUND = 0
 export default {
     data: () => ({
         waitingImage : true,
@@ -58,13 +62,16 @@ export default {
     computed: {
         resultReceived: function() {
             return !this.waitingImage
-        }
+        }        
     },
     methods: {
         onDoneClicked() {
             this.$emit("score-received", this.category.score)
             this.$router.push("/dashboard")
-        }
+        },
+        ...mapActions([
+            'categoryByName'
+        ])
     },
     props: {
         img : File
@@ -73,14 +80,16 @@ export default {
         'pacman' : PacmanLoader
     },
     mounted() {
-            Prediction.predict(this.img).then(res => {
+            prediction.aiPredict(this.img).then(res => {
                 this.waitingImage = false 
-                if(!res) {
+                if(res.data.status != CATEGORY_FOUND) {
                    this.resNotFound = true
-                } else {      
-                    this.category = res
+                } else {
+                    this.categoryByName(res.data.category).then(cf => {
+                        this.category = cf
+                    })
                 }
-            })
+            }).catch(err => this.resNotFound = true)
     }    
 }
 </script>

@@ -43,10 +43,12 @@
     </v-layout>
 </template>
 <script>
-import { BarcodeResearch } from '@/services/mockApiBarcode'
+import prediction from '@/services/predictionApi'
 import  color  from '@/plugins/vuetify'
 import Loader from '@/components/BarcodeLoader'
 import { functions } from 'firebase';
+import { createNamespacedHelpers } from 'vuex'
+const { mapActions } = createNamespacedHelpers('trashCategories');
 export default {
     data: () => ({
         waitingImage : true,
@@ -65,7 +67,10 @@ export default {
         onDoneClicked() {
             this.$emit("score-received", this.category.score)
             this.$router.push("/dashboard")
-        }
+        },
+        ...mapActions([
+            'categoryByName'
+        ])
     },
     props: {
         img : File
@@ -74,16 +79,19 @@ export default {
         'barcode-animation' : Loader
     },
     mounted() {
-            console.log(this.img)
             this.imageURL = URL.createObjectURL(this.img)
-            BarcodeResearch.search(this.img).then(res => {
-                this.waitingImage = false 
-                if(!res) {
-                   this.resNotFound = true
-                } else {      
-                    this.category = res
-                }
-            })
+            prediction.barcodePredict(this.img)
+                .then(res => {
+                    if(res.data.status != 0) {
+                    this.resNotFound = true
+                    } else {
+                        this.categoryByName(res.data.category).then(cf => {
+                            this.category = cf
+                        })
+                    }
+                })
+                .catch(err => this.resNotFound = true)
+                .finally(() => this.waitingImage = false)
     }    
 }
 </script>
