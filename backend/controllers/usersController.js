@@ -27,8 +27,8 @@ exports.create_user = function(req, res) {
 };
 
 exports.get_user = function(req, res) {
-    let uid = res.locals.uid;
-    User.findOne({ firebase_uid: uid })
+    let userId = req.params.id;
+    User.findOne({ firebase_uid: userId })
         .exec()
         .then(user => res.setOkIfNotNull(user, "User not found"))
         .catch(err => res.setInternalError(err))
@@ -36,19 +36,24 @@ exports.get_user = function(req, res) {
 
 exports.update_user = function(req, res) {
     let uid = res.locals.uid;
-    let updateUser = User.prepareUpdate(req.body);
-    User.findOneAndUpdate({ firebase_uid: uid }, updateUser, { new: true }, function(err, updatedUser) {
-        if (err) {
-            console.log(err)
-            res.setBadRequest();
-        } else {
-            if (updatedUser == null) {
-                res.setNotFound("User not found")
+    if(req.params.id==uid){
+        let updateUser = User.prepareUpdate(req.body);
+        User.findOneAndUpdate({ firebase_uid: uid }, updateUser, { new: true }, function(err, updatedUser) {
+            if (err) {
+                console.log(err)
+                res.setBadRequest();
             } else {
-                res.setOk(updateUser)
+                if (updatedUser == null) {
+                    res.setNotFound("User not found")
+                } else {
+                    res.setOk(updateUser)
+                }
             }
-        }
-    });
+        });
+    }else{
+        res.setForbidden("A user can update only his profile info")
+    }
+    
 };
 
 exports.get_all_users = function(req, res) {
