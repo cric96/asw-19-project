@@ -80,26 +80,26 @@ const router = new Router({
       ]
     }
   ]
-});
+})
 
 router.beforeEach((to, from, next) => {
   if(store.getters.isUserLoading) {
     const unwatch = store.watch((state, getters) => getters.userProfile, function() {
       routeGuard(to, from, next)
       unwatch()
-    });
+    })
   } else {
     routeGuard(to, from, next)
   }
-});
+})
 
 function routeGuard(to, from, next) {
-  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-  let isAuth = store.getters.isAuthenticated;
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
+  let isAuth = store.getters.isAuthenticated
 
-  if (requiresAuth && !isAuth) next('intro');
-  else if (!requiresAuth && isAuth) { next('dashboard');}
-  else next();
+  if (requiresAuth && !isAuth) next('intro')
+  else if (!requiresAuth && isAuth) { next('dashboard') }
+  else next()
 }
 
-export default router;
+export default router

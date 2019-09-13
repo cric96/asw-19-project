@@ -39,13 +39,13 @@ export default {
     methods: {
         logout : function(){
             this.$store.dispatch('logout').then(() => {
-                this.$router.replace("/intro");
+                this.$router.replace("/intro")
             })
         }
     },
     computed: {
         userProfile: function() {
-            return this.$store.getters.currentUser;
+            return this.$store.getters.currentUser
         }
     },
     props: {

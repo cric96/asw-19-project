@@ -20,99 +20,92 @@ const store = new Vuex.Store({
     },
     actions: {
         updateUserData({}, user) {
-           return usersApi.update_user(user);
+           return usersApi.updateUser(user)
             // TODO: move to right module
         },
         autoSignIn() {
-            return this.dispatch('signIn');
+            return this.dispatch('signIn')
         },
         signUp({}, user) {
-                return usersApi.create_user(user).then(()=>{
-                    return this.dispatch('signIn');
-                }).catch((err) => {
-                    this.dispatch('logout');
-                    return Promise.reject(err);
-                });
+            return usersApi.createUser(user).then(() => {
+                return this.dispatch('signIn')
+            }).catch(err => {
+                this.dispatch('logout')
+                return Promise.reject(err)
+            })
         },
         signInAndUpdate({ commit }, userToUpdate) {
             return this.dispatch('signIn').then((user)=>{
-                userToUpdate._id = user._id;
-                return usersApi.update_user(userToUpdate)
+                userToUpdate._id = user._id
+                return usersApi.updateUser(userToUpdate)
             }).then(updatedUser => {
-                commit('setUserProfile', updatedUser);
+                commit('setUserProfile', updatedUser)
                 return updatedUser
             }).catch((err)=>{
-                this.dispatch('logout');
-                return Promise.reject(err);
+                this.dispatch('logout')
+                return Promise.reject(err)
             })
         },
         signIn({ commit }) {
-            return new Promise((resolve, reject)=>{
-                retrieveFirebaseCurrentUser(firebaseUser => {
-                    if(firebaseUser) {                    
-                        firebaseUser.getIdToken(true).then(token => {
-                            if(token){
-                                commit('setToken', token);
-                                usersApi.get_user(firebaseUser.uid).then(user => {
-                                    commit('setUserProfile', user);
-                                    resolve(user)
-                                }).catch((err)=>{
-                                    reject(err);
-                                    this.dispatch('logout');
-                                })
-                            }else{
-                                reject();
-                                this.dispatch('logout');
-                            }
-                        });
-                    } else {
-                        commit('setUserProfile', null);
-                    }   
-                });
+            return retrieveFirebaseCurrentUser().then(firebaseUser => {
+                if(firebaseUser) return firebaseUser.getIdToken(true).then(token => [firebaseUser, token])
+                return Promise.reject()
+            }).then(([firebaseUser, token]) => {
+                if(token) {
+                    commit('setToken', token)
+                    return usersApi.getUser(firebaseUser.uid)
+                } else return Promise.reject()
+            }).then(user => {
+                commit('setUserProfile', user)
+                return Promise.resolve(user)
+            }).catch(err => {
+                this.dispatch('logout')
+                return Promise.reject(err)
             })
         },
         logout() {
             return new Promise((resolve, reject) => {
-                fb.auth.signOut().then(() => { this.dispatch('clearData'); resolve(); }, () => { reject(); });        
-            });
+                fb.auth.signOut().then(() => { this.dispatch('clearData'); resolve() }, () => { reject() })        
+            })
         },
         clearData({ commit }) {
-            commit('setToken', null);
-            commit('setUserProfile', null);
+            commit('setToken', null)
+            commit('setUserProfile', null)
         }
     },
     getters: {
-        isAuthenticated(state) {
-            return state.userProfile != undefined && state.userProfile != null
+        isAuthenticated(state, getters) {
+            return !getters.isUserLoading && state.userProfile != null
         },
         userProfile(state) {
             return state.userProfile
         },
-        isUserLoading(state) {
+        isUserLoading(state) { // true if the user info are not already fetched
             return state.userProfile === undefined
         },
         token(state){
-            return state.token;
+            return state.token
         },
         currentUser(state) {
-            return User.fromJson(state.userProfile);
+            return User.fromJson(state.userProfile)
         }
     },
     mutations: {
         setToken(state, val) {
-            console.log(val);
-            state.token = val;
+            state.token = val
         },
         setUserProfile(state, val) {
-            state.userProfile = val;
+            state.userProfile = val
         }
     }
 })
 
-function retrieveFirebaseCurrentUser(cb) {
-    const unsub = fb.auth.onAuthStateChanged(firebaseUser => {
-        unsub();
-        cb(firebaseUser);
+function retrieveFirebaseCurrentUser() {
+    return new Promise((resolve, reject) => {
+        const unsub = fb.auth.onAuthStateChanged(firebaseUser => {
+            unsub()
+            resolve(firebaseUser)
+        })
     })
 }
 

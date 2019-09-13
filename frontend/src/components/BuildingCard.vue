@@ -4,10 +4,7 @@
       class="mx-auto my-12"
       max-width="374"
     >
-      <v-img
-        height="250"
-        src="https://i1.wp.com/www.cssscript.com/wp-content/uploads/2018/03/Simple-Location-Picker.png?fit=561%2C421&ssl=1"
-      ></v-img>
+      <v-img height="250" :src="mapImage"></v-img>
   
       <v-card-title class="display-1">{{ building.name }}</v-card-title>
       <v-card-text class="subtitle-1">
@@ -26,7 +23,7 @@
         <user-chip :user="ownerObject" expandable></user-chip>
         <v-chip-group>
             <template v-for="member in building.members">
-                <user-chip :key="member" :user="member" expandable></user-chip>
+                <user-chip :key="member.email" :user="member" expandable></user-chip>
             </template>
         </v-chip-group>
       </v-card-text>
@@ -50,6 +47,7 @@
 <script>
 import User from '../model/user'
 import UserChip from '@/components/UserChip'
+import hereApi from '@/services/here.api'
 
 export default {
     name: 'building-card',
@@ -61,13 +59,13 @@ export default {
         selection: 1,
         building: {
         selected: false,
-        name: "Casa di Pedro",
-        address: "Via A. De Gasperi",
-        apartmentNumber: 10,
+        name: "Casa di Mon",
+        address: "Via Silvio pellico",
+        apartmentNumber: 20,
         city: {
-            name: "Montefelcino",
+            name: "Fano",
             state: "Italy",
-            cap: "61030"
+            cap: "61032"
         },
         owner: {
             nickname: 'Andrea',
@@ -77,17 +75,17 @@ export default {
         members: [{
                     nickname: 'Maaaartttt',
                     avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
-                    email: 'petretiandrea@gmail.com'
+                    email: 'mart@gmail.com'
                     },
                     {
                     nickname: 'Paggioliiix',
                     avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
-                    email: 'petretiandrea@gmail.com'
+                    email: 'pagg@gmail.com'
                     },
                 {
                     nickname: 'Mooon',
                     avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
-                    email: 'petretiandrea@gmail.com'
+                    email: 'mon@gmail.com'
                     }]
         }
     }),
@@ -106,6 +104,9 @@ export default {
     },
     ownerObject: function() {
         return Object.assign(new User(), this.building.owner)
+    },
+    mapImage: function() {
+      return hereApi.mapImageURL(this.building.city.state, this.building.city.name, this.building.address, this.building.apartmentNumber, 400)
     }
   }
 }

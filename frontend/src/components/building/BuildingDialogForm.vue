@@ -22,6 +22,9 @@
                             </v-row>
                             <v-row>
                                 <v-col cols="12">
+                                    <!--<autocomplete-address 
+                                        v-model="autocompletedAddress"
+                                        ></autocomplete-address>-->
                                     <v-text-field 
                                         name="address" 
                                         label="Indirizzo abitazione" 
@@ -85,8 +88,10 @@
 <script>
 import { createNamespacedHelpers } from 'vuex'
 import citiesApi from '@/services/cities.api'
-import { functions } from 'firebase';
-const { mapGetters, mapActions } = createNamespacedHelpers('building');
+import { functions } from 'firebase'
+import AutocompleteAddress from '@/components/AutocompleteAddress'
+
+const { mapGetters, mapActions } = createNamespacedHelpers('building')
 
 import MemberManager from '@/components/MemberManager'
 
@@ -95,7 +100,8 @@ export default {
         this.initialize()
     },
     components: {
-        'member-manager': MemberManager
+        'member-manager': MemberManager,
+        'autocomplete-address': AutocompleteAddress
     },
     data: () => ({
         value: false,
@@ -112,12 +118,17 @@ export default {
     }),
     computed: {
         activatorListener: function() {
-            let vm = this;
-            return Object.assign({}, {
+            let vm = this
+            return {
                 click: function(event) {
-                    vm.value = !vm.value;
+                    vm.value = !vm.value
                 }
-            });
+            }
+        }
+    },
+    watch: {
+        autocompletedAddress: function(newVal) {
+            console.log(newVal)
         }
     },
     methods: {
@@ -138,7 +149,7 @@ export default {
         },
         pressSaveBuilding() {
             if (this.$refs.form.validate()) {
-                let newBuilding = Object.assign({}, this.building);
+                let newBuilding = Object.assign({}, this.building)
                 let promise = this.createBuilding(newBuilding).then(() => {
                     this.$refs.form.reset()
                     this.closeDialog()

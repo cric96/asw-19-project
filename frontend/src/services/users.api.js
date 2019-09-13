@@ -1,13 +1,16 @@
 import { apiService } from './apiService'
 
 export default {
-    create_user: function(user) {
+    createUser: function(user) {
         return apiService.post("/users", user)
     },
-    get_user : function(firebaseUid) {
-        return apiService.get(`/users/${firebaseUid}`, true)
+    getUser : function(firebaseUid) {
+        return apiService.get(`/users/${firebaseUid}`, null, true)
     },
-    update_user : function(user) {
-        return apiService.put("/users",user, true) 
+    getAllUsers: function(filter = null) {
+        return apiService.get(`/users/`, { 'filter': filter }, true)
+    },
+    updateUser : function(user) {
+        return apiService.put("/users", user, null, true)
     }
 }

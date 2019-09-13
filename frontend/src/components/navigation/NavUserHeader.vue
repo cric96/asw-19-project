@@ -7,7 +7,7 @@
         </v-list-item>
         <v-list-item>
             <v-list-item-content>
-                <v-list-item-title>{{user.displayName()}}</v-list-item-title>
+                <v-list-item-title>{{ user | formatUserDisplayName }}</v-list-item-title>
                 <v-list-item-subtitle>{{score}} <!-- add an icon for "trash point" or similar --></v-list-item-subtitle>
             </v-list-item-content>
         </v-list-item>
@@ -29,7 +29,7 @@ export default {
     },
     computed: {
         score() {
-            return `Score: ${this.user.score}`;
+            return `Score: ${this.user.score}`
         }
     }
 }

@@ -44,4 +44,5 @@ var buildingSchema = new Schema({
 buildingSchema.statics.prepareUpdate = function(obj) {
     return utils.exclude(obj, 'members', 'owner', 'bins');
 }
+
 module.exports = mongoose.model('Building', buildingSchema);

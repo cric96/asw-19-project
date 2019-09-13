@@ -45,12 +45,12 @@ export default {
   }),
   methods: {
     loginWithFb() {
-      var provider = new firebase.auth.FacebookAuthProvider();
-      this.providerLogin(provider);
+      var provider = new firebase.auth.FacebookAuthProvider()
+      this.providerLogin(provider)
     },
     loginWithGoogle() {
-      var provider = new firebase.auth.GoogleAuthProvider();
-      this.providerLogin(provider);
+      var provider = new firebase.auth.GoogleAuthProvider()
+      this.providerLogin(provider)
     },
     providerLogin(provider) {
       firebase
@@ -61,22 +61,22 @@ export default {
             // show dialog form to add loss info (nickname)
             if (result.additionalUserInfo.isNewUser) {
               //sand and save data user in backend
-              var userLogged = result.user;
+              var userLogged = result.user
               this.incompleteUser = new User(undefined, userLogged.uid, userLogged.displayName.split(" ")[0], userLogged.displayName.split(" ")[1], userLogged.email)
               this.$store.dispatch('signUp', this.incompleteUser).then((user)=>{
-                  this.$router.replace("/dashboard");
-                });
+                  this.$router.replace("/dashboard")
+                })
             }else{
                 this.$store.dispatch('signIn').then((user)=>{
-                  this.$router.replace("/dashboard");
-                });
+                  this.$router.replace("/dashboard")
+                })
             } 
           }
         })
         .catch((error) => {
           if (error.code == "auth/account-exists-with-different-credential") {
-            this.existingEmail = error.email;
-            this.pendingCred = error.credential;
+            this.existingEmail = error.email
+            this.pendingCred = error.credential
             // Lookup existing account’s provider ID.
             firebase
               .auth()
