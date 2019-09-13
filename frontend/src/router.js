@@ -7,9 +7,6 @@ import Building from './views/building/Building.vue'
 import SignUp from './views/SignUp.vue'
 import HomeReport from './views/HomeReport.vue'
 import Intro from './views/Intro.vue'
-import ManualInsertion from './views/scan/ManualInsertion.vue'
-import AiInsertion from './views/scan/AiInsertion.vue'
-import BarcodeInsertion from './views/scan/BarcodeInsertion.vue'
 
 Vue.use(Router)
 
@@ -58,23 +55,6 @@ const router = new Router({
           path: '/buildings',
           name: 'Buildings',
           component: Building
-        },
-        {
-          path: '/ai',
-          name: 'AiInsertion',
-          component: AiInsertion,
-          props: true
-        },
-        {
-          path: '/barcode',
-          name: 'BarcodeInsertion',
-          component: BarcodeInsertion,
-          props: true
-        },
-        {
-          path: '/manual',
-          name: 'Manual',
-          component: ManualInsertion
         }
       ]
     }

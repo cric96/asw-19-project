@@ -7,27 +7,27 @@ export default {
             {
                 name: 'Plastica',
                 score: "8", 
-                url: "https://image.flaticon.com/icons/svg/1039/1039778.svg"
+                url: "https://www.stile.it/wp-content/uploads/2018/02/iStock-629554844-1024x576.jpg"
             },
             {
                 name: 'Carta',
                 score: "5", 
-                url: "https://image.flaticon.com/icons/svg/1039/1039778.svg"
+                url: "https://www.falcorpresse.it/wp-content/uploads/rifiuto-carta-giornali.jpg"
             },
             {
                 name: 'Alluminio',
                 score: "2", 
-                url: "https://image.flaticon.com/icons/svg/1039/1039778.svg"
+                url: "http://assets.gestione-rifiuti.it/immagini/alluminio/lattine_alluminio.jpg"
             },
             {
                 name: 'Vetro',
                 score: "6", 
-                url: "https://image.flaticon.com/icons/svg/1039/1039778.svg"
+                url: "http://www.ciaccimagazine.org/wp-content/uploads/2012/09/riciclo-vetro-1238.jpg"
             },
             {
                 name: 'Indifferenziato',
                 score: "0", 
-                url: "https://image.flaticon.com/icons/svg/1039/1039778.svg"
+                url: "http://1.citynews-foggiatoday.stgy.ovh/~media/original-hi/4562599333645/discarica-2.jpg"
             }
         ]}, 500);
     }  
