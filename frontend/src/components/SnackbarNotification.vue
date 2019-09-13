@@ -13,30 +13,30 @@ export default {
     }),
     computed: {
         notifications() {
-            return this.$store.state.msg.queue;
+            return this.$store.state.msg.queue
         },
         hasNotification() {
-            return this.notifications.length > 0;
+            return this.notifications.length > 0
         }
     },
     watch: {
         notifications(newVal) {
             this.$store.dispatch('msg/popMessage').then(nextMessage => {
                 if(nextMessage !== undefined) {
-                    this.notificationText = nextMessage;
-                    this.notificationShow = true;
+                    this.notificationText = nextMessage
+                    this.notificationShow = true
                 }  
-            });
+            })
         },
         notificationShow() {
             if(this.notificationShow && this.hasNotification) {
                 this.$store.dispatch('msg/popMessage').then(nextMessage => {
                     if(nextMessage !== undefined) {
-                        this.notificationText = nextMessage;
+                        this.notificationText = nextMessage
                         /* For show all snackbar, nextTick is called after snackbar disappear */
-                        this.$nextTick(() => this.notificationShow = true);
+                        this.$nextTick(() => this.notificationShow = true)
                     }  
-                });
+                })
             }
         }
     }
