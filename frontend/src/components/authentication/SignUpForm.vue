@@ -164,7 +164,12 @@ export default {
                 // TODO -- check server response (409...)
                 this.inRegistration = false
                 this.showAlert = true
-                this.$refs.alert.changeConfig(err, "error")
+                this.$refs.alert.changeConfig(err, "Esiste un altro user con lo stesso nickname")
+                firebase.auth().currentUser.delete().then(function () {
+                  console.log('delete successful in firebase because a specified nickname already exist')
+                }).catch(function (error) {
+                  console.error('error in firebase account deleting'+ error)
+                })                
                 //this.$refs.alert.changeConfig(messages.SIGNUP_ERR_NICKNAME_CONFLICT, "error")
               })
           }
