@@ -21,5 +21,8 @@ var citySchema = new Schema({
         require: true
     }
 });
-
+citySchema.statics.marshallCity = function(obj) {
+    obj.binCategories = undefined
+    return obj;
+}
 module.exports = mongoose.model('City', citySchema);

@@ -5,6 +5,10 @@ module.exports.exclude = function(obj, ...fields) {
     return obj;
 }
 
+module.exports.sameMongoId = function(id1, id2) {
+    return id1.toString() == id2.toString()
+}
+
 module.exports.sendResponseMessage = function (res, httpCode, message){
 	console.log("HTTP-Status: " + httpCode +  " Message: " + message);
 	return res.status(httpCode).json(message);

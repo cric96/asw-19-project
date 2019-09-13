@@ -12,7 +12,7 @@ router.route('/buildings/:id')
 	.put(auth, validateObjectId, buildingsController.update_building)
 	.delete(auth, validateObjectId, buildingsController.delete_building)
 
-router.route('user/:userId/buildings')
+router.route('/users/:userId/buildings')
 	.get(auth, buildingsController.get_buildings_of_user)
 
 /*    
