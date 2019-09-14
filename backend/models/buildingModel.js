@@ -1,8 +1,11 @@
 var mongoose = require('mongoose');
 var utils = require("../utils/utils");
 var Schema = mongoose.Schema;
-var BinSchema = require('./binModel').schema;
-
+var City = require('./cityModel'); //TODO use mongoose.model in each place
+var BinSchema = require('./binModel').citySchema;
+/**
+ * Building are identify (client-side) by ._id
+ */
 var buildingSchema = new Schema({
     name: {
         type: String,
@@ -42,6 +45,15 @@ var buildingSchema = new Schema({
 });
 
 buildingSchema.statics.prepareUpdate = function(obj) {
-    return utils.exclude(obj, 'members', 'owner', 'bins');
+    return utils.exclude(obj, 'members', 'owner');
 }
+
+buildingSchema.options.toJSON = {
+    transform: function(doc, ret, options) {
+        delete ret.active;
+        ret.city = City.marshallCity(ret.city)
+        return ret;
+    },
+}
+buildingSchema.index({ members: 1})
 module.exports = mongoose.model('Building', buildingSchema);

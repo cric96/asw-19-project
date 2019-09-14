@@ -8,7 +8,8 @@
             </template>
         </building-dialog-form>
 
-        <v-expansion-panels>
+        <building-card></building-card>
+        <!-- <v-expansion-panels>
             <template v-for="building in buildings">
                 <v-expansion-panel :key="building._id">
                     <v-expansion-panel-header v-slot="{ open }">
@@ -27,20 +28,22 @@
                     </v-expansion-panel-content>
                 </v-expansion-panel>
             </template>
-        </v-expansion-panels>
+        </v-expansion-panels> -->
     </v-container>
 </template>
 
 <script>
 import { createNamespacedHelpers } from 'vuex'
 import BuildingDialogFrom from '@/components/building/BuildingDialogForm'
+import BuildingCard from '@/components/BuildingCard'
 
 const { mapGetters, mapActions } = createNamespacedHelpers('building');
 
 export default {
     name: 'Building',
     components: {
-        'building-dialog-form': BuildingDialogFrom
+        'building-dialog-form': BuildingDialogFrom,
+        'building-card': BuildingCard
     },
     computed: {
         ...mapGetters([
