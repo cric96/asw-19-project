@@ -7,7 +7,7 @@ var City = require("../models/cityModel");
 var Bin = require("../models/binModel");
 var User = require("../models/userModel")
 var utils = require("../utils/utils");
-
+//Bin must exist to make possible filterd query
 const FETCHING_ERROR = 1000
 //TODO ADD CONSTANT
 //TO CHECK
@@ -58,6 +58,7 @@ exports.create_buildings = function(req, res) {
             buildingInserted.city = cityFetched
             buildingInserted.members = membersFetched
             buildingInserted.owner = res.locals.userAuth
+            buildingInserted.bins = []
             res.setCreated(buildingInserted)
         })
         .catch(err => {
@@ -88,7 +89,7 @@ exports.read_building = function(req, res) {
                 checkMembership(res, res.locals.userAuth._id, building, () => res.setOk(building))
             }
         })
-        .catch(err => res.setInternalError())
+        .catch(err => res.setInternalError(ere))
 }
 //TODO
 exports.update_building = function(req, res) {
@@ -108,19 +109,28 @@ exports.update_building = function(req, res) {
 }
 
 exports.delete_building = function(req, res) {
-    
+    Building.findById(building_id)
+        .then(building => {
+            if(building == null) {
+                res.setNotFound()
+            } else if(! utils.sameMongoId(building.owner, res.locals.userAuth._id)) {
+                res.setForbidden()
+            } else {
+                building.active = false
+                res.setNoContent()
+                return building.save()
+            }
+        }).catch(err => res.setInternalError(err))
 }
 
 exports.get_buildings_of_user = function(req, res) {
-    console.log(res.locals.uid)
-    console.log(req.params.userId)
     //verify if the user logged is the same passed as parameter
     if(res.locals.uid != req.params.userId) { 
         res.setForbidden("You can see only your buildings")
         return
     }
     //it has index on members, this query is ok
-    Building.find({members : res.locals.userAuth._id})
+    Building.find({ $and : [{ members : res.locals.userAuth._id } , { visible : true }]})
         .populate("owner") //fill with owner
         .populate("members") //fill with members
         .then(buildings => res.setOk(buildings))
