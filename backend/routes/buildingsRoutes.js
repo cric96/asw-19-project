@@ -7,16 +7,16 @@ var cityFetching = require("./middleware/fetchCityMiddleware")
 
 //TODO ricordati di aggiungere il cambio di ownership
 router.route('/buildings')
-	.get(auth, buildingsController.list_buildings)
-	.post(auth, cityFetching, buildingsController.create_buildings);
+	.get(auth, buildingsController.listBuildings)
+	.post(auth, cityFetching, buildingsController.createBuildings);
 
 router.route('/buildings/:id')
-	.get(auth, validateObjectId, buildingsController.read_building)
-	.put(auth, validateObjectId, cityFetching, buildingsController.update_building)
-	.delete(auth, validateObjectId, buildingsController.delete_building)
+	.get(auth, validateObjectId, buildingsController.readBuilding)
+	.put(auth, validateObjectId, cityFetching, buildingsController.updateBuilding)
+	.delete(auth, validateObjectId, buildingsController.deleteBuilding)
 
 router.route('/users/:userId/buildings')
-	.get(auth, userValidation, buildingsController.get_buildings_of_user)
+	.get(auth, userValidation, buildingsController.getBuildingsOfUser)
 
 /*    
 router.route('/buildings/:id/members')

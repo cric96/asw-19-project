@@ -6,7 +6,6 @@ var User = mongoose.model("User")
 var utils = require("../utils/utils");
 var httpCode = require("../httpCode")
 var errorHandler = require("./errorManagement")
-const FETCHING_ERROR = 0
 
 function populateBuilding(query) {
     //.populate replace objectId with the object identify by the id
@@ -27,45 +26,33 @@ function checkMembership(res, mongooseId, building, execIfIsInMembers) {
  * create building from data passed into body.
  * read SWAGGER docs to see how the body must be structed
  */
-exports.create_buildings = function(req, res) {
+exports.createBuildings = function(req, res) {
     var newBuilding = new Building(req.body)
     newBuilding.active = true //when we create a building it must be active
     newBuilding.owner = res.locals.userAuth._id //the _id mongo db
-    membersFetched = [] //used to create building result
-    
-    User.find({firebase_uid : {$in : req.body.members}})
-        .then(members => {
-            //store members to puts into result
-            members.push(res.locals.userAuth)
-            membersFetched = members
-            //map members into object ids (used to store into mongodb), prepare building object with this array
-            newBuilding.members = members.map(member => member._id)
-        })
-        .then(() => {
-            //this function suppuse that the city it is fetched by cityFetchedMiddleware
-            newBuilding.city = res.locals.cityFetched._id
-            //verify the correctness of object (it must follow building schema)
-            if(newBuilding.validateSync()) {
-                //here i can't set res.setBadRequest because i need to break promise chain (with exception)
-                throw new Exception(httpCode.BAD_REQUEST) 
-            } else {
-                //save building into mongodb
-                return newBuilding.save()
-            }
-        })
-        .then(buildingInserted => {
-            //put elements fetched inside attribute
-            buildingInserted.city = res.locals.cityFetched
-            buildingInserted.members = membersFetched
-            buildingInserted.owner = res.locals.userAuth
-            res.setCreated(buildingInserted)
-        })
-        .catch(err => errorHandler(err, res))
+    newBuilding.members = [res.locals.userAuth._id] //only member is the owner
+    //I suppuse that the city it is fetched by cityFetchedMiddleware
+    newBuilding.city = res.locals.cityFetched._id //put city id fetched
+    //verify the correctness of object (it must follow building schema)
+    if(newBuilding.validateSync()) {
+        res.setBadRequest()
+    } else {
+        //save building into mongodb
+        newBuilding.save()
+            .then(buildingInserted => {
+                //put elements fetched inside attribute
+                buildingInserted.city = res.locals.cityFetched
+                buildingInserted.members = [res.locals.userAuth]
+                buildingInserted.owner = res.locals.userAuth
+                res.setCreated(buildingInserted)
+            })
+            .catch(err => errorHandler(err, res))
+    }
 };
 /**
  * return all buildings stored inside the mongodb
  */
-exports.list_buildings = function(req, res) {
+exports.listBuildings = function(req, res) {
     populateBuilding(Building.find())
         .then(buildings => buildings.map(building => building.toJSON())) //map each elements into JSON object
         .then(buildingsJSON => res.setOk(buildingsJSON))
@@ -74,7 +61,7 @@ exports.list_buildings = function(req, res) {
 /**
  * from the id, return a corrisponding elements inside the mongodb
  */
-exports.read_building = function(req, res) {
+exports.readBuilding = function(req, res) {
     let buildingId = req.params.id
     let filterQuery = { 
         $and: [
@@ -89,7 +76,7 @@ exports.read_building = function(req, res) {
     populateBuilding(Building.findOne(filterQuery))
         .then(building => {
             if (building == null) {
-                res.setNotFound("Building " + buildingId + " not found")
+                throw new Exception(httpCode.NOT_FOUND)
             } else {
                 checkMembership(res, res.locals.userAuth._id, building, () => res.setOk(building))
             }
@@ -100,10 +87,12 @@ exports.read_building = function(req, res) {
  * update the building with the data passed into the body.
  * read SWAGGER docs to see how the body must be structed
  */
-exports.update_building = function(req, res) {
+exports.updateBuilding = function(req, res) {
     let buildingId = req.params.id
     let userId = res.locals.userAuth._id
+    //remove attribute that not influce building mongo object
     let buildingUpdatedData = Building.prepareUpdate(req.body);
+    //suppose that there is cityMiddleware
     buildingUpdatedData.city = res.locals.cityFetched
 
     populateBuilding(Building.findById(buildingId))
@@ -130,7 +119,7 @@ exports.update_building = function(req, res) {
  * this operation doesn't remove element from database, but make that element
  * not visible anymore. 
  */
-exports.delete_building = function(req, res) {
+exports.deleteBuilding = function(req, res) {
     Building.findById(req.params.id)
         .then(building => {
             if(building == null) {
@@ -145,10 +134,12 @@ exports.delete_building = function(req, res) {
         }).catch(err => errorHandler(err, res))
 }
 
-exports.get_buildings_of_user = function(req, res) { 
+exports.getBuildingsOfUser = function(req, res) { 
+    //it has index on members, this query is ok    
     let filterQuery = {
          $and : [
             { 
+                
                 members : mongoose.Types.ObjectId(res.locals.userAuth._id)
             },
             {
@@ -156,7 +147,6 @@ exports.get_buildings_of_user = function(req, res) {
             }
         ]
     }
-    //it has index on members, this query is ok
     populateBuilding(Building.find(filterQuery))
         .then(buildings => res.setOk(buildings))
         .catch(err => errorHandler(err, res))

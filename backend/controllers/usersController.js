@@ -3,7 +3,7 @@ var utils = require("../utils/utils");
 var User = mongoose.model('User');
 var errorHandler = require("./errorManagement")
 
-exports.create_user = function(req, res) {
+exports.createUser = function(req, res) {
     var user = new User(req.body);
     console.log(user)
     var error = user.validateSync();
@@ -20,7 +20,7 @@ exports.create_user = function(req, res) {
 
 };
 
-exports.get_user = function(req, res) {
+exports.getUser = function(req, res) {
     console.log(errorHandler)
     let uid = res.locals.uid
     User.findOne({ firebase_uid: uid })
@@ -29,7 +29,7 @@ exports.get_user = function(req, res) {
         .catch(err => errorHandler(err, res))
 }
 
-exports.update_user = function(req, res) {
+exports.updateUser = function(req, res) {
     let uid = res.locals.uid;
     let updateUser = User.prepareUpdate(req.body)
     User.findOneAndUpdate({ firebase_uid: uid }, updateUser, { new: true })
@@ -38,7 +38,7 @@ exports.update_user = function(req, res) {
         .catch(err => res.setBadRequest())
 };
 
-exports.get_all_users = function(req, res) {
+exports.getAllUsers = function(req, res) {
     User.find().exec()
         .then(users => res.setOk(users))
         .catch(err => res.setInternalError(err))

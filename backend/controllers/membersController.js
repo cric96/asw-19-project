@@ -18,7 +18,7 @@ let areUserAlreadyInBuiding = function(candidates, members) {
  * if one of these element aren't in the database or is already in building,
  * no one of members are inserted in the database
  */
-exports.add_building_member = function(req, res) {
+exports.addBuildingMember = function(req, res) {
     let building = res.locals.buildingFetched
     if(! utils.sameMongoId(building.owner, res.locals.userAuth._id)) {
         res.setForbidden("Only owner can add members")
@@ -38,7 +38,7 @@ exports.add_building_member = function(req, res) {
             if(memberCandindates.length != users.length) {
                 throw new Exception(httpCode.BAD_REQUEST, "some member doesn't exist in database")
             } else if(areUserAlreadyInBuiding(memberCandindates, building.members)) {
-                throw new Exception(httpCode.BAD_REQUEST, "some members are already in building")
+                throw new Exception(httpCode.CONFLICT, "some members are already in building")
             } else {
                 membersFetched = memberCandindates
                 memberCandindates.forEach(member => building.members.push(member._id))
@@ -49,7 +49,7 @@ exports.add_building_member = function(req, res) {
         .catch(err => errorHandler(err, res))
 }
 
-exports.get_building_members = function(req, res) {
+exports.getBuildingMembers = function(req, res) {
     let userId = mongoose.Types.ObjectId(res.locals.userAuth._id)
     let building = res.locals.buildingFetched
     //find all users defined in member array
@@ -73,7 +73,7 @@ let canUserAuthDeleteMember = function(memberToDelete, builing, userAuth) {
     let userAuthIsOwner = utils.sameMongoId(builing.owner, userAuth._id)
     return memberIsUserAuth || userAuthIsOwner
 }
-exports.delete_building_member = function(req, res) {
+exports.deleteBuildingMember = function(req, res) {
     let user = res.locals.userAuth
     let building = res.locals.buildingFetched
     let filterQuery = {
