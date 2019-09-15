@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var utils = require("../utils/utils");
 var User = mongoose.model('User');
-
+var errorHandler = require("./errorManagement")
 
 exports.create_user = function(req, res) {
     var user = new User(req.body);
@@ -16,25 +16,17 @@ exports.create_user = function(req, res) {
         .then(newUser => {
             res.setCreated(newUser)
         })
-        .catch(err => {
-            //check if put this code inside decore
-            if(err.code == 11000) { //TODO PUT COSTANT
-                res.setConflict("Conflict: " + err.errmsg);
-            } else {
-                console.log(err)
-                res.setInternalError();
-            }
-        })
+        .catch(err => errorHandler(err, res))
 
 };
 
 exports.get_user = function(req, res) {
-    console.log("here")
+    console.log(errorHandler)
     let uid = res.locals.uid
     User.findOne({ firebase_uid: uid })
         .exec()
         .then(user => res.setOkIfNotNull(user, "User not found"))
-        .catch(err => res.setInternalError(err))
+        .catch(err => errorHandler(err, res))
 }
 
 exports.update_user = function(req, res) {

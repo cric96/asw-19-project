@@ -2,20 +2,11 @@ var Exception = require("../utils/Exception")
 var mongoose = require('mongoose');
 var utils = require("../utils/utils");
 var Building = mongoose.model('Building');
-var User = require("../models/userModel")
+var User = mongoose.model("User")
 var utils = require("../utils/utils");
-const FETCHING_ERROR = 1000
-//TODO you want to generalize it??
-function manageError(err, res) {
-    console.log(err) //TO REMOVE
-    if(err.code == FETCHING_ERROR) {
-        res.setBadRequest(err.msg)
-    } else if(err.code == 11000){
-        res.setConflict("Building already here")
-    } else {
-        res.setInternalError()
-    }
-}
+var httpCode = require("../httpCode")
+var errorHandler = require("./errorManagement")
+const FETCHING_ERROR = 0
 
 function populateBuilding(query) {
     //.populate replace objectId with the object identify by the id
@@ -28,8 +19,7 @@ function checkMembership(res, mongooseId, building, execIfIsInMembers) {
     if (building.members.find(user => utils.sameMongoId(mongooseId, user._id))) {
         execIfIsInMembers()
     } else {
-        //otherwise user can't see 
-        res.setForbidden("You are not authorized to do this operation")
+        throw new Exception(httpCode.FORBIDDEN)
     }
 }
 //TODO owner must pass explicitly or not?
@@ -57,7 +47,7 @@ exports.create_buildings = function(req, res) {
             //verify the correctness of object (it must follow building schema)
             if(newBuilding.validateSync()) {
                 //here i can't set res.setBadRequest because i need to break promise chain (with exception)
-                throw new Exception(FETCHING_ERROR, "Bad request, body not valid") 
+                throw new Exception(httpCode.BAD_REQUEST) 
             } else {
                 //save building into mongodb
                 return newBuilding.save()
@@ -70,7 +60,7 @@ exports.create_buildings = function(req, res) {
             buildingInserted.owner = res.locals.userAuth
             res.setCreated(buildingInserted)
         })
-        .catch(err => manageError(err, res))
+        .catch(err => errorHandler(err, res))
 };
 /**
  * return all buildings stored inside the mongodb
@@ -79,6 +69,7 @@ exports.list_buildings = function(req, res) {
     populateBuilding(Building.find())
         .then(buildings => buildings.map(building => building.toJSON())) //map each elements into JSON object
         .then(buildingsJSON => res.setOk(buildingsJSON))
+        .catch(err => errorHandler(err, res))
 }
 /**
  * from the id, return a corrisponding elements inside the mongodb
@@ -103,7 +94,7 @@ exports.read_building = function(req, res) {
                 checkMembership(res, res.locals.userAuth._id, building, () => res.setOk(building))
             }
         })
-        .catch(err => manageError(err, res))
+        .catch(err => errorHandler(err, res))
 }
 /**
  * update the building with the data passed into the body.
@@ -118,22 +109,22 @@ exports.update_building = function(req, res) {
     populateBuilding(Building.findById(buildingId))
         .then(oldBuilding => {
             if (oldBuilding == null) {
-                res.setNotFound()
+                throw new Exception(httpCode.NOT_FOUND)
             } else if (!utils.sameMongoId(userId, oldBuilding.owner._id)){
-                res.setForbidden("You must be the owner")
+                throw new Exception(httpCode.FORBIDDEN)
             } else { //ok you can update building
                 //merge two object (the old one with the new one)
                 let buildingUpdated = Object.assign(oldBuilding, buildingUpdatedData)
                 if(buildingUpdated.validateSync()) { //verify if is correct
-                    throw new Exception(FETCHING_ERROR, "Bad request, body not valid") 
+                    throw new Exception(httpCode.BAD_REQUEST) 
                 } else {
                     //finally, save updated building
                     return buildingUpdated.save()
                 }
             }
         })
-        .then(buildingUpdated => es.setOk(buildingUpdated))
-        .catch(err => manageError(err, res))
+        .then(buildingUpdated => res.setOk(buildingUpdated))
+        .catch(err => errorHandler(err, res))
 }
 /**
  * this operation doesn't remove element from database, but make that element
@@ -151,7 +142,7 @@ exports.delete_building = function(req, res) {
                 res.setNoContent()
                 return building.save()
             }
-        }).catch(err => manageError(err, res))
+        }).catch(err => errorHandler(err, res))
 }
 
 exports.get_buildings_of_user = function(req, res) { 
@@ -168,5 +159,5 @@ exports.get_buildings_of_user = function(req, res) {
     //it has index on members, this query is ok
     populateBuilding(Building.find(filterQuery))
         .then(buildings => res.setOk(buildings))
-        .catch(err => manageError(err, res))
+        .catch(err => errorHandler(err, res))
 }

@@ -1,4 +1,5 @@
-var City = require("../../models/cityModel");
+var mongoose = require('mongoose');
+var City = mongoose.model("City");
 /**
  * find city by cap passed throw the body.
  * the city fetched is in res.locals.cityFetched
