@@ -3,7 +3,9 @@ var Schema = mongoose.Schema;
 
 var utils = require("../utils/utils");
 var regex = require("../utils/regex");
-//TODO put link in user returned object
+/**
+ * User schema: user are identify (client-side) with firebase uid
+ */
 var userSchema = new Schema({
     firebase_uid: {
         type: String,
@@ -51,8 +53,8 @@ var userSchema = new Schema({
     }]
 });
 /*
-    virtual propiety are used to create a virtual attribute not directly stored
-    in mongodb, but is computed when this value is requested.
+    virtual properties are used to create a virtual attribute not directly stored
+    in mongodb, but computed when its value is requested.
 */
 userSchema.virtual.nameId = function(obj) {
     return (this.nickname != null) ? this.nickname : this.email;
@@ -67,7 +69,7 @@ userSchema.statics.prepareUpdate = function(obj) {
 
 userSchema.options.toJSON = {
     transform: function(doc, ret, options) {
-        delete ret.firebase_uid;
+        // can i do? delete ret._id;
         return ret;
     },
 }
