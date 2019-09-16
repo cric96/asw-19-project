@@ -35,7 +35,7 @@
                             </v-row>
                             <v-row>
                                 <v-col cols="12">
-                                    <v-select v-model="building.city"
+                                    <v-autocomplete v-model="building.city"
                                         item-value="cap"
                                         :items="cities.data"
                                         :loading="cities.loading"
@@ -47,7 +47,7 @@
                                             <template slot="item" slot-scope="data">
                                                 {{data.item.name}}, {{data.item.cap}}, {{data.item.state}}
                                             </template>
-                                    </v-select>
+                                    </v-autocomplete>
                                 </v-col>
                             </v-row>
                             <v-row>
