@@ -29,5 +29,5 @@ var trashSchema = new Schema({
     }
 });
 
-trashSchema.index({ building: 1, user: 1, bin: 1 })
+trashSchema.index({ building: 1, user: 1, bin: 1, date: 1})
 module.exports = mongoose.model('Trash', trashSchema);

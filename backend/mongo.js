@@ -3,7 +3,7 @@ var mongoose = require('mongoose')
 var userModel = require("./models/userModel");
 var buildingModel = require('./models/buildingModel');
 var cityModel = require("./models/cityModel")
-
+var trashModel = require("./models/trashModel")
 module.exports.setupLocal = function() {
 
 }

@@ -1,8 +1,9 @@
 var router = require("express").Router();
 var binController = require('../controllers/binController');
-var auth = require('../authMiddleware');
+var auth = require('./middleware/authMiddleware');
+var buildingFetching = require("./middleware/fetchBuildingMiddleware")
 
-router.route('/buildings/:building_id/bins')
-    .post(auth, binController.getBinStatus)
+router.route('/buildings/:id/bins')
+    .get(auth, buildingFetching, binController.getBinStatus)
 
 module.exports = router;

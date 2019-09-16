@@ -52,6 +52,7 @@ const store = new Vuex.Store({
                 return Promise.reject()
             }).then(([firebaseUser, token]) => {
                 if(token) {
+                    console.log(token)
                     commit('setToken', token)
                     return usersApi.getUser(firebaseUser.uid)
                 } else return Promise.reject()

@@ -10,6 +10,7 @@ module.exports = function(req, res, next) {
             res.locals.uid = decodedToken.uid;
             fetchLoggedUser(decodedToken.uid).then((user)=>{
                 res.locals.userAuth = user;
+                console.log("BB")
                 next();
             }).catch((err)=>{
                 //fetch user failed; user not logged and not existing in db
@@ -29,7 +30,6 @@ function fetchLoggedUser(firebase_id){
         User.findOne({firebase_uid: firebase_id}, function(err, user) {
             if(user && !err) {
                 resolve(user); 
-                console.log("BB")
             } else {
                 reject(err)
             }
