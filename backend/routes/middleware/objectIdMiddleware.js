@@ -9,6 +9,6 @@ module.exports = function(req, res, next) {
     if(mongoose.Types.ObjectId.isValid(id)) {
         next()
     } else {
-        utils.sendResponseMessage(res, 400, 'Invalid resource id')
+        res.setBadRequest("Invalid resource id")
     }
 }

@@ -48,6 +48,13 @@ buildingSchema.statics.prepareUpdate = function(obj) {
     return utils.exclude(obj, 'members', 'owner');
 }
 
+buildingSchema.methods.isUserInBuilding = function(user) {
+    return this.members.find(member => utils.sameMongoId(member._id, user._id))
+}
+
+buildingSchema.methods.isOwner = function(user) {
+    return utils.sameMongoId(this.owner._id, user._id)
+}
 buildingSchema.options.toJSON = {
     transform: function(doc, ret, options) {
         delete ret.active;

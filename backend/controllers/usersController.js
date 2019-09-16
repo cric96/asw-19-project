@@ -13,9 +13,7 @@ exports.createUser = function(req, res) {
         return;
     }
     user.save()
-        .then(newUser => {
-            res.setCreated(newUser)
-        })
+        .then(newUser => res.setCreated(newUser))
         .catch(err => errorHandler(err, res))
 
 };

@@ -6,20 +6,15 @@ var User = mongoose.model("User")
 var utils = require("../utils/utils");
 var httpCode = require("../httpCode")
 var errorHandler = require("./errorManagement")
-
+/**
+ * populate building, return a promise with building fetched.
+ * @param {*} query the mongodb query
+ */
 function populateBuilding(query) {
     //.populate replace objectId with the object identify by the id
     return query.populate("owner") 
                 .populate("members")
-                .populate("city") 
-}
-function checkMembership(res, mongooseId, building, execIfIsInMembers) {
-    //verify if user passed is in the member list
-    if (building.members.find(user => utils.sameMongoId(mongooseId, user._id))) {
-        execIfIsInMembers()
-    } else {
-        throw new Exception(httpCode.FORBIDDEN)
-    }
+                .populate("city")
 }
 //TODO owner must pass explicitly or not?
 /**
@@ -74,11 +69,13 @@ exports.readBuilding = function(req, res) {
         ]
     }
     populateBuilding(Building.findOne(filterQuery))
+        .then(utils.filterNullElement)
         .then(building => {
-            if (building == null) {
-                throw new Exception(httpCode.NOT_FOUND)
+            //verify if the user logged is in the members(otherwise he can't fetch building)
+            if (building.isUserInBuilding(res.locals.userAuth)) {
+                res.setOk(building)
             } else {
-                checkMembership(res, res.locals.userAuth._id, building, () => res.setOk(building))
+                throw new Exception(httpCode.FORBIDDEN)
             }
         })
         .catch(err => errorHandler(err, res))
@@ -89,17 +86,16 @@ exports.readBuilding = function(req, res) {
  */
 exports.updateBuilding = function(req, res) {
     let buildingId = req.params.id
-    let userId = res.locals.userAuth._id
+    let user = res.locals.userAuth._id
     //remove attribute that not influce building mongo object
     let buildingUpdatedData = Building.prepareUpdate(req.body);
     //suppose that there is cityMiddleware
     buildingUpdatedData.city = res.locals.cityFetched
 
     populateBuilding(Building.findById(buildingId))
+        .then(utils.filterNullElement)
         .then(oldBuilding => {
-            if (oldBuilding == null) {
-                throw new Exception(httpCode.NOT_FOUND)
-            } else if (!utils.sameMongoId(userId, oldBuilding.owner._id)){
+            if (! oldBuilding.isOwner(user)){
                 throw new Exception(httpCode.FORBIDDEN)
             } else { //ok you can update building
                 //merge two object (the old one with the new one)
@@ -121,10 +117,9 @@ exports.updateBuilding = function(req, res) {
  */
 exports.deleteBuilding = function(req, res) {
     Building.findById(req.params.id)
+        .then(utils.filterNullElement)
         .then(building => {
-            if(building == null) {
-                res.setNotFound()
-            } else if(!utils.sameMongoId(building.owner, res.locals.userAuth._id)) {
+             if(! building.isOwner(res.locals.userAuth)) {
                 res.setForbidden()
             } else {
                 building.active = false
@@ -139,7 +134,6 @@ exports.getBuildingsOfUser = function(req, res) {
     let filterQuery = {
          $and : [
             { 
-                
                 members : mongoose.Types.ObjectId(res.locals.userAuth._id)
             },
             {

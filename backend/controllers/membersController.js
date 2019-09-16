@@ -5,13 +5,8 @@ var httpCode = require("../httpCode")
 var User = mongoose.model("User")
 var utils = require('../utils/utils')
 
-
-let isUserInMembers = function(members, user) {
-    return members.find(member => utils.sameMongoId(member._id, user._id))
-}
-
-let areUserAlreadyInBuiding = function(candidates, members) {
-    return candidates.filter(candidate => isUserInMembers(members, candidate)).length != 0
+let areUserAlreadyInBuiding = function(candidates, building) {
+    return candidates.filter(candidate => building.isUserInBuilding(candidate)).length != 0
 }
 /**
  * try to add members in a building identify by firebase uid.
@@ -37,7 +32,7 @@ exports.addBuildingMember = function(req, res) {
         .then(memberCandindates => {
             if(memberCandindates.length != users.length) {
                 throw new Exception(httpCode.BAD_REQUEST, "some member doesn't exist in database")
-            } else if(areUserAlreadyInBuiding(memberCandindates, building.members)) {
+            } else if(areUserAlreadyInBuiding(memberCandindates, building)) {
                 throw new Exception(httpCode.CONFLICT, "some members are already in building")
             } else {
                 membersFetched = memberCandindates
@@ -50,7 +45,6 @@ exports.addBuildingMember = function(req, res) {
 }
 
 exports.getBuildingMembers = function(req, res) {
-    let userId = mongoose.Types.ObjectId(res.locals.userAuth._id)
     let building = res.locals.buildingFetched
     //find all users defined in member array
     let filterQuery = {
@@ -58,7 +52,7 @@ exports.getBuildingMembers = function(req, res) {
             $in : building.members.map(id => mongoose.Types.ObjectId(id))
         }
     }
-    if(building.members.includes(userId)) {
+    if(building.isUserInBuilding(res.locals.userAuth)) {
         User.find(filterQuery)
             .then(users => users.map(user => user.toJSON()))
             .then(users => res.setOk(users))
@@ -80,27 +74,24 @@ exports.deleteBuildingMember = function(req, res) {
         firebase_uid : req.params.memberId
     }
     User.findOne(filterQuery)
-        .then(user => {
-            if(user == null) {
-                throw new Exception(httpCode.NOT_FOUND, "User not found")
-            } else {
-                return mongoose.Types.ObjectId(user._id)
-            }
-        })
-        .then(memberId => { //filter the member id, if is in the building, it can be deleted
-            if(isUserInMembers(building.members, memberId)) {
-                return memberId
+        .then(utils.filterNullElement)
+        .then(member => { //filter the member id, if is in the building, it can be deleted
+            if(building.isUserInBuilding(member)) {
+                return member
             } else {
                 throw new Exception(httpCode.BAD_REQUEST, "User must be in building")
             }
         })
-        .then(memberId => {
+        .then(member => {
             //if the member id is owner, it can't be delete 
-            if(utils.sameMongoId(memberId, building.owner)) {
+            if(building.isOwner(member)) {
                 throw new Exception(httpCode.FORBIDDEN, "Owner can't delete itself (for now)")
-            } else if(canUserAuthDeleteMember(memberId, building, user)) {
+            } else if(canUserAuthDeleteMember(member._id, building, user)) {
                 //store new member without the member deleted
-                building.members = building.members.filter((item, index) => ! utils.sameMongoId(item, memberId))
+                let removeMember = function(item, index) {
+                    return ! utils.sameMongoId(item, member._id)
+                }
+                building.members = building.members.filter(removeMember)
                 return building.save()
             } else {
                 throw new Exception(httpCode.FORBIDDEN)
