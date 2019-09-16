@@ -8,10 +8,10 @@ router.route('/cities')
 	.post(auth, citiesController.createCity);
 
 router.route('/cities/:CAP')
-	.get(auth, citiesController.readCity)
+	.get(auth, cityFetching, citiesController.readCity)
  
 
 router.route('/cities/:CAP/binCategories')
-	.get(auth, citiesController.getBinCategories)
+	.get(auth, cityFetching, citiesController.getBinCategories)
 
 module.exports = router
