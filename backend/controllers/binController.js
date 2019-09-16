@@ -3,24 +3,9 @@ var Trash = mongoose.model('Trash')
 var User = mongoose.model('User')
 var httpCode = require("../httpCode")
 var Exception = require("../utils/Exception")
+var QueryBuilder = require("../utils/QueryBuilder")
 var errorHandler = require("./errorManagement")
 
-class QueryBuilder {
-    constructor() {
-        this.filters = []
-    }
-
-    pushFilter(filter) {
-        this.filters.push(filter)
-        return this
-    }
-
-    build() {
-        return {
-            $and : this.filters
-        }
-    }
-}
 function areDatesValid(from, to) {
     return (from === undefined || isFinite(from)) && (to === undefined || isFinite(to))
 }
@@ -46,12 +31,16 @@ function queryBuilding(req, res) {
     }) 
 }
 function addFilterDate(req, queryBuilder) {
-    let to = req.query.to === undefined ? Date.now() : new Date(req.query.to)
-    let from = req.query.from === undefined ? Date.now() : new Date(req.query.from)
+    if(!areDatesValid(req.query.to, req.query.from)) {
+        throw new Exception(httpCode.BAD_REQUEST, "Put timestamp in date field")
+    }
+    let to = req.query.to === undefined ? new Date() : new Date(req.query.to)
+    let from = req.query.from === undefined ? new Date(1) : new Date(req.query.from)
+    console.log(from)
     queryBuilder.pushFilter({
         date: {
-            $gte : from,
-            $lt : to
+            $lt : to,
+            $gt : from
         }
     })
 }
@@ -69,22 +58,73 @@ function fetchUser(firebaseId, buildingFetched) {
         })
 }
 
-exports.getBinStatus = function(req, res) {	
-    let groupCatogoriesAndCount = {
-        _id : "$trashCategory",
-        count : {$sum : 1}
-    }
-    queryBuilding(req, res).then(queryBuilder => Trash.aggregate([
-        {
-            $match : queryBuilder.build() //use filter query create with user, date and building
-        },
-        {
-            $group : groupCatogoriesAndCount
+function groupByBin(trashes) {
+    let binMap = new Map()
+    for(trash in trashes) {
+        if(binMap.has(trash.bin._id)) {
+            binMap.get(trash.bin._id)
         }
-    ]))
-    .then(collectedTrashes => {
-        console.log(collectedTrashes)
-        res.setOk(collectedTrashes)
-    })
+    }
+}
+
+const groupCatogoriesAndCount = {
+    _id: "$trashCategory",
+    count : {
+        $sum : 1 //count the trash
+    },
+    binId: {
+        $max:"$bin" //in this context we assume that for a trash category in building there is only one bin for all trash, max it is used to avoid an array on the same bins
+    }
+}
+
+const lookupBin = {
+    from: "bins",
+    localField: "binId",
+    foreignField: "_id",
+    as: "bin"
+}
+
+const lookupTrashCategory = {
+    from: "trashcategories",
+    localField: "_id",
+    foreignField: "_id",
+    as: "trashCategory"
+}
+
+const projection = {
+    trashCategory : 1,
+    bin : 1,
+    count : 1
+}
+
+exports.getBinStatus = function(req, res) {	
+    queryBuilding(req, res).then(queryBuilder => 
+        Trash.aggregate([
+            {
+                $match : queryBuilder.build() //use filter query create with user, date and building
+            },
+            {
+                $group : groupCatogoriesAndCount //group by the trash category and count the occurences
+            },
+            {
+                $lookup : lookupBin //populate bins
+            },
+            {
+                $lookup : lookupTrashCategory //populate trash category
+            },
+            //lookup return always an array, even if you have only one element, unwind convert an array to a single element
+            {
+               $unwind : "$bin" 
+            },
+            {
+                $unwind : "$trashCategory"
+            },
+            {
+                $project : projection
+            }
+            
+        ])
+    )
+    .then(collectedTrashes => res.setOk(collectedTrashes))
     .catch(err => errorHandler(err, res))
 }

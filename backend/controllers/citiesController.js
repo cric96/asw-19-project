@@ -1,11 +1,20 @@
 var mongoose = require('mongoose');
-var City = mongoose.model('Cities');
+var City = mongoose.model('City');
 var Bin = mongoose.model('Bin')
 //REMEMBER, when you exec filter query (with find and some constraints) 
 //if the query not found element, mongo return null! use res.setOkIfNotNull or 
 //res.setCreatedIfNotNull
 exports.listCities = function(req, res) {
-	City.find()
+	let filter = req.query.filter === undefined ? "" : req.query.filter
+	console.log(filter)
+	//TODO aggiungi il cap nelle regex
+	let filterQuery = {
+		name : {
+			$regex: filter , "$options": "i" 
+		}
+	}
+	
+	City.find(filterQuery)
 		.exec()
 		.then(cities => res.setOk(cities))
 		.catch(err => res.setInternalError(err))
@@ -23,8 +32,7 @@ exports.readCity = function(req, res) {
 	res.setOk(res.locals.cityFetched)
 };
 exports.getBinCategories = function(req, res) {
-	//TODO put populate correct
-	Bin.populate(res.cityFetched, )
+	//TODO
 	res.setOk(res.locals.cityFetched.binCategories)
 }
 
