@@ -20,4 +20,10 @@ var trashCategorySchema = new Schema({
     }
 });
 
+trashCategorySchema.options.toJSON = {
+    transform: function(doc, ret, options) {
+        return ret;
+    },
+}
+
 module.exports = mongoose.model('TrashCategory', trashCategorySchema);

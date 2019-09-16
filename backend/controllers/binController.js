@@ -5,6 +5,7 @@ var httpCode = require("../httpCode")
 var Exception = require("../utils/Exception")
 var QueryBuilder = require("../utils/QueryBuilder")
 var errorHandler = require("./errorManagement")
+var CollectedBin = require("./collectedBin")
 
 function areDatesValid(from, to) {
     return (from === undefined || isFinite(from)) && (to === undefined || isFinite(to))
@@ -36,7 +37,6 @@ function addFilterDate(req, queryBuilder) {
     }
     let to = req.query.to === undefined ? new Date() : new Date(req.query.to)
     let from = req.query.from === undefined ? new Date(1) : new Date(req.query.from)
-    console.log(from)
     queryBuilder.pushFilter({
         date: {
             $lt : to,
@@ -60,11 +60,14 @@ function fetchUser(firebaseId, buildingFetched) {
 
 function groupByBin(trashes) {
     let binMap = new Map()
-    for(trash in trashes) {
-        if(binMap.has(trash.bin._id)) {
-            binMap.get(trash.bin._id)
+    for(trash of trashes) {
+        if(!binMap.has(trash.bin._id)) {
+            binMap.set(trash.bin._id, new CollectedBin(trash.bin))
         }
+        binMap.get(trash.bin._id).pushTrash(trash.trashCategory, trash.count)
     }
+        
+    return Array.from(binMap.values())
 }
 
 const groupCatogoriesAndCount = {
@@ -125,6 +128,7 @@ exports.getBinStatus = function(req, res) {
             
         ])
     )
+    .then(groupByBin)
     .then(collectedTrashes => res.setOk(collectedTrashes))
     .catch(err => errorHandler(err, res))
 }
