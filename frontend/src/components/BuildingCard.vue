@@ -1,8 +1,6 @@
 <template>
-    <v-card
-      :loading="loading" class="" >
+    <v-card>
       <v-img height="250" :src="mapImage"></v-img>
-  
       <v-card-title class="display-1">{{ building.name }}</v-card-title>
       <v-card-text class="subtitle-1">
         <div class="subtitle-1">
@@ -27,15 +25,14 @@
   
       <!-- TODO: v-if delete button owner-userlogged -->
       <v-card-actions>       
-        <v-btn
-          color="error accent-4"
-          text
-        >
+        <v-btn color="error accent-4" text @click="onClickDelete">
           Elimina
         </v-btn>
         <div class="flex-grow-1"></div>
-        <v-btn v-if="!building.selected" icon small @click="markAsActive">
-          <v-icon color="green">fas fa-check</v-icon>
+        <v-btn icon small @click="markAsActive">
+          <v-icon :color="(this.activeBuilding._id == this.building._id) ? 'green darken-1' : 'grey lighten-1'">
+            fas fa-check
+          </v-icon>
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -45,6 +42,9 @@
 import User from '../model/user'
 import UserChip from '@/components/UserChip'
 import hereApi from '@/services/here.api'
+
+import { createNamespacedHelpers } from 'vuex'
+const { mapGetters, mapActions } = createNamespacedHelpers('building')
 
 export default {
     name: 'building-card',
@@ -57,17 +57,33 @@ export default {
     components: {
         'user-chip': UserChip
     },
-    data: () => ({
-        loading: false,
-        selection: 1
-    }),
-
     methods: {
+        ...mapActions([
+            'deactivateBuilding',
+            'changeActiveBuilding'
+        ]),
+        // TODO: add dialog for confirm the delete of building
+        onClickDelete() {
+          /*this.$alertDialog('ciao', {
+            positiveButtonText: 'ciaoooo'
+          })*/
+          this.deactivateBuilding(this.building._id).then(() => {
+            this.$store.dispatch('msg/addMessage', 'Abitazione eliminata')
+          }).catch(err => {
+            // TODO: show error
+          })
+        },
         markAsActive: function() {
-
+          this.changeActiveBuilding(this.building._id)
         }
     },
   computed: {
+    ...mapGetters([
+      'activeBuilding'
+    ]),
+    markAsActiveColor: function() {
+      return 
+    },
     completeAddress: function() {
       return `${this.building.address}, ${this.building.apartmentNumber}`
     },

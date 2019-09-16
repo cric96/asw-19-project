@@ -37,9 +37,16 @@ export default {
         },
         createBuilding({ commit }, building) {
             return ApiBuilding.createBuilding(building).then(newBuilding => {
-                commit(types.APPEND_AVAILABLE_BUILDING, newBuilding);
+                commit(types.APPEND_AVAILABLE_BUILDING, newBuilding)
                 return Promise.resolve();
-            }).catch(err => Promise.reject(err));
+            })
+        },
+        deactivateBuilding({ commit, state }, buildingId) {
+            return ApiBuilding.deleteBuilding(buildingId).then(deleted => {
+                let newAvailableBuildings = state.availableBuildings.filter(building => building._id != buildingId)
+                commit(types.SET_ACTIVE_AND_AVAILABLE_BUILDING, newAvailableBuildings)
+                return Promise.resolve()
+            })
         }
     },
     mutations: {

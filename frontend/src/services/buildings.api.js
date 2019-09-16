@@ -11,5 +11,8 @@ export default {
     },
     createBuilding: function(building) {
         return apiService.post(resourceEndpoint, building, null, true)
+    },
+    deleteBuilding: function(buildingId) {
+        return apiService.delete(`${resourceEndpoint}/${buildingId}`, true)
     }
 }
