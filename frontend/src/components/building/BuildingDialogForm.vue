@@ -35,16 +35,17 @@
                             </v-row>
                             <v-row>
                                 <v-col cols="12">
-                                    <v-select :value="building.city" @input="mapCityLink($event)" 
+                                    <v-select v-model="building.city"
+                                        item-value="cap"
                                         :items="cities.data"
                                         :loading="cities.loading"
                                         label="Seleziona la città" 
                                         clearable return-object>
                                             <template v-slot:selection="{item, index}">
-                                                <span>{{item.name}}, {{item.country}}</span>
+                                                <span>{{item.name}}, {{item.cap}}, {{item.state}}</span>
                                             </template>
                                             <template slot="item" slot-scope="data">
-                                                {{data.item.name}}, {{data.item.country}}
+                                                {{data.item.name}}, {{data.item.cap}}, {{data.item.state}}
                                             </template>
                                     </v-select>
                                 </v-col>
@@ -141,8 +142,10 @@ export default {
                 this.cities.data = data
             }).finally(() => this.cities.loading = false)
         },
-        mapCityLink(event) {
-            this.building.city = (event !== undefined) ? event.link : undefined
+        mapCityCap(event) {
+            this.building.city = {
+                cap: (event !== undefined) ? event.cap : undefined
+            }
         },
         closeDialog() {
             this.value = false

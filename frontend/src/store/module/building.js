@@ -1,13 +1,14 @@
 // import { ApiBuilding } from '@/services/mockApiBuilding'
 import ApiBuilding from '@/services/buildings.api'
 import * as types from '../mutationTypes'
+import store from '../store';
 
 const ACTIVE_BUILDING_KEY = 'activeBuilding' 
 
 function setActiveAndAvailableBuilding(state, newAvailableBuildings) {
     state.availableBuildings = newAvailableBuildings;
     if(state.activeBuilding == null && newAvailableBuildings.length > 0) {
-        state.activeBuilding = newAvailableBuildings[0].link;
+        state.activeBuilding = newAvailableBuildings[0]._id;
     } 
 }
 
@@ -20,7 +21,7 @@ export default {
     },
     getters: {
         activeBuilding: state => {
-            return state.availableBuildings.find(building => building.link == state.activeBuilding);
+            return state.availableBuildings.find(building => building._id == state.activeBuilding);
         },
         buildings: state => state.availableBuildings
     },
@@ -29,7 +30,8 @@ export default {
             commit(types.SET_ACTIVE_BUILDING, newBuilding);
         },
         fetchBuildings({commit}) {
-            ApiBuilding.getAll().then(buildings => {
+            let userUid = store.getters.userProfile.firebase_uid;
+            ApiBuilding.getAllOfUser(userUid).then(buildings => {
                 commit(types.SET_ACTIVE_AND_AVAILABLE_BUILDING, buildings);
             });
         },

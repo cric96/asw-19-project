@@ -1,9 +1,6 @@
 <template>
     <v-card
-      :loading="loading"
-      class="mx-auto my-12"
-      max-width="374"
-    >
+      :loading="loading" class="" >
       <v-img height="250" :src="mapImage"></v-img>
   
       <v-card-title class="display-1">{{ building.name }}</v-card-title>
@@ -20,10 +17,9 @@
   
       <v-card-text>
         <div class="title text--primary">Membri</div>
-        <user-chip :user="ownerObject" expandable>
-        </user-chip>
-        <v-chip-group>
-            <template v-for="member in building.members">
+        <user-chip :user="ownerObject" expandable></user-chip>
+        <v-chip-group v-if="buildingMembers.length > 0">
+            <template v-for="member in buildingMembers">
                 <user-chip :key="member.email" :user="member" expandable></user-chip>
             </template>
         </v-chip-group>
@@ -52,43 +48,18 @@ import hereApi from '@/services/here.api'
 
 export default {
     name: 'building-card',
+    props: {
+      building: {
+        type: Object,
+        required: true
+      }
+    },
     components: {
         'user-chip': UserChip
     },
     data: () => ({
         loading: false,
-        selection: 1,
-        building: {
-        selected: false,
-        name: "Casa di Mon",
-        address: "Via Silvio pellico",
-        apartmentNumber: 20,
-        city: {
-            name: "Fano",
-            state: "Italy",
-            cap: "61032"
-        },
-        owner: {
-            nickname: 'Andrea',
-            avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
-            email: 'petretiandrea@gmail.com'
-        },
-        members: [{
-                    nickname: 'Maaaartttt',
-                    avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
-                    email: 'mart@gmail.com'
-                    },
-                    {
-                    nickname: 'Paggioliiix',
-                    avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
-                    email: 'pagg@gmail.com'
-                    },
-                {
-                    nickname: 'Mooon',
-                    avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
-                    email: 'mon@gmail.com'
-                    }]
-        }
+        selection: 1
     }),
 
     methods: {
@@ -105,6 +76,9 @@ export default {
     },
     ownerObject: function() {
         return Object.assign(new User(), this.building.owner)
+    },
+    buildingMembers: function() {
+      return this.building.members.filter(member => member._id.toString() !== this.building.owner._id.toString())
     },
     mapImage: function() {
       return hereApi.mapImageURL(this.building.city.state, this.building.city.name, this.building.address, this.building.apartmentNumber, 400)
