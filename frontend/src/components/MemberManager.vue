@@ -12,14 +12,8 @@
                     </template>
                     <!-- slot for selected items, show as chips -->
                     <template v-slot:selection="data" >
-                        <v-chip v-bind="data.attrs" :input-value="data.selected" close @click="data.select" 
-                            @click:close="remove(data.item)">
-                            <v-avatar left v-if="data.item.avatar"><v-img :src="data.item.avatar"/></v-avatar>
-                            <v-avatar left v-else color="secondary" class="font-weight-light white--text">
-                               {{ data.item | formatUserDisplayName | initial }}
-                            </v-avatar>
-                            {{ data.item | formatUserDisplayName }}
-                        </v-chip>
+                        <user-chip v-bind="data.attrs" :input-value="data.selected" :user="data.item" close @click="data.select" 
+                            @click:close="remove(data.item)"></user-chip>
                     </template>
                     <!-- slot template for list of suggestions -->
                     <template v-slot:item="{ item }">
@@ -46,8 +40,12 @@
 
 <script>
 import userApi from '@/services/users.api'
+import UserChip from '@/components/UserChip'
 
 export default {
+    components: {
+        'user-chip': UserChip
+    },
     data: () => ({
         selectedMembers: [],
         availableUsers: [],

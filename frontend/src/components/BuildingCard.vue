@@ -20,7 +20,8 @@
   
       <v-card-text>
         <div class="title text--primary">Membri</div>
-        <user-chip :user="ownerObject" expandable></user-chip>
+        <user-chip :user="ownerObject" expandable>
+        </user-chip>
         <v-chip-group>
             <template v-for="member in building.members">
                 <user-chip :key="member.email" :user="member" expandable></user-chip>
