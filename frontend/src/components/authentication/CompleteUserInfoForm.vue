@@ -63,13 +63,13 @@ export default {
     value: {
       immediate: true,
       handler: function(val) {
-        this.opened = val;
+        this.opened = val
       }
     },
     user: {
       immediate: true,
       handler: function(val) {
-        this.finalUser = val;
+        this.finalUser = val
       }
     }
   },
@@ -80,17 +80,17 @@ export default {
           this.alert = {
             type: 'success',
             message: "Informazioni aggiornate"
-          };
-          this.opened = false;
+          }
+          this.opened = false
         }).catch(err => {
           this.alert = {
             type: 'error',
             message: "Errore durante l'aggiornamento. Riprovare"
-          };
-        });
+          }
+        })
       }
     }
   }
-};
+}
 </script>
 

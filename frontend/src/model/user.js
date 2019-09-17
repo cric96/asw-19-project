@@ -6,6 +6,7 @@ class User {
     constructor(id, firebase_uid, name, surname, email, nickname = undefined, score = undefined, level = undefined) {
         this._id = id;
         this.firebase_uid = firebase_uid;
+        this.avatar = "";
         this.name = name;
         this.surname = surname;
         this.email = email;

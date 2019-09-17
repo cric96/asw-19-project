@@ -37,7 +37,7 @@ export default {
   }),
   methods: {
     reset: function() {
-      this.$refs.form.reset();
+      this.$refs.form.reset()
     },
     createNewUser(firebase_uid, user) {
       return new User(
@@ -61,7 +61,7 @@ export default {
               .then((user)=>{
                 this.showAlert = true
                 this.$refs.alert.changeConfig(messages.SIGNUP_SUCCESS, "success")
-                setTimeout(() => { this.$router.replace("/dashboard"); }, 1500);
+                setTimeout(() => { this.$router.replace("/dashboard"); }, 1500)
               }).catch((err)=>{
                 // TODO -- check server response (409...)
                 this.inRegistration = false
@@ -81,16 +81,16 @@ export default {
             const existingEmail = user.email;
             const password = user.password;
             firebase.auth().fetchSignInMethodsForEmail(existingEmail).then((providers) =>{
-                const fbProvider = new firebase.auth.FacebookAuthProvider();
+                const fbProvider = new firebase.auth.FacebookAuthProvider()
                 if (providers.indexOf(firebase.auth.FacebookAuthProvider.PROVIDER_ID) != -1) {
                   // Sign in user to fb with same account.
-                  fbProvider.setCustomParameters({ login_hint: existingEmail });
+                  fbProvider.setCustomParameters({ login_hint: existingEmail })
                   return firebase
                     .auth()
                     .signInWithPopup(fbProvider)
                     .then(function(result) {
-                      return result.user;
-                    });
+                      return result.user
+                    })
                 }else{
                   this.showAlert = true
                   this.$refs.alert.changeConfig(messages.SIGNUP_ERR_EMAIL_CONFLICT, "error")
@@ -102,7 +102,7 @@ export default {
                     let newuser = this.createNewUser(userLinked.uid, user);
                     this.$store.dispatch('signInAndUpdate', newuser)
                     .then((user)=>{
-                      this.$router.replace("/dashboard");
+                      this.$router.replace("/dashboard")
                     }).catch(err=>{
                       // TODO -- check server response (409...)
                       this.showAlert = true
@@ -111,12 +111,12 @@ export default {
                     })
                   })
                 }
-              });
+              })
           } else {
-            console.log(err);
+            console.log(err)
           }
-        });
+        })
     }
   }
-};
+}
 </script>

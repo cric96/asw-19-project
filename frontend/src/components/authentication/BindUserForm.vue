@@ -36,7 +36,7 @@
 </template>
 
 <script>
-    import firebase from "firebase";
+    import firebase from "firebase"
 
 export default {
   data: () => ({
@@ -59,11 +59,11 @@ export default {
     },
     show: {
       get() {
-        return this.value;
+        return this.value
       },
       set(value) {
         if(!value){
-          this.$emit('close');
+          this.$emit('close')
         }
       }
     }
@@ -83,7 +83,7 @@ export default {
           firebase.auth().currentUser.linkWithCredential(this.pendingCred).then((userLinked)=>{
             this.$store.dispatch('signIn').then((user)=>{
               this.successMessage = "Collegamento completato con successo"
-              this.$router.replace("/dashboard");
+              this.$router.replace("/dashboard")
             }).catch(err=>{
               //todo chack erros
               console.log(err)
@@ -92,7 +92,7 @@ export default {
             })
           }).catch((err)=>{
             console.log(err)
-          });
+          })
           
         }else {
           this.error = true
@@ -103,7 +103,7 @@ export default {
             this.error = true
             this.errorMessage = "ERRORE; la password inserita non è corretta; riprova inserendo una nuova password"
         }
-      });
+      })
     }
   }
 };

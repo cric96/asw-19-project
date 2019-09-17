@@ -100,7 +100,7 @@ export default {
             this.showAlert = true;
             this.$refs.alert.changeConfig(messages.LOGIN_SUCCESS, "success");
             setTimeout(() => { this.$router.replace("/dashboard"); }, 1500);
-          }).catch(()=>{
+          }).catch(err => {
             this.loggingIn = false;
             this.showAlert = true;
             this.$refs.alert.changeConfig(messages.LOGIN_ERROR, "error");

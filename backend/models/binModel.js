@@ -15,4 +15,10 @@ var binSchema = new Schema({
     trashCategories: [{ type: mongoose.Schema.Types.ObjectId, ref: 'TrashCategory' }]
 });
 
+binSchema.options.toJSON = {
+    transform: function(doc, ret, options) {
+        delete ret.trashCategories;
+        return ret;
+    },
+}
 module.exports = mongoose.model('Bin', binSchema);

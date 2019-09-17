@@ -1,3 +1,4 @@
+var httpCode = require("./httpCode")
 /*
     The function "decore" it is used to decore the express's resut object.
     It enable to make more result (with json response) building more "readable".
@@ -12,54 +13,47 @@ module.exports.decore = (express) => {
     }
 
     express.response.setInternalError = function(msg = "Internal error") {
-        this.setResponse(500, msg)
+        this.setResponse(httpCode.INTERNAL_ERROR, msg)
     }
 
     express.response.setNotFound = function(msg = "Not found") {
-        this.setResponse(404, msg)
+        this.setResponse(httpCode.NOT_FOUND, msg)
     }
 
     express.response.setForbidden = function(msg = "Forbidden") {
-        this.setResponse(403, msg)
+        this.setResponse(httpCode.FORBIDDEN, msg)
     }
 
     express.response.setNotAuthorized = function(msg = "Not authorized") {
-        this.setResponse(401, msg)
+        this.setResponse(httpCode.NOT_FOUND, msg)
     }
 
     express.response.setBadRequest = function(msg = "Bad request") {
-        this.setResponse(400, msg)
+        this.setResponse(httpCode.BAD_REQUEST, msg)
     }
 
     express.response.setConflict = function(msg = "Conflict") {
-        this.setResponse(409, msg)
+        this.setResponse(httpCode.CONFLICT, msg)
     }
 
     express.response.setCreated = function(responseBody) {
-        this.setResponse(201, responseBody)
+        this.setResponse(httpCode.CREATED, responseBody)
     }
 
     express.response.setOk = function(responseBody) {
-        this.setResponse(200, responseBody)
+        this.setResponse(httpCode.OK, responseBody)
+    }
+
+    express.response.setNoContent = function() {
+        this.setResponse(httpCode.NO_CONTENT, "")
     }
 
     express.response.setOkIfNotNull = function(responseBody, msgNotFound = "Not found") {
-        if(bodyOk == null) {
+        if(responseBody != null) {
             this.setOk(responseBody)
         } else {
             this.setNotFound(msgNotFound)
         }
     }
 
-    express.response.setCreatedIfNotNull = function(responseBody, msgNotFound = "Not found") {
-        if(bodyOk == null) {
-            this.setCreated(responseBody)
-        } else {
-            this.setNotFound(msgNotFound)
-        }
-    }
-
-    express.response.setNoContent = function() {
-        this.setResponse(204, "")
-    }
 }

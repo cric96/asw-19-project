@@ -1,152 +1,147 @@
+var Exception = require("../utils/Exception")
 var mongoose = require('mongoose');
 var utils = require("../utils/utils");
 var Building = mongoose.model('Building');
-var BinCategory = require("../models/binModel");
-var City = require("../models/cityModel");
-var Bin = require("../models/binModel");
-
-
-
-//TO CHECK
-function execIfUserIsInBuilding(mongooseId, building, callback, res) {
-    if (building.members.find(user => JSON.stringify(mongooseId) == JSON.stringify(user._id))) {
-        callback()
-    } else {
-        if (JSON.stringify(building.owner) != JSON.stringify(mongooseId)) {
-            utils.sendResponseMessage(res, 403, "This operation is allowed only to owner.")
-        } else {
-            utils.sendResponseMessage(res, 403, "You are not member of this building")
-        }
-    }
+var User = mongoose.model("User")
+var utils = require("../utils/utils");
+var httpCode = require("../httpCode")
+var errorHandler = require("./errorManagement")
+/**
+ * populate building, return a promise with building fetched.
+ * @param {*} query the mongodb query
+ */
+function populateBuilding(query) {
+    //.populate replace objectId with the object identify by the id
+    return query.populate("owner") 
+                .populate("members")
+                .populate("city")
 }
-exports.create_buildings = function(req, res) {
+//TODO owner must pass explicitly or not?
+/**
+ * create building from data passed into body.
+ * read SWAGGER docs to see how the body must be structed
+ */
+exports.createBuildings = function(req, res) {
     var newBuilding = new Building(req.body)
-    newBuilding.owner = res.locals.userAuth._id
-    newBuilding.members = [res.locals.userAuth._id]
-
-    // TODO: add support for city, now this is the default city.
-    newBuilding.city = new mongoose.Types.ObjectId("5d70c36c928ae939588c4993")
-
-    var error = newBuilding.validateSync()
-    if (error) {
-        console.log(error)
-        utils.sendResponseMessage(res, 400, "Bad request; email and firebase_uid are required fields");
+    newBuilding.active = true //when we create a building it must be active
+    newBuilding.owner = res.locals.userAuth._id //the _id mongo db
+    newBuilding.members = [res.locals.userAuth._id] //only member is the owner
+    //I suppuse that the city it is fetched by cityFetchedMiddleware
+    newBuilding.city = res.locals.cityFetched._id //put city id fetched
+    //verify the correctness of object (it must follow building schema)
+    if(newBuilding.validateSync()) {
+        res.setBadRequest()
     } else {
-        City.findById(newBuilding.city)
-            .populate('binCategories')
-            .exec()
-            .then(city => {
-                return city.binCategories.map(element => new Bin({ binCategory: element, trash: [] }))
-            }).then(bins => {
-                newBuilding.bins = bins
-                newBuilding.active = true
-                return newBuilding.save()
-            }).then(insertBuilding => {
-                utils.sendResponseMessage(res, 201, insertBuilding)
-            }).catch(err => {
-                if (err.code == 11000) {
-                    utils.sendResponseMessage(res, 409, "Conflict: " + err.errmsg)
-                } else {
-                    console.log(err)
-                    utils.sendResponseMessage(res, 500, "Internal Error")
-                }
-            });
+        //save building into mongodb
+        newBuilding.save()
+            .then(buildingInserted => {
+                //put elements fetched inside attribute
+                buildingInserted.city = res.locals.cityFetched
+                buildingInserted.members = [res.locals.userAuth]
+                buildingInserted.owner = res.locals.userAuth
+                res.setCreated(buildingInserted)
+            })
+            .catch(err => errorHandler(err, res))
     }
 };
+/**
+ * return all buildings stored inside the mongodb
+ */
+exports.listBuildings = function(req, res) {
+    populateBuilding(Building.find())
+        .then(buildings => buildings.map(building => building.toJSON())) //map each elements into JSON object
+        .then(buildingsJSON => res.setOk(buildingsJSON))
+        .catch(err => errorHandler(err, res))
+}
+/**
+ * from the id, return a corrisponding elements inside the mongodb
+ */
+exports.readBuilding = function(req, res) {
+    let buildingId = req.params.id
+    let filterQuery = { 
+        $and: [
+            { 
+                _id : buildingId //find building with the id passed
+            }, 
+            {
+                active : true //verify if it is active or not
+            }
+        ]
+    }
+    populateBuilding(Building.findOne(filterQuery))
+        .then(utils.filterNullElement)
+        .then(building => {
+            //verify if the user logged is in the members(otherwise he can't fetch building)
+            if (building.isUserInBuilding(res.locals.userAuth)) {
+                res.setOk(building)
+            } else {
+                throw new Exception(httpCode.FORBIDDEN)
+            }
+        })
+        .catch(err => errorHandler(err, res))
+}
+/**
+ * update the building with the data passed into the body.
+ * read SWAGGER docs to see how the body must be structed
+ */
+exports.updateBuilding = function(req, res) {
+    let buildingId = req.params.id
+    let user = res.locals.userAuth._id
+    //remove attribute that not influce building mongo object
+    let buildingUpdatedData = Building.prepareUpdate(req.body);
+    //suppose that there is cityMiddleware
+    buildingUpdatedData.city = res.locals.cityFetched
 
-exports.list_buildings = function(req, res) {
-    const userId = res.locals.userAuth._id;
-    Building.aggregate([{
-                $unwind: {
-                    path: "$members",
-                    preserveNullAndEmptyArrays: true
+    populateBuilding(Building.findById(buildingId))
+        .then(utils.filterNullElement)
+        .then(oldBuilding => {
+            if (! oldBuilding.isOwner(user)){
+                throw new Exception(httpCode.FORBIDDEN)
+            } else { //ok you can update building
+                //merge two object (the old one with the new one)
+                let buildingUpdated = Object.assign(oldBuilding, buildingUpdatedData)
+                if(buildingUpdated.validateSync()) { //verify if is correct
+                    throw new Exception(httpCode.BAD_REQUEST) 
+                } else {
+                    //finally, save updated building
+                    return buildingUpdated.save()
                 }
+            }
+        })
+        .then(buildingUpdated => res.setOk(buildingUpdated))
+        .catch(err => errorHandler(err, res))
+}
+/**
+ * this operation doesn't remove element from database, but make that element
+ * not visible anymore. 
+ */
+exports.deleteBuilding = function(req, res) {
+    Building.findById(req.params.id)
+        .then(utils.filterNullElement)
+        .then(building => {
+             if(! building.isOwner(res.locals.userAuth)) {
+                res.setForbidden()
+            } else {
+                building.active = false
+                res.setNoContent()
+                return building.save()
+            }
+        }).catch(err => errorHandler(err, res))
+}
+
+exports.getBuildingsOfUser = function(req, res) { 
+    //it has index on members, this query is ok    
+    let filterQuery = {
+         $and : [
+            { 
+                members : mongoose.Types.ObjectId(res.locals.userAuth._id)
             },
             {
-                $match: {
-                    members: new mongoose.Types.ObjectId(userId)
-                }
+                active : true
             }
-        ])
-        .allowDiskUse(true)
-        .exec(function(err, buildings) {
-            console.log(err, buildings)
-            if (!err) {
-                utils.sendResponseMessage(res, 200, buildings)
-            } else {
-                utils.sendResponseMessage(res, 404, buildings)
-            }
-        });
-}
-
-exports.read_building = function(req, res) {
-    let building_id = req.params.id
-    Building.findById(building_id)
-        .exec()
-        .then(building => {
-            if (building == null) {
-                utils.sendResponseMessage(res, 404, "Building " + building_id + " not found")
-            } else {
-                execIfUserIsInBuilding(res.locals.userAuth._id, building, () => utils.sendResponseMessage(res, 200, building), res)
-            }
-        })
-        .catch(err => {
-            console.log(err);
-            utils.sendResponseMessage(res, 500, "Internal error")
-        })
-}
-
-exports.update_building = function(req, res) {
-    let building_id = req.params.id
-    let mongoose_id = res.locals.userAuth._id
-    let updatedBuilding = Building.prepareUpdate(req.body);
-    Building.findByIdAndUpdate(building_id, updatedBuilding)
-        .populate('members')
-        .exec()
-        .then(buildingReturned => {
-            if (buildingReturned == null) {
-                utils.sendResponseMessage(res, 404, "Building not found")
-            } else {
-                execIfUserIsInBuilding(mongoose_id, buildingReturned, () => utils.sendResponseMessage(res, 200, buildingReturned), res)
-            }
-        }).catch(err => utils.sendResponseMessage(res, 500, "Internal error"))
-}
-
-exports.delete_building = function(req, res) {
-
-}
-
-exports.get_buildings_of_user = function(req, res) {
-    
-}
-exports.add_building_member = function(req, res) {
-        let building_id = req.params.id
-        let mongoose_id = res.locals.userAuth._id
-        Building.findById(building_id).exec()
-            .then(building => {
-
-            })
-            .catch(err => {
-
-            })
+        ]
     }
-    /*
-
-    exports.update_user = function(req, res) {
-        let uid = res.locals.uid;
-        let updateUser = User.prepareUpdate(req.body);
-        User.findOneAndUpdate({firebase_uid: uid}, updateUser, {new: true}, function(err, updatedUser){
-            if (err){
-                console.log(err)
-                utils.sendResponseMessage(res, 400, "Bad request");
-            }else{
-    			if(updatedUser == null){
-                    utils.sendResponseMessage(res, 404, "User not found");
-    			}
-    			else{
-                    utils.sendResponseMessage(res, 200, updatedUser);
-    			}
-    		}
-        });
-    };
-    */
+    populateBuilding(Building.find(filterQuery))
+        .then(buildings => res.setOk(buildings))
+        .catch(err => errorHandler(err, res))
+}

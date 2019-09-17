@@ -27,7 +27,7 @@
 
 <script>
 import { createNamespacedHelpers } from 'vuex'
-const { mapGetters, mapActions } = createNamespacedHelpers('building');
+const { mapGetters, mapActions } = createNamespacedHelpers('building')
 
 export default {
     name: 'NavBuildingSelector',
@@ -46,15 +46,15 @@ export default {
             'fetchBuildings'
         ]),
         init() {
-            this.fetchBuildings();
+            this.fetchBuildings()
         },
         selectBuilding(building) {
-            this.expanded = false; /* trick for collpase the dropdown after selection */
-            this.changeActiveBuilding(building.link);
+            this.expanded = false /* trick for collpase the dropdown after selection */
+            this.changeActiveBuilding(building._id)
         }
     },
     mounted() {
-        this.init();
+        this.init()
     }
 }
 </script>

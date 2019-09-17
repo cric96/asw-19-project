@@ -1,14 +1,25 @@
 // import { ApiBuilding } from '@/services/mockApiBuilding'
 import ApiBuilding from '@/services/buildings.api'
 import * as types from '../mutationTypes'
+import store from '../store';
+import { stat } from 'fs';
 
 const ACTIVE_BUILDING_KEY = 'activeBuilding' 
 
-function setActiveAndAvailableBuilding(state, newAvailableBuildings) {
-    state.availableBuildings = newAvailableBuildings;
-    if(state.activeBuilding == null && newAvailableBuildings.length > 0) {
-        state.activeBuilding = newAvailableBuildings[0].link;
-    } 
+function getDefaultActiveBuilding(state) {
+    if((state.activeBuilding == null && state.availableBuildings.length > 0) ||
+        !state.availableBuildings.map(building => building._id).includes(state.activeBuilding)) {
+        return state.availableBuildings[0]._id
+    }
+    return state.activeBuilding
+}
+
+function activateBuilding(state, buildingToActivate) {
+    if(state.activeBuilding != buildingToActivate) {
+        // save on localStorage
+        localStorage.setItem(ACTIVE_BUILDING_KEY, buildingToActivate)
+        state.activeBuilding = buildingToActivate
+    }
 }
 
 export default {
@@ -20,7 +31,7 @@ export default {
     },
     getters: {
         activeBuilding: state => {
-            return state.availableBuildings.find(building => building.link == state.activeBuilding);
+            return state.availableBuildings.find(building => building._id == state.activeBuilding);
         },
         buildings: state => state.availableBuildings
     },
@@ -29,34 +40,36 @@ export default {
             commit(types.SET_ACTIVE_BUILDING, newBuilding);
         },
         fetchBuildings({commit}) {
-            ApiBuilding.getAll().then(buildings => {
-                commit(types.SET_ACTIVE_AND_AVAILABLE_BUILDING, buildings);
+            let userUid = store.getters.userProfile.firebase_uid;
+            ApiBuilding.getAllOfUser(userUid).then(buildings => {
+                commit(types.SET_AVAILABLE_BUILDING, buildings);
             });
         },
         createBuilding({ commit }, building) {
             return ApiBuilding.createBuilding(building).then(newBuilding => {
-                commit(types.APPEND_AVAILABLE_BUILDING, newBuilding);
+                commit(types.APPEND_AVAILABLE_BUILDING, newBuilding)
                 return Promise.resolve();
-            }).catch(err => Promise.reject(err));
+            })
+        },
+        deactivateBuilding({ commit, state }, buildingId) {
+            return ApiBuilding.deleteBuilding(buildingId).then(deleted => {
+                let newAvailableBuildings = state.availableBuildings.filter(building => building._id != buildingId)
+                commit(types.SET_AVAILABLE_BUILDING, newAvailableBuildings)
+                return Promise.resolve()
+            })
         }
     },
     mutations: {
-        [types.SET_ACTIVE_BUILDING](state, newBuilding) {
-            if(state.activeBuilding != newBuilding) {
-                // save on localStorage
-                localStorage.setItem(ACTIVE_BUILDING_KEY, newBuilding)
-                state.activeBuilding = newBuilding;
-            }
-        },
-        [types.SET_ACTIVE_AND_AVAILABLE_BUILDING](state, newAvailableBuildings) {
-            setActiveAndAvailableBuilding(state, newAvailableBuildings);
+        [types.SET_ACTIVE_BUILDING](state, buildingToActivate) {
+            activateBuilding(state, buildingToActivate)
         },
         [types.SET_AVAILABLE_BUILDING](state, newAvailableBuildings) {
-            setActiveAndAvailableBuilding(state, newAvailableBuildings);
+            state.availableBuildings = newAvailableBuildings
+            activateBuilding(state, getDefaultActiveBuilding(state))
         },
         [types.APPEND_AVAILABLE_BUILDING](state, newBuilding) {
-            state.availableBuildings.push(newBuilding);
-            setActiveAndAvailableBuilding(state, state.availableBuildings);
+            state.availableBuildings.push(newBuilding)
+            activateBuilding(state, getDefaultActiveBuilding(state))
         }
     }
 };

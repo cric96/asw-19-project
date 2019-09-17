@@ -27,11 +27,18 @@ tags:
   description: "Access to bin categories"
 - name: "reward"
   description: "Access to reward"
+- name: "rank"
+  description: "Access to application's rank"
 schemes:
 - "http"
 
 paths:
   /users:
+    parameters:
+      - in: query
+        name: filter
+        type: string
+        description: "Filtering users by different fields (e-mail, nickname, name, surname)."
     get:
       tags:
       - "user"
@@ -87,7 +94,7 @@ paths:
         name: user_id
         type: string
         required: true
-        description: ""
+        description: "put firebase uid"
     get:
       tags: 
       - "user"
@@ -164,10 +171,11 @@ paths:
       parameters:
       - in: "body"
         name: "body"
-        description: "The building object to be created. The properties link and bins must be undefined"
+        description: "The building object to be created. In city, you need to specify only the CAP. The owner is the user authenticated, the members are ignored, to add member you need to use other rest api"
         required: true
         schema:
           $ref: "#/definitions/Building"
+          
       security: *security
       responses:
         201: 
@@ -176,17 +184,14 @@ paths:
             $ref: "#/definitions/Building"
         400: *response400
         401: *response401
-        403: 
-          description: "Forbidden. You must specify yourself as the owner of the building."
         500: *response500 
-        
   /users/{user_id}/buildings:
     parameters:
       - in: path
         name: user_id
         type: string
         required: true
-        description: "It represents the id of the user who's making the request."
+        description: "It represents the firebase id of the user who's making the request."
     get:
       tags: 
       - "building"
@@ -205,7 +210,6 @@ paths:
         401: *response401
         403: *response403
         500: *response500
-        
   /buildings/{building_id}:
     parameters: &idParameters
       - in: path
@@ -243,7 +247,7 @@ paths:
       parameters:
       - in: "body"
         name: "body"
-        description: "The building object to be updated."
+        description: "The building object to be updated. In city you define the CAP. the attributes members, owner, are not considerated"
         required: true
         schema:
           $ref: "#/definitions/Building"
@@ -269,14 +273,13 @@ paths:
       - "application/json"
       security: *security
       responses:
-        200:
+        204:
           description: "Successful Delete"
         400: *response400
         401: *response401
         403: *response403
         404: *response404
         500: *response500
-        
   /buildings/{building_id}/members:
     parameters: *idParameters
     get:
@@ -310,12 +313,13 @@ paths:
       parameters:
       - in: "body"
         name: "body"
-        description: "The member object to be created. Nickname or email must be defined"
+        description: "Array of firebase uid of user that you want to add into the building"
         required: true
         schema:
           type: array
           items:
-            $ref: "#/definitions/User"
+            type: string
+          example: ["id1", "id2"]
       security: *security
       responses:
         201: 
@@ -325,11 +329,9 @@ paths:
         400: *response400
         401: *response401
         403: *response403
-        404: *response404
         409: 
           description: "Conflict. You cannot re-add this member."
         500: *response500 
-    
   /buildings/{building_id}/members/{member_id}:
     parameters: 
       - in: path
@@ -359,7 +361,6 @@ paths:
         403: *response403
         404: *response404
         500: *response500 
-        
   /buildings/{building_id}/bins:
     parameters:
       - in: path
@@ -368,7 +369,7 @@ paths:
         required: true
         description: "It represents the building's identifier"
       - in: query
-        name: email
+        name: userId
         type: string
         description: "It represents the user's identifier and it is used to filter bins by a specific user."
       - in: query
@@ -400,7 +401,6 @@ paths:
         403: *response403
         404: *response404
         500: *response500
-  
   /building/{building_id}/trashes:
     parameters:
       - in: path
@@ -425,7 +425,330 @@ paths:
         403: *response403
         404: *response404
         500: *response500
+  /users/{user_id}/trashes:
+    parameters:
+      - in: path
+        name: user_id
+        type: string
+        required: true
+        description: "It represents a specific user."
+      - in: query
+        name: from
+        type: string
+        format: date
+        description: "You can specify from what day you can get the results. If you don't specify the 'to' parameter you will get results until today."
+      - in: query
+        name: to
+        type: string
+        format: date
+        description: "You can specify to what day you can get the results"
+    get:
+      tags: 
+      - "trash"
+      summary: "Get the trashes for a specified user."
+      description: "This can only be done by a logged user who wants to see trashes for a specified user. You can also get the results filtered by a period."
+      produces:
+      - "application/json"
+      security: *security
+      responses:
+        200:
+          description: "Trashes found."
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/CollectedTrash"
+        401: *response401
+        404: *response404
+        500: *response500
+  /cities:
+    get:
+      tags: 
+      - "city"
+      summary: "Get all the cities participating."
+      description: "This can be done by a user who wants to see all the cities."
+      produces:
+      - "application/json"
+      security: *security
+      responses:
+        200:
+          description: "Cities found."
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/City"
+        401: *response401
+        500: *response500
+  /cities/{CAP}:
+    parameters:
+        - in: path
+          name: CAP
+          type: string
+          required: true
+          description: "It represents the city's identifier"
+    get:
+      tags: 
+      - "city"
+      summary: "Get the specified city."
+      description: "This can be done by a user who wants to see a specified city."
+      produces:
+      - "application/json"
+      security: *security
+      responses:
+        200:
+          description: "City found."
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/City"
+        404: *response404
+        500: *response500
+  /trash_category:
+    get:
+      tags:
+      - "TrashCategory"
+      summary: "Retreive all the trash categories."
+      description: "It is used to see all the trash categories of the application."
+      produces:
+      - "application/json"
+      security: *security
+      responses:
+        200:
+          description: "Trash categories found"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/TrashCategory"
+        500: *response500
+  /cities/{CAP}/binCategories:
+    parameters:
+        - in: path
+          name: CAP
+          type: string
+          required: true
+          description: "It represents the cap's name"
+    get:
+      tags: 
+      - "bin category"
+      summary: "Get the bin categories of a specified city."
+      description: "This can be done by a user who wants to see all the bin categories (trash category coupling) for the specified city. Example: (plastic , aluminum)"
+      produces:
+      - "application/json"
+      security: *security
+      responses:
+        200:
+          description: "Bin categories found"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/BinCategory"
+        404: *response404
+        500: *response500
+  /rewards:
+    get:
+      tags: 
+      - "reward"
+      summary: "Get all the rewards."
+      description: "This can only be done by a logged user who wants to see all the rewards of the application"
+      produces:
+      - "application/json"
+      security: *security
+      responses:
+        200:
+          description: "Rewards found."
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Reward"
+        401: *response401
+        500: *response500
+  /rewards/{reward_id}:
+    parameters:
+        - in: path
+          name: reward_id
+          type: string
+          required: true
+          description: "It represents the reward's id"
+    get:
+      tags: 
+      - "reward"
+      summary: "Get a specified rewards."
+      description: "This can only be done by a logged user who wants to see a specified reward."
+      produces:
+      - "application/json"
+      security: *security
+      responses:
+        200:
+          description: "Reward found."
+          schema:
+            $ref: "#/definitions/Reward"
+        401: *response401
+        404: *response404
+        500: *response500
+  /users/{user_id}/rewards:
+    parameters:
+        - in: path
+          name: user_id
+          type: string
+          required: true
+          description: "It represents the user's id"
+    get:
+      tags: 
+      - "reward"
+      summary: "Get the rewards."
+      description: "This can only be done by a logged user who wants to see rewards of a specified user"
+      produces:
+      - "application/json"
+      security: *security
+      responses:
+        200:
+          description: "Rewards found."
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Reward"
+        401: *response401
+        404: *response404
+        500: *response500
+  /ranks/users:
+    parameters:
+      - in: query
+        name : orderBy
+        type : string
+        description: "orderBy it's a value that filter user's property. it can be: score, level, one of the trash categories and rewards."
+      - in: query
+        name: sort
+        type: string
+        enum : [asc, desc]
+        description: "It sorts the rank."
+      - in: query
+        name: page
+        type: integer
+        description: "It defines which rank's page do you want"
+      - in: query
+        name: cap
+        type: integer
+        description: "It defines which city the rank refers to"
+      - in: query
+        name: from
+        type: string
+        format: date
+        description: "You can specify from what day you can get the results. If you don't specify the 'to' parameter you will get results until today."
+      - in: query
+        name: to
+        type: string
+        format: date
+        description: "You can specify to what day you can get the results"
+    get:
+      tags: 
+      - "rank"
+      summary: "Get users' ranks."
+      description: "This can only be done by a logged user who wants to see ranks. The ranks could be filtered by different filters."
+      produces:
+      - "application/json"
+      security: *security
+      responses:
+        200:
+          description: "Ranks found."
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/UserRank"
+        401: *response401
+        404: *response404
+        500: *response500
+  /ranks/buildings:
+    parameters:
+    - in: query
+      name : orderBy
+      type : string
+      description: "orderBy it's a value that filter building's property. It can be: trash category."
+    - in: query
+      name: sort
+      type: string
+      enum : [asc, desc]
+      description: "It sorts the rank."
+    - in: query
+      name: page
+      type: integer
+      description: "It defines which rank's page do you want"
+    - in: query
+      name: cap
+      type: integer
+      description: "It defines which city the rank refers to"
+    - in: query
+      name: from
+      type: string
+      format: date
+      description: "You can specify from what day you can get the results. If you don't specify the 'to' parameter you will get results until today."
+    - in: query
+      name: to
+      type: string
+      format: date
+      description: "You can specify to what day you can get the results"
+    get:
+      tags: 
+      - "rank"
+      summary: "Get buildings' ranks."
+      description: "This can only be done by a logged user who wants to see ranks. The ranks could be filtered by different filters."
+      produces:
+      - "application/json"
+      security: *security
+      responses:
+        200:
+          description: "Ranks found."
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/BuildingRank"
+        401: *response401
+        404: *response404
+        500: *response500
+  /ranks/cities:
+    parameters:
+      - in: query
+        name : orderBy
+        type : string
+        description: "orderBy it's a value that filter building's property. It can be: trash category."
+      - in: query
+        name: sort
+        type: string
+        enum : [asc, desc]
+        description: "It sorts the rank."
+      - in: query
+        name: page
+        type: integer
+        description: "It defines which rank's page do you want"
+      - in: query
+        name: from
+        type: string
+        format: date
+        description: "You can specify from what day you can get the results. If you don't specify the 'to' parameter you will get results until today."
+      - in: query
+        name: to
+        type: string
+        format: date
+        description: "You can specify to what day you can get the results"
+    get:
+      tags: 
+      - "rank"
+      summary: "Get cities' ranks."
+      description: "This can only be done by a logged user who wants to see ranks. The ranks could be filtered by different filters."
+      produces:
+      - "application/json"
+      security: *security
+      responses:
+        200:
+          description: "Ranks found."
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/CityRank"
+        401: *response401
+        404: *response404
+        500: *response500
     
+  
+  
 securityDefinitions:
   credentials: 
     type: apiKey
@@ -442,8 +765,6 @@ definitions:
       _id:
         type: "string"
         uniqueItems: true
-      link:
-        $ref: "#/definitions/Link"
       name:
         type: "string"
       surname:
@@ -471,12 +792,9 @@ definitions:
   Building:
     type: "object"
     properties:
-    # non usareeeeeeeeee
       _id:
         type: "string"
         uniqueItems: true
-      link:
-        $ref: "#/definitions/Link"
       name:
         type: "string"
       address:
@@ -494,14 +812,11 @@ definitions:
         $ref: "#/definitions/City"
       owner:
         $ref: "#/definitions/User"
-      bins: 
-        type: array
-        items:
-          $ref: "#/definitions/Link"
+
       members:
         type: array
         items: 
-          $ref: "#/definitions/Link"
+          $ref: "#/definitions/User"
         
     required:
       - _id
@@ -555,9 +870,12 @@ definitions:
         type: "string"
       country:
         type: "string"
+      cap:
+        type: "integer"
     required:
       - name
       - country
+      - cap
   BinCategory:
     type: "object"
     properties:
@@ -590,4 +908,28 @@ definitions:
   Link:
     type: "string"
     format: "url"
+  UserRank:
+    type: "object"
+    properties:
+      user:
+        $ref: "#/definitions/User"
+      value:
+        type: "integer"
+        format: "int32"
+  BuildingRank:
+    type: "object"
+    properties:
+      building:
+        $ref: "#/definitions/Building"
+      value:
+        type: "integer"
+        format: "int32"
+  CityRank:
+    type: "object"
+    properties:
+      city:
+        $ref: "#/definitions/City"
+      value:
+        type: "integer"
+        format: "int32"
   

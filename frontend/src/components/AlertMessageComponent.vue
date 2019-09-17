@@ -16,17 +16,17 @@ export default {
     computed: {
         show: {
             get() {
-                return this.value;
+                return this.value
             },
             set(value) {
-                this.$emit('input', value);
+                this.$emit('input', value)
             }
         }
     },
     methods: {
         changeConfig: function(newmessage, newtype){
-          this.type = newtype;
-          this.message = newmessage;
+          this.type = newtype
+          this.message = newmessage
         }
     }
 }

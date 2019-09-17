@@ -2,7 +2,11 @@ var mongoose = require('mongoose')
 //NB! mongoose need all schema to conect into the data
 var userModel = require("./models/userModel");
 var buildingModel = require('./models/buildingModel');
-
+var cityModel = require("./models/cityModel")
+var trashModel = require("./models/trashModel")
+var trashCategoryModel = require("./models/trashCategoryModel")
+var binCategoryModel = require("./models/binModel")
+var cityModel = require("./models/cityModel")
 module.exports.setupLocal = function() {
 
 }

@@ -22,6 +22,9 @@
                             </v-row>
                             <v-row>
                                 <v-col cols="12">
+                                    <!--<autocomplete-address 
+                                        v-model="autocompletedAddress"
+                                        ></autocomplete-address>-->
                                     <v-text-field 
                                         name="address" 
                                         label="Indirizzo abitazione" 
@@ -32,18 +35,20 @@
                             </v-row>
                             <v-row>
                                 <v-col cols="12">
-                                    <v-select :value="building.city" @input="mapCityLink($event)" 
+                                    <v-autocomplete v-model="building.city"
                                         :items="cities.data"
                                         :loading="cities.loading"
+                                        :search-input.sync="citySearchText"
                                         label="Seleziona la città" 
-                                        clearable return-object>
-                                            <template v-slot:selection="{item, index}">
-                                                <span>{{item.name}}, {{item.country}}</span>
+                                        hide-details hide-selected
+                                        no-filter clearable return-object>
+                                            <template v-slot:selection="data">
+                                                <span>{{data.item.name}}, {{data.item.cap}}, {{data.item.state}}</span>
                                             </template>
-                                            <template slot="item" slot-scope="data">
-                                                {{data.item.name}}, {{data.item.country}}
+                                            <template v-slot:item="{ item }">
+                                                {{item.name}}, {{item.cap}}, {{item.state}}
                                             </template>
-                                    </v-select>
+                                    </v-autocomplete>
                                 </v-col>
                             </v-row>
                             <v-row>
@@ -57,12 +62,11 @@
                                 <v-col cols="12" md="6">
                                     <v-text-field 
                                         name="apartmentNumber" 
-                                        label="Numero Civico"
+                                        label="Interno"
                                         type="number"
                                         min="0"
-                                        :rules="baseRule"
                                         v-model="building.apartmentNumber"
-                                        required/>
+                                        />
                                 </v-col>
                             </v-row>
                             <v-row>
@@ -85,22 +89,23 @@
 <script>
 import { createNamespacedHelpers } from 'vuex'
 import citiesApi from '@/services/cities.api'
-import { functions } from 'firebase';
-const { mapGetters, mapActions } = createNamespacedHelpers('building');
+import { functions } from 'firebase'
+import AutocompleteAddress from '@/components/AutocompleteAddress'
+
+const { mapGetters, mapActions } = createNamespacedHelpers('building')
 
 import MemberManager from '@/components/MemberManager'
 
 export default {
-    mounted() {
-        this.initialize()
-    },
     components: {
-        'member-manager': MemberManager
+        'member-manager': MemberManager,
+        'autocomplete-address': AutocompleteAddress
     },
     data: () => ({
         value: false,
+        citySearchText: '',
         cities: {
-            loading: true,
+            loading: false,
             data: []
         },
         validForm: true,
@@ -112,33 +117,41 @@ export default {
     }),
     computed: {
         activatorListener: function() {
-            let vm = this;
-            return Object.assign({}, {
+            let vm = this
+            return {
                 click: function(event) {
-                    vm.value = !vm.value;
+                    vm.value = !vm.value
                 }
-            });
+            }
+        }
+    },
+    watch: {
+        citySearchText(query) {
+            query && !this.building.city && this.fetchCities(query)
         }
     },
     methods: {
          ...mapActions([
             'createBuilding' 
         ]),
-        initialize() {
+        fetchCities(query) {
             this.cities.loading = true
-            citiesApi.getAll().then(data => {
+            citiesApi.getAllFilter(query).then(data => {
                 this.cities.data = data
-            }).finally(() => this.cities.loading = false)
+            })
+            .finally(() => this.cities.loading = false)
         },
-        mapCityLink(event) {
-            this.building.city = (event !== undefined) ? event.link : undefined
+        mapCityCap(event) {
+            this.building.city = {
+                cap: (event !== undefined) ? event.cap : undefined
+            }
         },
         closeDialog() {
             this.value = false
         },
         pressSaveBuilding() {
             if (this.$refs.form.validate()) {
-                let newBuilding = Object.assign({}, this.building);
+                let newBuilding = Object.assign({}, this.building)
                 let promise = this.createBuilding(newBuilding).then(() => {
                     this.$refs.form.reset()
                     this.closeDialog()
