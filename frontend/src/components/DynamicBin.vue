@@ -1,16 +1,36 @@
 <template>
     <v-card outlined>
-        <v-card-title primary-title>{{binTitle}}</v-card-title>
+        <v-card-title primary-title two-line>{{bin.binCategory.name}}</v-card-title>
         <v-divider></v-divider>
         <v-container fluid>
             <v-layout row wrap justify-center>
                 <canvas ref="canvasRect" id="canvas_rect"></canvas>
                 <canvas ref="hiddenMask" id="hidden_mask" ></canvas>
             </v-layout>
-            <v-layout row wrap justify-center>
-                <h6 class="headline font-weight-light">Collected: {{bin.collected}}</h6> <!-- or font-weight-thin? -->
-            </v-layout>
         </v-container>
+        <v-card-actions>
+            <h6 class="ml-2 headline font-weight-light">Collected: {{collectedTotal}}</h6> <!-- or font-weight-thin? -->
+            <v-spacer></v-spacer>
+            <v-btn icon @click="show = !show">
+                <v-icon>{{ show ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}</v-icon>
+            </v-btn>
+        </v-card-actions>
+        <v-expand-transition>
+            <div v-show="show">
+                <v-container fluid>
+                    <template v-for="collectedTrash in bin.collectedTrashes">
+                        <v-layout row wrap justify-center :key="collectedTrash._id" class="ma-2" >
+                            {{collectedTrash.trashCategory.name}}
+                            <v-progress-linear height="25" reactive :value="(collectedTrash.quantity / collectedTotal) * 100">
+                                <template v-slot="{ value }">
+                                    <strong>{{ collectedTrash.quantity }}</strong>
+                                </template>
+                            </v-progress-linear>
+                        </v-layout>
+                    </template>
+                </v-container>
+            </div>
+        </v-expand-transition>
     </v-card>
     
 </template>
@@ -35,25 +55,26 @@ export default {
     name: 'DynamicBin',
     props: {
         bin: {
-            type: Bin,
+            type: Object,
             required: true
         }
     },
     data:() => ({
         maskImage: null,
-        binImage: null
+        binImage: null,
+        show: false
     }),
     watch: {
         bin: function(newBin) {
-            this.draw(newBin.color)
+            this.draw(newBin.binCategory.colour)
         }
     },
     mounted() {
-        this.draw(this.bin.color)
+        this.draw(this.bin.binCategory.colour)
     },
     computed: {
-        binTitle: function(){
-            return this.bin.categories.reduce((acc, current) => acc + ", " + current)
+        collectedTotal() {
+            return this.bin.collectedTrashes.reduce((a, b) => a + b.quantity, 0)
         }
     },
     methods: {

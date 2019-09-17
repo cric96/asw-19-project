@@ -47,7 +47,7 @@
     </v-speed-dial>
 
     <v-row dense v-if="!loading">
-      <v-col v-for="(bin, index) in bins" :key="index" cols="12" md="3" sm="4">
+      <v-col v-for="(bin, index) in bins" :key="index" cols="12" md="6" sm="6">
         <bin :bin="bin"></bin>
       </v-col>
     </v-row>
@@ -77,14 +77,13 @@ export default {
       activeBuilding: "building/activeBuilding"
     }),
     loading: function() {
-      return !this.bins;
+      return !this.bins
     }
   },
   watch: {
     activeBuilding(val) {
-      ApiBin.getBins(val._id).then(bins => {
-        console.log("Bins");
-        console.log(bins);
+      ApiBin.getBins(this.activeBuilding).then(bins => {
+        this.bins = bins
       });
     }
   },
