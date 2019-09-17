@@ -5,9 +5,10 @@ var City = mongoose.model("City");
  * the city fetched is in res.locals.cityFetched
  */
 module.exports = function(req, res, next) {
+    let caps = req.body.city === undefined ? [req.params.cap] : [req.body.city.cap, req.params.cap]
     let filterQuery = {
         cap : {
-            $in : [req.body.city.cap, req.params.cap]
+            $in : caps
         }
     }
     City.findOne(filterQuery)
