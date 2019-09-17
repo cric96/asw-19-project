@@ -20,7 +20,6 @@ class BuildingBin {
             quantity : amount
         })
     }
-
     toJSON() {
         binCategory.trashCategories = undefined
         return {
@@ -28,26 +27,6 @@ class BuildingBin {
             collectedTrashes : this.collectedTrashes
         }
     }
-}
-
-function keyOf(element) {
-    return element._id.toString()
-}
-
-/**
- * given the result from aggregate query,
- * this function gruop elements by bin id 
- * @param {*} trashes the query result
- */
-function groupByBin(trashes) {
-    let binMap = new Map()
-    for(trash of trashes) {
-        if(!binMap.has(keyOf(trash.bin))) {
-            binMap.set(keyOf(trash.bin), new BuildingBin(trash.bin))
-        }
-        binMap.get(keyOf(trash.bin)).putTrash(trash.trashCategory, trash.count)
-    }  
-    return Array.from(binMap.values())
 }
 
 function populateEachBin(trashes, binCategories) {
@@ -71,9 +50,4 @@ exports.getBinStatus = function(req, res) {
         .then(categories => trashFetching.binsFetch(req, res).then(trashes => populateEachBin(trashes, categories)))
         .then(collectedTrash => res.setOk(collectedTrash))
         .catch(err => errorHandler(err, res))
-    /*
-    trashFetching.binsFetch(req,res)
-        .then(groupByBin) 
-        .then(collectedTrashes => res.setOk(collectedTrashes))
-        .catch(err => errorHandler(err, res))*/
 }

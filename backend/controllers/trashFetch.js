@@ -60,17 +60,7 @@ const groupCatogoriesAndBin = {
     _id: "$trashCategory",
     count : {
         $sum : 1 //count the trash
-    },
-    binId: {
-        $max:"$bin" //in this context we assume that for a trash category in building there is only one bin for all trash, max it is used to avoid an array on the same bins
     }
-}
-
-const lookupBin = {
-    from: "bins",
-    localField: "binId",
-    foreignField: "_id",
-    as: "bin"
 }
 
 const lookupTrashCategory = {
@@ -82,7 +72,6 @@ const lookupTrashCategory = {
 
 const projection = {
     trashCategory : 1,
-    bin : 1,
     count : 1
 }
 
@@ -95,15 +84,9 @@ function createAggregationPipeline(builder) {
             $group : groupCatogoriesAndBin //group by the trash category and count the occurences. put the bin
         },
         {
-            $lookup : lookupBin //populate bins
-        },
-        {
             $lookup : lookupTrashCategory //populate trash category
         },
         //lookup return always an array, even if you have only one element, unwind convert an array to a single element
-        {
-        $unwind : "$bin" 
-        },
         {
             $unwind : "$trashCategory"
         },

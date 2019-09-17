@@ -48,7 +48,7 @@ buildingSchema.statics.prepareUpdate = function(obj) {
     return utils.exclude(obj, 'members', 'owner');
 }
 
-buildingSchema.methods.isUserInBuilding = function(user) {
+buildingSchema.methods.isMember = function(user) {
     return this.members.find(member => utils.sameMongoId(member._id, user._id))
 }
 

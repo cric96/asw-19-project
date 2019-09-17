@@ -12,11 +12,6 @@ var trashSchema = new Schema({
         ref: 'TrashCategory',
         required: true
     },
-    bin: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Bin',
-        required: true
-    },
     building: {
         type: Schema.Types.ObjectId,
         required: true,
