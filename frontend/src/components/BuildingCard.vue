@@ -85,7 +85,8 @@ export default {
       return 
     },
     completeAddress: function() {
-      return `${this.building.address}, ${this.building.apartmentNumber}`
+      // TODO: visualize apartamentNumber and floor
+      return `${this.building.address}`
     },
     completeCityInfo: function() {
       return `${this.building.city.name}, ${this.building.city.cap}, ${this.building.city.state}`

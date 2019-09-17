@@ -14,5 +14,8 @@ const mockApi = new MockApiHelper([
 export default {
     getAll : function(){
         return apiService.get(resourceEndpoint, false)
+    },
+    getAllFilter(queryFilter) {
+        return apiService.get(resourceEndpoint, {filter: queryFilter})
     }
 }

@@ -36,16 +36,17 @@
                             <v-row>
                                 <v-col cols="12">
                                     <v-autocomplete v-model="building.city"
-                                        item-value="cap"
                                         :items="cities.data"
                                         :loading="cities.loading"
+                                        :search-input.sync="citySearchText"
                                         label="Seleziona la città" 
-                                        clearable return-object>
-                                            <template v-slot:selection="{item, index}">
-                                                <span>{{item.name}}, {{item.cap}}, {{item.state}}</span>
+                                        hide-details hide-selected
+                                        no-filter clearable return-object>
+                                            <template v-slot:selection="data">
+                                                <span>{{data.item.name}}, {{data.item.cap}}, {{data.item.state}}</span>
                                             </template>
-                                            <template slot="item" slot-scope="data">
-                                                {{data.item.name}}, {{data.item.cap}}, {{data.item.state}}
+                                            <template v-slot:item="{ item }">
+                                                {{item.name}}, {{item.cap}}, {{item.state}}
                                             </template>
                                     </v-autocomplete>
                                 </v-col>
@@ -61,12 +62,11 @@
                                 <v-col cols="12" md="6">
                                     <v-text-field 
                                         name="apartmentNumber" 
-                                        label="Numero Civico"
+                                        label="Interno"
                                         type="number"
                                         min="0"
-                                        :rules="baseRule"
                                         v-model="building.apartmentNumber"
-                                        required/>
+                                        />
                                 </v-col>
                             </v-row>
                             <v-row>
@@ -97,17 +97,15 @@ const { mapGetters, mapActions } = createNamespacedHelpers('building')
 import MemberManager from '@/components/MemberManager'
 
 export default {
-    mounted() {
-        this.initialize()
-    },
     components: {
         'member-manager': MemberManager,
         'autocomplete-address': AutocompleteAddress
     },
     data: () => ({
         value: false,
+        citySearchText: '',
         cities: {
-            loading: true,
+            loading: false,
             data: []
         },
         validForm: true,
@@ -128,19 +126,20 @@ export default {
         }
     },
     watch: {
-        autocompletedAddress: function(newVal) {
-            console.log(newVal)
+        citySearchText(query) {
+            query && !this.building.city && this.fetchCities(query)
         }
     },
     methods: {
          ...mapActions([
             'createBuilding' 
         ]),
-        initialize() {
+        fetchCities(query) {
             this.cities.loading = true
-            citiesApi.getAll().then(data => {
+            citiesApi.getAllFilter(query).then(data => {
                 this.cities.data = data
-            }).finally(() => this.cities.loading = false)
+            })
+            .finally(() => this.cities.loading = false)
         },
         mapCityCap(event) {
             this.building.city = {
