@@ -1,5 +1,4 @@
 var mongoose = require('mongoose');
-var utils = require("../utils/utils");
 var User = mongoose.model('User');
 var errorHandler = require("./errorManagement")
 
