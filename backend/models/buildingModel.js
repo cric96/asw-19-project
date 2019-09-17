@@ -58,7 +58,7 @@ buildingSchema.methods.isOwner = function(user) {
 buildingSchema.options.toJSON = {
     transform: function(doc, ret, options) {
         delete ret.active;
-        ret.city = City.marshallCity(ret.city)
+        ret.city = ret.city.toJSON()
         return ret;
     },
 }

@@ -5,21 +5,17 @@ var errorHandler = require("./errorManagement")
 
 exports.createUser = function(req, res) {
     var user = new User(req.body);
-    console.log(user)
     var error = user.validateSync();
     if (error) {
-        console.log(error)
         res.setBadRequest("Bad request; email and firebase_uid are required fields");
         return;
     }
     user.save()
         .then(newUser => res.setCreated(newUser))
         .catch(err => errorHandler(err, res))
-
 };
 
 exports.getUser = function(req, res) {
-    console.log(errorHandler)
     let uid = res.locals.uid
     User.findOne({ firebase_uid: uid })
         .exec()
