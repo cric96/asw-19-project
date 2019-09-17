@@ -30,6 +30,10 @@ class User {
         else
             return undefined;
     }
+
+    static emptyUser() {
+        return new User(null, null, null, null)
+    }
 }
 
 export default User

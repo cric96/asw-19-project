@@ -8,7 +8,7 @@
         <span class="headline">Completa la registrazione</span>
       </v-card-title>
       <v-card-text>
-        <v-container v-if="finalUser" fluid>
+        <!--<v-container v-if="finalUser" fluid>
           <v-form ref="form" v-model="valid" lazy-validation>
               <v-row v-for="propertyName in userProperties" :key="propertyName">
                 <v-col cols="12">
@@ -20,6 +20,8 @@
               </v-row>
           </v-form>
         </v-container>
+      </v-card-text>-->
+      <user-form v-bind:userProperties="userProperties" v-bind:user="user" formMode="aggiorna"></user-form>
       </v-card-text>
       <v-card-actions>
         <div class="flex-grow-1"></div>
@@ -32,8 +34,12 @@
 
 <script>
 import User from "../../model/user";
+import UserForm from '@/components/user/UserForm';
 
 export default {
+  components: {
+    "user-form": UserForm
+  },
   props: {
     user: {
       type: User,
