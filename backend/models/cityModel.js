@@ -14,7 +14,7 @@ var citySchema = new Schema({
     },
     binCategories: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'BinCategory'
+        ref: 'Bin'
     }],
     cap: {
         type: Number,
