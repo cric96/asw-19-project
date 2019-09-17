@@ -7,11 +7,11 @@ router.route('/cities')
 	.get(citiesController.listCities)
 	.post(auth, citiesController.createCity);
 
-router.route('/cities/:CAP')
+router.route('/cities/:cap')
 	.get(auth, cityFetching, citiesController.readCity)
  
 
-router.route('/cities/:CAP/binCategories')
+router.route('/cities/:cap/binCategories')
 	.get(auth, cityFetching, citiesController.getBinCategories)
 
 module.exports = router
