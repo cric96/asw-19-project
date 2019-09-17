@@ -7,10 +7,11 @@ var City = mongoose.model("City");
 module.exports = function(req, res, next) {
     let filterQuery = {
         cap : {
-            $in : [req.body.city.CAP, req.params.CAP]
+            $in : [req.body.city.cap, req.params.cap]
         }
     }
     City.findOne(filterQuery)
+        .populate("binCategories")
         .then(city => {
             if(city == null) { 
                 res.setNotFound("City not found")
