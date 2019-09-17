@@ -1,15 +1,17 @@
 var mongoose = require('mongoose')
-var trashFetch = require('./trashFetch')
 var errorHandler = require("./errorManagement")
 var CollectedBin = require("./collectedBin")
 var trashFetching = require("./trashFetch")
+function keyOf(element) {
+    return element._id.toString()
+}
 function groupByBin(trashes) {
     let binMap = new Map()
     for(trash of trashes) {
-        if(!binMap.has(trash.bin._id)) {
-            binMap.set(trash.bin._id, new CollectedBin(trash.bin))
+        if(!binMap.has(keyOf(trash.bin))) {
+            binMap.set(keyOf(trash.bin), new CollectedBin(trash.bin))
         }
-        binMap.get(trash.bin._id).pushTrash(trash.trashCategory, trash.count)
+        binMap.get(keyOf(trash.bin)).pushTrash(trash.trashCategory, trash.count)
     }  
     return Array.from(binMap.values())
 }
