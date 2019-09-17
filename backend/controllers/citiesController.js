@@ -5,12 +5,15 @@ var Bin = mongoose.model('Bin')
 //if the query not found element, mongo return null! use res.setOkIfNotNull or 
 //res.setCreatedIfNotNull
 const capLength = 5
+
 function isNumeric(num){
 	return !isNaN(num)
 }
+
 function fillCapWithZero(cap, digitsToFillCap) {
 	return cap * (Math.pow(10, digitsToFillCap))
 }
+
 const createCapFilter = function(capString) {
 	let digits = capString.length
 	if(!isNumeric(capString) || digits == 0 || digits > capLength) {
@@ -34,6 +37,7 @@ const createCapFilter = function(capString) {
 		}
 	}
 }
+
 exports.listCities = function(req, res) {
 	let filter = req.query.filter === undefined ? "" : req.query.filter
 	console.log(filter)
@@ -54,7 +58,7 @@ exports.listCities = function(req, res) {
 		.exec()
 		.then(cities => res.setOk(cities))
 		.catch(err => res.setInternalError(err))
-};
+}
 //WHO can create city??
 exports.createCity = function(req, res) {
 	var city = new City(req.body)
@@ -64,9 +68,11 @@ exports.createCity = function(req, res) {
 	} else {
 	}
 }
+
 exports.readCity = function(req, res) {
 	res.setOk(res.locals.cityFetched)
-};
+}
+
 exports.getBinCategories = function(req, res) {
 	let binCategories = res.locals.cityFetched.binCategories
 	res.setOk(binCategories.map(binCategory => binCategory.toJSON()))

@@ -41,7 +41,7 @@ function fetchUser(firebaseId, buildingFetched) {
 }
 
 function filterUserInMember(user, buildingFetched) {
-    if(! buildingFetched.isUserInBuilding(user)){
+    if(!buildingFetched.isUserInBuilding(user)){
         throw new Exception(httpCode.NOT_FOUND, "Member not found in building")
     } else {
         return user
