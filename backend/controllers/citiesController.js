@@ -1,9 +1,6 @@
 var mongoose = require('mongoose');
 var City = mongoose.model('City');
-var Bin = mongoose.model('Bin')
-//REMEMBER, when you exec filter query (with find and some constraints) 
-//if the query not found element, mongo return null! use res.setOkIfNotNull or 
-//res.setCreatedIfNotNull
+
 const capLength = 5
 
 function isNumeric(num){
@@ -41,7 +38,6 @@ const createCapFilter = function(capString) {
 exports.listCities = function(req, res) {
 	let filter = req.query.filter === undefined ? "" : req.query.filter
 	console.log(filter)
-	//TODO aggiungi il cap nelle regex
 	let filterQuery = {
 		$or : [
 			{		

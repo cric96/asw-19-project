@@ -10,7 +10,6 @@ module.exports = function(req, res, next) {
             res.locals.uid = decodedToken.uid;
             fetchLoggedUser(decodedToken.uid).then((user)=>{
                 res.locals.userAuth = user;
-                console.log("BB")
                 next();
             }).catch((err)=>{
                 //fetch user failed; user not logged and not existing in db

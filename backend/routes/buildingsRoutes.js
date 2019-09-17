@@ -18,13 +18,4 @@ router.route('/buildings/:id')
 router.route('/users/:userId/buildings')
 	.get(auth, userValidation, buildingsController.getBuildingsOfUser)
 
-/*    
-router.route('/buildings/:id/members')
-    .post(auth, buildingsController.add_building_member)
-    .get(auth, buildingsController.get_building_members);
-
-router.route('/buildings/:id/members/:memberId')
-    .delete(auth, buildingsController.delete_building_member);*/
-
-
 module.exports = router
