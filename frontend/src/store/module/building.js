@@ -48,7 +48,6 @@ export default {
         createBuilding({ commit }, building) {
             return ApiBuilding.createBuilding(building).then(newBuilding => {
                 commit(types.APPEND_AVAILABLE_BUILDING, newBuilding)
-                commit(types.SET_AVAILABLE_BUILDING, newBuilding)
                 return Promise.resolve();
             })
         },
