@@ -1,5 +1,6 @@
 var mongoose = require('mongoose')
 var Trash = mongoose.model('Trash')
+var User = mongoose.model('User')
 var httpCode = require("../httpCode")
 var Exception = require("../utils/Exception")
 var QueryBuilder = require("../utils/QueryBuilder")
@@ -36,12 +37,13 @@ function putBuildingInQuery(building, queryBuilder) {
 }
 
 function fetchUser(firebaseId, buildingFetched) {
-    return User.findOne({firebase_id : firebaseId})
+    console.log(firebaseId)
+    return User.findOne({firebase_uid : firebaseId})
         .then(user => utils.filterNullElement(user, "User not found"))
 }
 
 function filterUserInMember(user, buildingFetched) {
-    if(!buildingFetched.isUserInBuilding(user)){
+    if(!buildingFetched.isMember(user)){
         throw new Exception(httpCode.NOT_FOUND, "Member not found in building")
     } else {
         return user
@@ -49,16 +51,17 @@ function filterUserInMember(user, buildingFetched) {
 }
 
 function putUserInQuery(user, queryBuilder) {
+    console.log(user)
     return queryBuilder.pushFilter(
         {
-            user : user.firebase_id
+            user : user._id
         }
     )
 }
 
 const groupCatogoriesAndBin = {
     _id: "$trashCategory",
-    count : {
+    quantity : {
         $sum : 1 //count the trash
     }
 }
@@ -72,7 +75,7 @@ const lookupTrashCategory = {
 
 const projection = {
     trashCategory : 1,
-    count : 1
+    quantity : 1
 }
 
 function createAggregationPipeline(builder) {
@@ -117,5 +120,5 @@ module.exports.trashesFetch = function(req, res) {
     return queryBuilding()
         .then(builder => putFilterDateInQuery(req, builder))
         .then(builder => putUserInQuery(res.locals.userAuth, builder))
-        .then(queryBuilder => Trash.aggregate(createAggregationPipeline(queryBuilder)))
+        .then(queryBuilder =>  Trash.aggregate(createAggregationPipeline(queryBuilder)))
 }

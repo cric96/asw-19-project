@@ -72,7 +72,7 @@ exports.readBuilding = function(req, res) {
         .then(utils.filterNullElement)
         .then(building => {
             //verify if the user logged is in the members(otherwise he can't fetch building)
-            if (building.isUserInBuilding(res.locals.userAuth)) {
+            if (building.isMember(res.locals.userAuth)) {
                 res.setOk(building)
             } else {
                 throw new Exception(httpCode.FORBIDDEN)
@@ -95,7 +95,7 @@ exports.updateBuilding = function(req, res) {
     populateBuilding(Building.findById(buildingId))
         .then(utils.filterNullElement)
         .then(oldBuilding => {
-            if (! oldBuilding.isOwner(user)){
+            if (!oldBuilding.isOwner(user)){
                 throw new Exception(httpCode.FORBIDDEN)
             } else { //ok you can update building
                 //merge two object (the old one with the new one)

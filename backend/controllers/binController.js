@@ -35,7 +35,7 @@ function populateEachBin(trashes, binCategories) {
         let buildingBin = new BuildingBin(binCategory)
         for(trashCategory of binCategory.trashCategories) {
             let collectedTrash = trashes.find(trash => utils.sameMongoId(trash._id, trashCategory._id))
-            let trashCount = collectedTrash === undefined ? 0 : collectedTrash.count
+            let trashCount = collectedTrash === undefined ? 0 : collectedTrash.quantity
             buildingBin.putTrash(trashCategory, trashCount)
         }
         bins.push(buildingBin.toJSON())

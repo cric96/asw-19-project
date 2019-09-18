@@ -6,4 +6,7 @@ var buildingFetching = require("./middleware/fetchBuildingMiddleware")
 router.route('/buildings/:id/trashes')
     .post(auth, validation, buildingFetching, trashesController.insertTrash)
 
+router.route('/users/:id/trashes')
+    .get(auth, trashesController.getUserTrashes)
+
 module.exports = router;

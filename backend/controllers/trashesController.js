@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Trash = mongoose.model('Trash');
 var TrashCategory = mongoose.model('TrashCategory')
 var utils = require('../utils/utils')
-var Exception = require("../utils/Exception")
+var trashFetching = require("./trashFetch")
 var errorHandler = require("./errorManagement")
 
 exports.insertTrash = function(req, res) {
@@ -26,3 +26,7 @@ exports.insertTrash = function(req, res) {
         .catch(err => errorHandler(err, res))
 };
 
+exports.getUserTrashes = function(req, res) {
+    trashFetching.trashesFetch(req, res)
+        .then(trashes => res.setOk(trashes))
+}
