@@ -2,7 +2,7 @@
     <v-navigation-drawer v-bind:value.sync="value" @input="val => $emit('input', val)" app clipped>
         <!-- Header navigation drawer -->
         <template v-slot:prepend>
-            <nav-user-header v-if="userProfile" :user="userProfile"/>
+            <nav-user-header v-if="userProfile" :user="userProfile" @clickEditUser="clickUser"/>
         </template>
         <v-divider/>
         <!-- Main content navigation drawer -->
@@ -37,15 +37,18 @@ export default {
         'nav-building-selector': NavBuildingSelector
     },
     methods: {
+        clickUser() {
+            console.log('Edit pen clicked nav user')
+        },
         logout : function(){
             this.$store.dispatch('logout').then(() => {
-                this.$router.replace("/intro");
+                this.$router.replace("/intro")
             })
         }
     },
     computed: {
         userProfile: function() {
-            return this.$store.getters.currentUser;
+            return this.$store.getters.currentUser
         }
     },
     props: {

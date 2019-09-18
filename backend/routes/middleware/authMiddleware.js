@@ -13,17 +13,14 @@ module.exports = function(req, res, next) {
                 next();
             }).catch((err)=>{
                 //fetch user failed; user not logged and not existing in db
+                res.setNotFound("User logged not found")
             });
         })
         .catch(function(error) {
-            res.status(401).json({
-                description: 'Not authorized, not valid token.'
-            })
+            res.setNotAuthorized('Not authorized, not valid token.')
         });
     } else {
-        res.status(400).json({
-            description: 'Bad request.'
-        })
+        res.setNotAuthorized('Not authorized, not valid token.')
     }
 };
 
@@ -32,7 +29,6 @@ function fetchLoggedUser(firebase_id){
         User.findOne({firebase_uid: firebase_id}, function(err, user) {
             if(user && !err) {
                 resolve(user); 
-                console.log("BB")
             } else {
                 reject(err)
             }

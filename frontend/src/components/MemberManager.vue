@@ -3,9 +3,7 @@
         <v-row>
             <v-col cols="12">
                 <v-autocomplete v-model="selectedMembers" :items="userItems" :search-input.sync="searchText" :loading="loading" 
-                    clearable hide-details hide-selected
-                    item-text="nickname"
-                    item-value="nickname"
+                    clearable hide-details hide-selected no-filter
                     label="Membri dell'abitazione"
                     multiple chips deletable-chips return-object
                 >
@@ -18,19 +16,19 @@
                             @click:close="remove(data.item)">
                             <v-avatar left v-if="data.item.avatar"><v-img :src="data.item.avatar"/></v-avatar>
                             <v-avatar left v-else color="secondary" class="font-weight-light white--text">
-                                {{data.item.nickname.charAt(0)}}
+                               {{ data.item | formatUserDisplayName | initial }}
                             </v-avatar>
-                            {{ data.item.nickname }}
+                            {{ data.item | formatUserDisplayName }}
                         </v-chip>
                     </template>
                     <!-- slot template for list of suggestions -->
                     <template v-slot:item="{ item }">
                         <v-list-item-avatar v-if="item.avatar"><v-img :src="item.avatar"/></v-list-item-avatar>
                         <v-list-item-avatar v-else color="secondary" class="headline font-weight-light white--text">
-                            {{item.nickname.charAt(0)}}
+                            {{ item | formatUserDisplayName | initial }}
                         </v-list-item-avatar>
                         <v-list-item-content>
-                            <v-list-item-title v-if="item.nickname" v-text="item.nickname"></v-list-item-title>
+                            <v-list-item-title v-if="item">{{item | formatUserDisplayName}}</v-list-item-title>
                             <v-list-item-subtitle v-text="item.email"></v-list-item-subtitle>
                         </v-list-item-content>
                         <v-list-item-action>
@@ -47,6 +45,8 @@
 </template>
 
 <script>
+import userApi from '@/services/users.api'
+
 export default {
     data: () => ({
         selectedMembers: [],
@@ -68,34 +68,13 @@ export default {
     },
     watch: {
         searchText(val) {
-            if(this.searchText && this.searchText.length > 0) {
+            if(val && val.length > 0) {
                 this.loading = true
-                new Promise((resolve) => {
-                    setTimeout(() => resolve(), 700);
-                }).then(() => {
-                    this.availableUsers = [{
-                nickname: 'Andrea',
-                email: 'petretiandrea@gmail.com'
-                },
-                {
-                nickname: 'Mooon',
-                avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
-                email: 'petretiandrea@gmail.com'
-                },
-                {
-                nickname: 'Maaaartttt',
-                avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
-                email: 'petretiandrea@gmail.com'
-                },
-                {
-                nickname: 'Paggioliiix',
-                avatar: 'https://cdn.vuetifyjs.com/images/lists/1.jpg',
-                email: 'petretiandrea@gmail.com'
-                }] // TODO: replace this with remote fetch query
-                    console.log(this.availableUsers)
+                userApi.getAllUsers(val).then(results => {
+                    this.availableUsers = results
                 }).finally(() => {
                     this.loading = false
-                });
+                })
             } else {
                 this.availableUsers = []
                 this.loading = false

@@ -14,8 +14,17 @@ var citySchema = new Schema({
     },
     binCategories: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'BinCategory'
-    }]
+        ref: 'Bin'
+    }],
+    cap: {
+        type: Number,
+        require: true
+    }
 });
-
+citySchema.options.toJSON = {
+    transform: function(doc, ret, options) {
+        ret.binCategories = undefined
+        return ret;
+    },
+}
 module.exports = mongoose.model('City', citySchema);

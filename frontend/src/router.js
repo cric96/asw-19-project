@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import fb from './firebaseConfig'
+import store from './store/store'
 import Router from 'vue-router'
 import Dashboard from './views/Dashboard.vue'
 import Login from './views/Login.vue'
@@ -59,18 +60,26 @@ const router = new Router({
       ]
     }
   ]
-});
+})
 
 router.beforeEach((to, from, next) => {
-  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-  const unsub = fb.auth.onAuthStateChanged(currentUser => {
-    if (requiresAuth && !currentUser) next('intro');
-    else if (!requiresAuth && currentUser) { next('dashboard');}
-    else next();
+  if(store.getters.isUserLoading) {
+    const unwatch = store.watch((state, getters) => getters.userProfile, function() {
+      routeGuard(to, from, next)
+      unwatch()
+    })
+  } else {
+    routeGuard(to, from, next)
+  }
+})
 
-    unsub();
-  });
+function routeGuard(to, from, next) {
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
+  let isAuth = store.getters.isAuthenticated
 
-});
+  if (requiresAuth && !isAuth) next('intro')
+  else if (!requiresAuth && isAuth) { next('dashboard') }
+  else next()
+}
 
-export default router;
+export default router
