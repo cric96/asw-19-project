@@ -99,6 +99,9 @@ const store = new Vuex.Store({
         },
         setUserProfile(state, val) {
             state.userProfile = val
+        },
+        updateScore(state, score) {
+            state.userProfile.score += score
         }
     }
 })

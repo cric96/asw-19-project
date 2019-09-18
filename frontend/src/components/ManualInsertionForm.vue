@@ -12,13 +12,12 @@
                     <v-autocomplete
                         v-model="category"
                         :items="categories.map(category => category.name)"
-                        cache-items
-                        class="mx-4"
                         flat
                         hide-no-data
                         hide-details
                         label="Digita..."
                         solo
+                        menu-props="auto"                    
                     ></v-autocomplete>
                     <v-btn icon @click="onAccept" :disabled="confirmDisabled">
                         <v-icon>done</v-icon>
@@ -62,7 +61,8 @@
       ]),
       onAccept() {
         this.categoryByName(this.category).then(category => {
-          this.$store.dispatch('msg/addMessage', 'Hai guadagnato '+category.score+ ' punti')
+          this.$store.dispatch('msg/addMessage', 'Hai guadagnato '+ category.score + ' punti')
+          this.$store.commit('updateScore', category.score)
         })
         this.close()
       },

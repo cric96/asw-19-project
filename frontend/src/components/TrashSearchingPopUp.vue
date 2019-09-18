@@ -24,13 +24,13 @@
                     />
                 </v-flex>
                 <v-card-title class="align-end fill-height">{{category.name}}</v-card-title>
-                <v-card-text>
+                <v-card-text v-if="aiMode">
                 <p>Confermi?</p>
                 </v-card-text>
 
-                <v-card-actions>
+                <v-card-actions class="justify-center">
                 <v-btn icon @click="onAccept"><v-icon>done</v-icon></v-btn>
-                <v-btn icon @click="close"> <v-icon>close</v-icon></v-btn>
+                <v-btn v-if="aiMode" icon @click="close"> <v-icon>close</v-icon></v-btn>
                 </v-card-actions>
             </v-card>
             <v-card
@@ -67,7 +67,8 @@ export default {
         waitingImage : true,
         primaryColor : color.preset.theme.themes.light.primary,
         category : '',
-        resNotFound : false
+        resNotFound : false,
+        aiMode : false
     }),
     computed: {
         resultReceived: function() {
@@ -81,6 +82,7 @@ export default {
         onAccept() {
             this.value = false
             this.$store.dispatch('msg/addMessage', 'Hai guadagnato ' + this.category.score + ' punti')
+            this.$store.commit('updateScore', this.category.score)
             this.close()
         },
         open() {
@@ -94,9 +96,11 @@ export default {
         },
         barcodePrediction(img) {
             this.manageResult(prediction.barcodePredict(img))
+            this.aiMode = false
         },
         aiPrediction(img) {
-            this.manageResult(prediction.aiPredict(img))                
+            this.manageResult(prediction.aiPredict(img))  
+            this.aiMode = true             
         },
         manageResult(promise) {
             promise.then(res => {

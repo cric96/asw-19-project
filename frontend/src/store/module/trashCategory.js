@@ -1,4 +1,4 @@
-import trashCategoriesApi from '@/services/mockApiCategories'
+import trashCategoriesApi from '@/services/trashCategoriesApi'
 
 export default {
     namespaced: true,
