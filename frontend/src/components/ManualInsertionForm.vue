@@ -33,6 +33,7 @@
 </template>
 <script>
   import { createNamespacedHelpers } from 'vuex'
+  import trashesApi from '../services/trashesApi'
   const { mapGetters, mapActions } = createNamespacedHelpers('trashCategories');
 
   export default {
@@ -61,10 +62,14 @@
       ]),
       onAccept() {
         this.categoryByName(this.category).then(category => {
-          this.$store.dispatch('msg/addMessage', 'Hai guadagnato '+ category.score + ' punti')
-          this.$store.commit('updateScore', category.score)
-        })
-        this.close()
+          console.log(this.$store.state.building)
+          let buildingId = this.$store.state.building.activeBuilding
+          return trashesApi.insertTrash(buildingId, { "name" : category.name })
+            .then(() => {
+              this.$store.dispatch('msg/addMessage', 'Hai guadagnato '+ category.score + ' punti')
+              this.$store.commit('updateScore', category.score)
+            })
+        }).finally(() => this.close())
       },
       open() {
         this.value = true
