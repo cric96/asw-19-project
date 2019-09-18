@@ -15,13 +15,15 @@ function queryBuilding(req, res) {
 function areDatesValid(from, to) {
     return (from === undefined || isFinite(from)) && (to === undefined || isFinite(to))
 }
-
+function parseDateOrElse(timestap, orElseDate) {
+    return timestap === undefined ? orElseDate : new Date(parseInt(timestap))
+} 
 function putFilterDateInQuery(req, queryBuilder) {
     if(!areDatesValid(req.query.to, req.query.from)) {
         throw new Exception(httpCode.BAD_REQUEST, "Put timestamp in date field")
     }
-    let to = req.query.to === undefined ? new Date() : new Date(req.query.to)
-    let from = req.query.from === undefined ? new Date(1) : new Date(req.query.from)
+    let to = parseDateOrElse(req.query.to, new Date())
+    let from = parseDateOrElse(req.query.from, new Date(1))
     return queryBuilder.pushFilter({
         date: {
             $lt : to,
