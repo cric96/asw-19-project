@@ -86,7 +86,7 @@ exports.readCity = function(req, res) {
 	res.setOk(res.locals.cityFetched)
 }
 
-exports.getBinCategories = function(req, res) {
+exports.listBinCategories = function(req, res) {
 	let binCategories = res.locals.cityFetched.binCategories
 	res.setOk(binCategories.map(binCategory => binCategory.toJSON()))
 }

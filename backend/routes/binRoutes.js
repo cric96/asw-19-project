@@ -5,6 +5,6 @@ var buildingFetching = require("./middleware/fetchBuildingMiddleware")
 var validateObjectId = require('./middleware/objectIdMiddleware');
 
 router.route('/buildings/:id/bins')
-    .get(auth, validateObjectId, buildingFetching, binController.getBinStatus)
+    .get(auth, validateObjectId, buildingFetching, binController.listBins)
 
 module.exports = router;

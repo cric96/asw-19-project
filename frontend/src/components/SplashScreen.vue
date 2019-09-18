@@ -1,5 +1,5 @@
 <template>
-    <v-content fluid>
+    <v-content z>
         Loading...
     </v-content>
 </template>

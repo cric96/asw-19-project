@@ -44,7 +44,7 @@ exports.addBuildingMember = function(req, res) {
         .catch(err => errorHandler(err, res))
 }
 
-exports.getBuildingMembers = function(req, res) {
+exports.listBuildingMembers = function(req, res) {
     let building = res.locals.buildingFetched
     //find all users defined in member array
     let filterQuery = {

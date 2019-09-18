@@ -31,7 +31,7 @@ exports.updateUser = function(req, res) {
         .catch(err => res.setBadRequest())
 };
 
-exports.getAllUsers = function(req, res) {
+exports.listUsers = function(req, res) {
     User.find().exec()
         .then(users => res.setOk(users))
         .catch(err => res.setInternalError(err))

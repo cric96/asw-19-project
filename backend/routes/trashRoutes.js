@@ -1,5 +1,5 @@
 var router = require("express").Router()
-var trashesController = require('../controllers/trashesController')
+var trashesController = require('../controllers/trashController')
 var auth = require('./middleware/authMiddleware')
 var validation = require('./middleware/objectIdMiddleware')
 var buildingFetching = require("./middleware/fetchBuildingMiddleware")
@@ -7,6 +7,6 @@ router.route('/buildings/:id/trashes')
     .post(auth, validation, buildingFetching, trashesController.insertTrash)
 
 router.route('/users/:id/trashes')
-    .get(auth, trashesController.getUserTrashes)
+    .get(auth, trashesController.listUserTrashes)
 
 module.exports = router;

@@ -56,7 +56,7 @@ exports.listBuildings = function(req, res) {
 /**
  * from the id, return a corrisponding elements inside the mongodb
  */
-exports.readBuilding = function(req, res) {
+exports.getBuilding = function(req, res) {
     let buildingId = req.params.id
     let filterQuery = { 
         $and: [
@@ -129,7 +129,7 @@ exports.deleteBuilding = function(req, res) {
         }).catch(err => errorHandler(err, res))
 }
 
-exports.getBuildingsOfUser = function(req, res) { 
+exports.listUserBuildings = function(req, res) { 
     //it has index on members, this query is ok    
     let filterQuery = {
          $and : [

@@ -42,7 +42,7 @@ function populateEachBin(trashes, binCategories) {
     }
     return bins
 }
-exports.getBinStatus = function(req, res) {
+exports.listBins = function(req, res) {
     City.findById(res.locals.buildingFetched.city)
         .populate("binCategories")
         .then(city => city.binCategories)
