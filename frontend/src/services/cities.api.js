@@ -15,7 +15,7 @@ export default {
     getAll : function(){
         return apiService.get(resourceEndpoint, false)
     },
-    getAllFilter(queryFilter) {
-        return apiService.get(resourceEndpoint, {filter: queryFilter})
+    getAllFilter(queryFilter, limit = 5) {
+        return apiService.get(resourceEndpoint, {filter: queryFilter, limit: limit})
     }
 }
