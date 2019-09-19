@@ -50,7 +50,7 @@ export default {
         },
         selectBuilding(building) {
             this.expanded = false /* trick for collpase the dropdown after selection */
-            this.changeActiveBuilding(building.link)
+            this.changeActiveBuilding(building._id)
         }
     },
     mounted() {
