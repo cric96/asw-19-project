@@ -16,7 +16,7 @@ export default {
     actions: {
         fetchCategories({ commit }) {
             return trashCategoriesApi.getCategories()
-            .then(categories => commit('setCategories', categories))
+                .then(categories => commit('setCategories', categories))
         },
         categoryByName({getters}, name) {
             return getters.categories.find(category => category.name == name)
