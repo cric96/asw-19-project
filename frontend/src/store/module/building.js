@@ -46,10 +46,12 @@ export default {
             });
         },
         createBuilding({ commit }, building) {
-            return ApiBuilding.createBuilding(building).then(newBuilding => {
-                commit(types.APPEND_AVAILABLE_BUILDING, newBuilding)
-                return Promise.resolve();
-            })
+            return ApiBuilding.createBuilding(building).then(newBuilding => 
+                ApiBuilding.addMembers(newBuilding._id, building.members).then(addedMembers => {
+                    newBuilding.members = addedMembers
+                    commit(types.APPEND_AVAILABLE_BUILDING, newBuilding)
+                })
+            )
         },
         deactivateBuilding({ commit, state }, buildingId) {
             return ApiBuilding.deleteBuilding(buildingId).then(deleted => {

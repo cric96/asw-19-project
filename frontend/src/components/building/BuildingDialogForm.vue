@@ -10,7 +10,7 @@
                 </v-card-title>
                 <v-card-text>
                     <v-container>
-                        <v-form ref="form" v-model="validForm" lazy-validation>
+                        <v-form ref="form" lazy-validation>
                             <v-row>
                                 <v-col cols="12">
                                     <v-text-field name="name" 
@@ -18,6 +18,25 @@
                                         :rules="baseRule"
                                         v-model="building.name"
                                         required/>
+                                </v-col>
+                            </v-row>
+                            <v-row>
+                                <v-col cols="12">
+                                    <v-autocomplete v-model="building.city"
+                                        :items="cities.data"
+                                        :loading="cities.loading"
+                                        :search-input.sync="citySearchText"
+                                        :rules="baseRule"
+                                        label="Seleziona la città" 
+                                        hide-details hide-selected
+                                        no-filter clearable return-object>
+                                            <template v-slot:selection="data">
+                                                <span>{{data.item.name}}, {{data.item.cap}}, {{data.item.state}}</span>
+                                            </template>
+                                            <template v-slot:item="{ item }">
+                                                {{item.name}}, {{item.cap}}, {{item.state}}
+                                            </template>
+                                    </v-autocomplete>
                                 </v-col>
                             </v-row>
                             <v-row>
@@ -34,32 +53,14 @@
                                 </v-col>
                             </v-row>
                             <v-row>
-                                <v-col cols="12">
-                                    <v-autocomplete v-model="building.city"
-                                        :items="cities.data"
-                                        :loading="cities.loading"
-                                        :search-input.sync="citySearchText"
-                                        label="Seleziona la città" 
-                                        hide-details hide-selected
-                                        no-filter clearable return-object>
-                                            <template v-slot:selection="data">
-                                                <span>{{data.item.name}}, {{data.item.cap}}, {{data.item.state}}</span>
-                                            </template>
-                                            <template v-slot:item="{ item }">
-                                                {{item.name}}, {{item.cap}}, {{item.state}}
-                                            </template>
-                                    </v-autocomplete>
-                                </v-col>
-                            </v-row>
-                            <v-row>
-                                <v-col cols="12" md="6">
+                                <v-col cols="6" md="6">
                                     <v-text-field 
                                         name="floor" 
                                         label="Piano abitazione" 
                                         type="number"
                                         v-model="building.floor"/>
                                 </v-col>
-                                <v-col cols="12" md="6">
+                                <v-col cols="6" md="6">
                                     <v-text-field 
                                         name="apartmentNumber" 
                                         label="Interno"
@@ -70,7 +71,9 @@
                                 </v-col>
                             </v-row>
                             <v-row>
-                                <member-manager></member-manager>
+                                <v-col cols="12">
+                                    <autocomplete-managers ref="memberManager"></autocomplete-managers>
+                                </v-col>
                             </v-row>
                         </v-form>
                         <!-- TODO: preview google maps -->
@@ -78,7 +81,7 @@
                 </v-card-text>
                 <v-card-actions>
                     <div class="flex-grow-1"></div>
-                    <v-btn color="blue darken-1" text @click="value = false">Chiudi</v-btn>
+                    <v-btn color="blue darken-1" text :disabled="pendingOperation" @click="value = false">Chiudi</v-btn>
                     <v-btn color="blue darken-1" text :loading="pendingOperation" @click="pressSaveBuilding">Salva</v-btn>
                 </v-card-actions>
             </v-card>
@@ -89,16 +92,15 @@
 <script>
 import { createNamespacedHelpers } from 'vuex'
 import citiesApi from '@/services/cities.api'
-import { functions } from 'firebase'
 import AutocompleteAddress from '@/components/AutocompleteAddress'
+import AutocompletMembers from '@/components/AutocompleteMembers'
 
 const { mapGetters, mapActions } = createNamespacedHelpers('building')
 
-import MemberManager from '@/components/MemberManager'
 
 export default {
     components: {
-        'member-manager': MemberManager,
+        'autocomplete-managers': AutocompletMembers,
         'autocomplete-address': AutocompleteAddress
     },
     data: () => ({
@@ -108,9 +110,7 @@ export default {
             loading: false,
             data: []
         },
-        validForm: true,
         building: { },
-        members: [],
         alert: null,
         pendingOperation: false,
         baseRule: [v => !!v || "Questo campo è obbligatorio"]
@@ -152,6 +152,7 @@ export default {
         pressSaveBuilding() {
             if (this.$refs.form.validate()) {
                 let newBuilding = Object.assign({}, this.building)
+                newBuilding.members = this.$refs.memberManager.selectedMembers.map(member => member.firebase_uid)
                 let promise = this.createBuilding(newBuilding).then(() => {
                     this.$refs.form.reset()
                     this.closeDialog()
