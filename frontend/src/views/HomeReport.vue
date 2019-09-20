@@ -55,15 +55,12 @@ export default {
   },
   data: () => ({
     fabExpanded: false,
-    newTrash: false,
-    manualOpened: false,
-    score: 0,
     bins: null
   }),
   computed: {
     ...mapGetters({
       activeBuilding: "building/activeBuilding",
-      areLoaded : "trashCategories/areLoaded"
+      areLoaded : "trashCategories/areLoaded" //used to see if the trash category are loaded
     }),
     loading: function() {
       return !this.bins
@@ -77,10 +74,7 @@ export default {
     }
   },
   methods: {
-    /**
-     * change current child screen to manual screen
-     */
-    openManualForm() {
+    openManualForm() { //show the manual insertionpopup
       this.$refs.manualInsertionPopUp.open()
     },
     openCamera(ref) {

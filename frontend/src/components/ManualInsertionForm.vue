@@ -38,9 +38,9 @@
 
   export default {
     data: () => ({
-        value: false,
-        category: '',
-        confirmDisabled: true
+        value: false, //true the dialog is opened, false the dialog is closed
+        category: '', //the category found
+        confirmDisabled: true //confirm is disable as long as the user write a trash category 
     }),
     computed: {
       ...mapGetters([
@@ -48,7 +48,7 @@
       ])
     },
     watch: {
-      category: function(val) {
+      category: function(val) { //watch category value, when there is some value, user can confirm the category
         if(!val) {
           this.confirmDisabled = true
         } else {
@@ -61,15 +61,17 @@
         'categoryByName'
       ]),
       onAccept() {
+        //fetch the category from the name
         this.categoryByName(this.category).then(category => {
           let buildingId = this.$store.state.building.activeBuilding
+          //put the trash into backend
           return trashesApi.insertTrash(buildingId, { "name" : category.name })
             .then(() => {
               this.$store.dispatch('msg/addMessage', 'Hai guadagnato '+ category.score + ' punti')
               this.$store.commit('updateScore', category.score)
             })
         })
-        .catch(err => console.log(err))
+        .catch(err => console.log(err)) //find a way to show erros
         .finally(() => this.close())
       },
       open() {
