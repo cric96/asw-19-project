@@ -21,8 +21,10 @@ const store = new Vuex.Store({
         userProfile: undefined,
     },
     actions: {
-        updateUserData({}, user) {
-           return usersApi.updateUser(user)
+        updateUserData({commit}, user) {
+           return usersApi.updateUser(user).then(updatedUser => {
+               commit('setUserProfile', updatedUser)
+           })
             // TODO: move to right module
         },
         autoSignIn() {

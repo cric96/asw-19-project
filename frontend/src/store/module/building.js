@@ -1,8 +1,7 @@
 // import { ApiBuilding } from '@/services/mockApiBuilding'
 import ApiBuilding from '@/services/buildings.api'
 import * as types from '../mutationTypes'
-import store from '../store';
-import { stat } from 'fs';
+import store from '../store'
 
 const ACTIVE_BUILDING_KEY = 'activeBuilding' 
 

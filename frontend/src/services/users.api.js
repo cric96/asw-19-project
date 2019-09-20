@@ -11,6 +11,6 @@ export default {
         return apiService.get(`/users/`, { 'filter': filter }, true)
     },
     updateUser : function(user) {
-        return apiService.put("/users", user, null, true)
+        return apiService.put(`/users/${user.firebase_uid}`, user, null, true)
     }
 }
