@@ -11,10 +11,10 @@ function fillCapWithZero(cap, digitsToFillCap) {
 	return cap * (Math.pow(10, digitsToFillCap))
 }
 
-const createCapFilter = function(capString) {
+function createCapFilter(capString) {
 	let digits = capString.length
 	if(!isNumeric(capString) || digits == 0 || digits > capLength) {
-		return {}
+		return undefined
 	} else {
 		let cap = parseInt(capString)
 		let digitsToFillCap = (capLength - digits)
@@ -27,31 +27,47 @@ const createCapFilter = function(capString) {
 		let upperCap = fillCapWithZero(cap + 1, digitsToFillCap) - 1
 		console.log(lowerCap, upperCap)
 		return {
-			cap : {
-				$gte : lowerCap,
-				$lte : upperCap
-			}
+			$gte : lowerCap,
+			$lte : upperCap
 		}
 	}
 }
 
-exports.listCities = function(req, res) {
-	let filter = req.query.filter === undefined ? "" : req.query.filter
-	console.log(filter)
-	let filterQuery = {
-		$or : [
-			{		
-				name : {
-					$regex: filter , "$options": "i" 
-				}
-			},
-			createCapFilter(filter)
-		]
-		
+function putLimitIfDefined(query, req) {
+	if(isNumeric(req.query.limit)) {
+		return query.limit(parseInt(req.query.limit))
+	} else {
+		return query
 	}
-	
-	City.find(filterQuery)
-		.exec()
+}
+
+function createFilterQuery(req) {
+	let filter = req.query.filter === undefined ? "" : req.query.filter
+	let capFilter = createCapFilter(filter)
+	if(capFilter == undefined) {
+		return {
+			name : {
+				$regex: filter , "$options": "i" 
+			}
+		}
+	} else {
+		return {
+			$or : [
+				{
+					name : {
+						$regex: filter , "$options": "i" 
+					}
+				}, 
+				{	
+					cap : capFilter
+				}
+			]
+		}
+	}
+}
+exports.listCities = function(req, res) {
+	let filterQuery = createFilterQuery(req)
+	putLimitIfDefined(City.find(filterQuery), req)
 		.then(cities => res.setOk(cities))
 		.catch(err => res.setInternalError(err))
 }
@@ -62,6 +78,7 @@ exports.createCity = function(req, res) {
     if(error) {
 		res.setBadRequest()
 	} else {
+		
 	}
 }
 
@@ -69,13 +86,7 @@ exports.readCity = function(req, res) {
 	res.setOk(res.locals.cityFetched)
 }
 
-exports.getBinCategories = function(req, res) {
+exports.listBinCategories = function(req, res) {
 	let binCategories = res.locals.cityFetched.binCategories
 	res.setOk(binCategories.map(binCategory => binCategory.toJSON()))
 }
-
-
-
-
-
-

@@ -1,5 +1,5 @@
 var router = require("express").Router();
-var citiesController = require('../controllers/citiesController');
+var citiesController = require('../controllers/cityController');
 var auth = require('./middleware/authMiddleware');
 var cityFetching = require("./middleware/fetchCityMiddleware")
 //TODO ricordati di aggiungere il cambio di ownership
@@ -12,6 +12,6 @@ router.route('/cities/:cap')
  
 
 router.route('/cities/:cap/binCategories')
-	.get(auth, cityFetching, citiesController.getBinCategories)
+	.get(auth, cityFetching, citiesController.listBinCategories)
 
 module.exports = router

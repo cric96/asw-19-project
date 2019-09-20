@@ -36,6 +36,9 @@ import NavigationDrawer from '@/components/navigation/NavigationDrawer'
 import CompleteUserInfoForm from '@/components/authentication/CompleteUserInfoForm'
 import SnackbarNotification from '@/components/SnackbarNotification'
 import { mapGetters } from 'vuex'
+import { createNamespacedHelpers } from 'vuex'
+const { mapActions } = createNamespacedHelpers('trashCategories');
+
 
 export default {
   name: 'Dashboard',
@@ -74,7 +77,13 @@ export default {
       console.log("event reiceved")
       this.newTrash = true
       this.score = scoreReceived
-    }
+    },
+    ...mapActions([
+      'fetchCategories',
+    ])
+  },
+  beforeMount() {
+    this.fetchCategories()
   }
 };
 </script>

@@ -56,7 +56,7 @@ exports.listBuildings = function(req, res) {
 /**
  * from the id, return a corrisponding elements inside the mongodb
  */
-exports.readBuilding = function(req, res) {
+exports.getBuilding = function(req, res) {
     let buildingId = req.params.id
     let filterQuery = { 
         $and: [
@@ -72,7 +72,7 @@ exports.readBuilding = function(req, res) {
         .then(utils.filterNullElement)
         .then(building => {
             //verify if the user logged is in the members(otherwise he can't fetch building)
-            if (building.isUserInBuilding(res.locals.userAuth)) {
+            if (building.isMember(res.locals.userAuth)) {
                 res.setOk(building)
             } else {
                 throw new Exception(httpCode.FORBIDDEN)
@@ -95,7 +95,7 @@ exports.updateBuilding = function(req, res) {
     populateBuilding(Building.findById(buildingId))
         .then(utils.filterNullElement)
         .then(oldBuilding => {
-            if (! oldBuilding.isOwner(user)){
+            if (!oldBuilding.isOwner(user)){
                 throw new Exception(httpCode.FORBIDDEN)
             } else { //ok you can update building
                 //merge two object (the old one with the new one)
@@ -129,7 +129,7 @@ exports.deleteBuilding = function(req, res) {
         }).catch(err => errorHandler(err, res))
 }
 
-exports.getBuildingsOfUser = function(req, res) { 
+exports.listUserBuildings = function(req, res) { 
     //it has index on members, this query is ok    
     let filterQuery = {
          $and : [

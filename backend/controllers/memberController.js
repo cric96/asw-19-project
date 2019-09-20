@@ -6,7 +6,7 @@ var User = mongoose.model("User")
 var utils = require('../utils/utils')
 
 let areUserAlreadyInBuiding = function(candidates, building) {
-    return candidates.filter(candidate => building.isUserInBuilding(candidate)).length != 0
+    return candidates.filter(candidate => building.isMember(candidate)).length != 0
 }
 /**
  * try to add members in a building identify by firebase uid.
@@ -44,7 +44,7 @@ exports.addBuildingMember = function(req, res) {
         .catch(err => errorHandler(err, res))
 }
 
-exports.getBuildingMembers = function(req, res) {
+exports.listBuildingMembers = function(req, res) {
     let building = res.locals.buildingFetched
     //find all users defined in member array
     let filterQuery = {
@@ -52,7 +52,7 @@ exports.getBuildingMembers = function(req, res) {
             $in : building.members.map(id => mongoose.Types.ObjectId(id))
         }
     }
-    if(building.isUserInBuilding(res.locals.userAuth)) {
+    if(building.isMember(res.locals.userAuth)) {
         User.find(filterQuery)
             .then(users => users.map(user => user.toJSON()))
             .then(users => res.setOk(users))
@@ -76,7 +76,7 @@ exports.deleteBuildingMember = function(req, res) {
     User.findOne(filterQuery)
         .then(utils.filterNullElement)
         .then(member => { //filter the member id, if is in the building, it can be deleted
-            if(building.isUserInBuilding(member)) {
+            if(building.isMember(member)) {
                 return member
             } else {
                 throw new Exception(httpCode.BAD_REQUEST, "User must be in building")
