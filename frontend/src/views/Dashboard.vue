@@ -15,7 +15,7 @@
       <navigation-drawer v-model="drawer" :navItems="navItems"></navigation-drawer>
 
       <v-content>
-          <v-container fluid>
+          <v-container fluid fill-height>
             
             <!-- TODO: insert v-breadcrumbs?? -->
             <!-- Replaced with the childrend view -->
