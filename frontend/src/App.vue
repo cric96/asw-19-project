@@ -5,7 +5,7 @@
 </template>
 
 <script>
-
+console.log(process.env.VUE_APP_NODE_SERVER)
 export default {
   name: 'App'
 }
