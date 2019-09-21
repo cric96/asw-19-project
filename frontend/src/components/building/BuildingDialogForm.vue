@@ -91,7 +91,7 @@
 
 <script>
 import { createNamespacedHelpers } from 'vuex'
-import citiesApi from '@/services/cities.api'
+import citiesApi from '@/services/citiesApi'
 import AutocompleteAddress from '@/components/AutocompleteAddress'
 import AutocompletMembers from '@/components/AutocompleteMembers'
 

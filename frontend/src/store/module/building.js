@@ -1,5 +1,5 @@
 // import { ApiBuilding } from '@/services/mockApiBuilding'
-import ApiBuilding from '@/services/buildings.api'
+import ApiBuilding from '@/services/buildingsApi'
 import * as types from '../mutationTypes'
 import store from '../store'
 

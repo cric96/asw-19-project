@@ -41,7 +41,7 @@
 <script>
 import User from '../model/user'
 import UserChip from '@/components/UserChip'
-import hereApi from '@/services/here.api'
+import hereApi from '@/services/hereApi'
 
 import { createNamespacedHelpers } from 'vuex'
 const { mapGetters, mapActions } = createNamespacedHelpers('building')

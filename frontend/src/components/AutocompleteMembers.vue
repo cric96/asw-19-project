@@ -48,7 +48,7 @@
 </template>
 
 <script>
-import userApi from "@/services/users.api";
+import userApi from "@/services/usersApi";
 import UserChip from "@/components/UserChip";
 
 export default {

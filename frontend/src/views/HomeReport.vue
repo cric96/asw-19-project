@@ -46,7 +46,7 @@
 import BinsBoard from '@/components/bin/BinsBoard.vue'
 import ManualInsertionForm from '@/components/ManualInsertionForm.vue'
 import TrashSearchingPopUp from '@/components/TrashSearchingPopUp.vue'
-import ApiBin from "@/services/bins.api";
+import ApiBin from "@/services/binsApi";
 import { ScaleLoader } from '@saeris/vue-spinners'
 import { createNamespacedHelpers } from 'vuex'
 import { mapGetters } from 'vuex'
