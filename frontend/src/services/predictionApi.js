@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 function post(image, finalUrl) {
-    return axios.post("http://localhost:7000/v0/prediction"+finalUrl, image, {
+    return axios.post(process.env.VUE_APP_PREDITION_SERVER + finalUrl, image, {
             headers: { 'Content-type' : 'image/jpg' }
         })
 } 
