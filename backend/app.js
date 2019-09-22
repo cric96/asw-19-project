@@ -6,7 +6,6 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors');
 var admin = require('firebase-admin');
-    
 var app = express();
 
 let serviceAccount = require('./scanbage-firebase-adminsdk-itzje-52ab1c019c.json')
