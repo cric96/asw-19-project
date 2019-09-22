@@ -1,4 +1,4 @@
-module.exports = class QueryBuilder {
+module.exports = class AndFilterBuilder {
     constructor() {
         this.filters = []
     }

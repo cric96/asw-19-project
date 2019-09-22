@@ -3,12 +3,12 @@ var Trash = mongoose.model('Trash')
 var User = mongoose.model('User')
 var httpCode = require("../httpCode")
 var Exception = require("../utils/Exception")
-var QueryBuilder = require("../utils/QueryBuilder")
+var AndFilterBuilder = require("../utils/AndFilterBuilder")
 var utils = require("../utils/utils")
 
 function queryBuilding(req, res) {
     return new Promise((resolve, reject) => {
-        resolve(new QueryBuilder())
+        resolve(new AndFilterBuilder())
     }) 
 }
 
@@ -18,13 +18,13 @@ function areDatesValid(from, to) {
 function parseDateOrElse(timestap, orElseDate) {
     return timestap === undefined ? orElseDate : new Date(parseInt(timestap))
 } 
-function putFilterDateInQuery(req, queryBuilder) {
+function putFilterDateInQuery(req, AndFilterBuilder) {
     if(!areDatesValid(req.query.to, req.query.from)) {
         throw new Exception(httpCode.BAD_REQUEST, "Put timestamp in date field")
     }
     let to = parseDateOrElse(req.query.to, new Date())
     let from = parseDateOrElse(req.query.from, new Date(1))
-    return queryBuilder.pushFilter({
+    return AndFilterBuilder.pushFilter({
         date: {
             $lt : to,
             $gt : from
@@ -32,8 +32,8 @@ function putFilterDateInQuery(req, queryBuilder) {
     })
 }
 
-function putBuildingInQuery(building, queryBuilder) {
-    return queryBuilder.pushFilter({
+function putBuildingInQuery(building, AndFilterBuilder) {
+    return AndFilterBuilder.pushFilter({
         building : building._id
     })
 }
@@ -52,9 +52,9 @@ function filterUserInMember(user, buildingFetched) {
     }
 }
 
-function putUserInQuery(user, queryBuilder) {
+function putUserInQuery(user, AndFilterBuilder) {
     console.log(user)
-    return queryBuilder.pushFilter(
+    return AndFilterBuilder.pushFilter(
         {
             user : user._id
         }
@@ -115,12 +115,12 @@ module.exports.binsFetch = function(req, res) {
                     .then(user => putUserInQuery(user, builder))
             }
         })
-        .then(queryBuilder => Trash.aggregate(createAggregationPipeline(queryBuilder)))
+        .then(AndFilterBuilder => Trash.aggregate(createAggregationPipeline(AndFilterBuilder)))
 }
 
 module.exports.trashesFetch = function(req, res) {
     return queryBuilding()
         .then(builder => putFilterDateInQuery(req, builder))
         .then(builder => putUserInQuery(res.locals.userAuth, builder))
-        .then(queryBuilder =>  Trash.aggregate(createAggregationPipeline(queryBuilder)))
+        .then(AndFilterBuilder =>  Trash.aggregate(createAggregationPipeline(AndFilterBuilder)))
 }
