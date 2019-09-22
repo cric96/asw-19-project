@@ -1,21 +1,24 @@
 import { apiService } from './apiService'
 
-const resourceEndpoint = "/buildings"
+const ENDPOINT_BUILDINGS = "/buildings"
+const ENDPOINT_BUILDINGS_OF_USER = "/users/{0}/buildings"
+const ENDPOINT_BUILDINGS_ID = `${ENDPOINT_BUILDINGS}/{0}`
+const ENDPOINT_BUILDINGS_MEMBERS = `${ENDPOINT_BUILDINGS_ID}/members`
 
 export default {
     getAll: function() {
-        return apiService.get(resourceEndpoint, null, true)
+        return apiService.get(ENDPOINT_BUILDINGS, null, true)
     },
     getAllOfUser: function(userUid) {
-        return apiService.get(`/users/${userUid}/buildings`, null, true)
+        return apiService.get(ENDPOINT_BUILDINGS_OF_USER.format(userUid), null, true)
     },
     createBuilding: function(building) {
-        return apiService.post(resourceEndpoint, building, null, true)
+        return apiService.post(ENDPOINT_BUILDINGS, building, null, true)
     },
     addMembers(buildingId, members) {
-        return apiService.post(`/buildings/${buildingId}/members`, members, null, true)
+        return apiService.post(ENDPOINT_BUILDINGS_MEMBERS.format(buildingId), members, null, true)
     },
     deleteBuilding: function(buildingId) {
-        return apiService.delete(`${resourceEndpoint}/${buildingId}`, true)
+        return apiService.delete(ENDPOINT_BUILDINGS_ID.format(buildingId), true)
     }
 }

@@ -1,9 +1,9 @@
 import { apiService } from "./apiService";
 
-const resourceEndpoint = "/buildings/{0}/bins";
+const ENDPOINT_BINS = "/buildings/{0}/bins"
 
 export default {
 	getBins: function(building) {
-		return apiService.get(`/buildings/${building._id}/bins`, null, true)
+		return apiService.get(ENDPOINT_BINS.format(building._id), null, true)
 	}
 };
