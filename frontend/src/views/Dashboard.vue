@@ -3,8 +3,7 @@
       
       <snackbar-notification></snackbar-notification>
 
-      <complete-user-info v-if="currentUser" :value="needCompletation"
-        :user="currentUser"/>
+      <complete-user-info v-if="currentUser" :value="needCompletation" :user="currentUser"/>
 
       <v-app-bar app clipped-left>
         <v-app-bar-nav-icon @click="drawer = !drawer"/>
@@ -15,19 +14,13 @@
       <navigation-drawer v-model="drawer" :navItems="navItems"></navigation-drawer>
 
       <v-content>
-          <v-container fluid>
+          <v-container fluid fill-height>
             
             <!-- TODO: insert v-breadcrumbs?? -->
             <!-- Replaced with the childrend view -->
-            <router-view v-on:score-received="onScoreReceived"/>
+            <router-view/>
           </v-container>
       </v-content>
-      <v-snackbar
-            v-model="newTrash"
-            :timeout=2000
-        >
-        <p> Hai guadagnato {{score}} punti </p>
-      </v-snackbar>
   </v-app>
 </template>
 
@@ -73,11 +66,6 @@ export default {
     'snackbar-notification': SnackbarNotification
   },
   methods: {
-    onScoreReceived(scoreReceived) {
-      console.log("event reiceved")
-      this.newTrash = true
-      this.score = scoreReceived
-    },
     ...mapActions([
       'fetchCategories',
     ])
