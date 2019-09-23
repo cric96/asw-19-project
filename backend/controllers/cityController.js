@@ -9,7 +9,7 @@ function fillCapWithZero(cap, digitsToFillCap) {
 
 function createCapFilter(capString) {
 	let digits = capString.length
-	if(!isNumeric(capString) || digits == 0 || digits > capLength) {
+	if(!utils.isNumeric(capString) || digits == 0 || digits > capLength) {
 		return undefined
 	} else {
 		let cap = parseInt(capString)

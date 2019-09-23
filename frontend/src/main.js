@@ -3,8 +3,9 @@ import App from './App.vue';
 import router from './router';
 import store  from './store/store.js'
 import vuetify from './plugins/vuetify';
-import fb from './firebaseConfig'
+import './firebaseConfig'
 import filters from './filters'
+import './utils'
 
 Vue.config.productionTip = false;
 
