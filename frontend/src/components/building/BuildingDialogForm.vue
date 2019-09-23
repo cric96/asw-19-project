@@ -30,6 +30,14 @@
                                         label="Seleziona la città" 
                                         hide-details hide-selected
                                         no-filter clearable return-object>
+                                            <template v-slot:no-data>
+                                                <v-list-item>
+                                                    <v-list-item-title>
+                                                    Cerca la tua
+                                                    <strong>città</strong>
+                                                    </v-list-item-title>
+                                                </v-list-item>
+                                            </template>
                                             <template v-slot:selection="data">
                                                 <span>{{data.item.name}}, {{data.item.cap}}, {{data.item.state}}</span>
                                             </template>
@@ -41,9 +49,6 @@
                             </v-row>
                             <v-row>
                                 <v-col cols="12">
-                                    <!--<autocomplete-address 
-                                        v-model="autocompletedAddress"
-                                        ></autocomplete-address>-->
                                     <v-text-field 
                                         name="address" 
                                         label="Indirizzo abitazione" 
@@ -72,11 +77,10 @@
                             </v-row>
                             <v-row>
                                 <v-col cols="12">
-                                    <autocomplete-managers ref="memberManager"></autocomplete-managers>
+                                    <autocomplete-managers v-model="building.members"></autocomplete-managers>
                                 </v-col>
                             </v-row>
                         </v-form>
-                        <!-- TODO: preview google maps -->
                     </v-container>
                 </v-card-text>
                 <v-card-actions>
@@ -92,7 +96,6 @@
 <script>
 import { createNamespacedHelpers } from 'vuex'
 import citiesApi from '@/services/citiesApi'
-import AutocompleteAddress from '@/components/AutocompleteAddress'
 import AutocompletMembers from '@/components/AutocompleteMembers'
 
 const { mapGetters, mapActions } = createNamespacedHelpers('building')
@@ -100,8 +103,7 @@ const { mapGetters, mapActions } = createNamespacedHelpers('building')
 
 export default {
     components: {
-        'autocomplete-managers': AutocompletMembers,
-        'autocomplete-address': AutocompleteAddress
+        'autocomplete-managers': AutocompletMembers
     },
     data: () => ({
         value: false,
@@ -152,7 +154,7 @@ export default {
         pressSaveBuilding() {
             if (this.$refs.form.validate()) {
                 let newBuilding = Object.assign({}, this.building)
-                newBuilding.members = this.$refs.memberManager.selectedMembers.map(member => member.firebase_uid)
+                newBuilding.members = this.building.members.map(member => member.firebase_uid)
                 let promise = this.createBuilding(newBuilding).then(() => {
                     this.$refs.form.reset()
                     this.closeDialog()

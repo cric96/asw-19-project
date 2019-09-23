@@ -1,5 +1,5 @@
 <template>
-  <v-autocomplete v-model="selectedMembers"
+  <v-autocomplete :input="value" @input="$emit('input', $event)"
     :items="autocompleteItems"
     :search-input.sync="searchText"
     :loading="loading"
@@ -29,20 +29,20 @@
     <!-- slot template for list of suggestions -->
     <template v-slot:item="{ item }">
       <v-list-item-avatar v-if="item.avatar">
-        <v-img :src="item.avatar" />
-      </v-list-item-avatar>
-      <v-list-item-avatar
-        v-else
-        color="secondary"
-        class="headline font-weight-light white--text"
-      >{{ item | formatUserDisplayName | initial }}</v-list-item-avatar>
-      <v-list-item-content>
-        <v-list-item-title v-if="item">{{item | formatUserDisplayName}}</v-list-item-title>
-        <v-list-item-subtitle v-text="item.email"></v-list-item-subtitle>
-      </v-list-item-content>
-      <v-list-item-action>
-        <v-icon>fas fa-user-friends</v-icon>
-      </v-list-item-action>
+          <v-img :src="item.avatar" />
+        </v-list-item-avatar>
+        <v-list-item-avatar
+          v-else
+          color="secondary"
+          class="headline font-weight-light white--text"
+        >{{ item | formatUserDisplayName | initial }}</v-list-item-avatar>
+        <v-list-item-content>
+          <v-list-item-title v-if="item">{{item | formatUserDisplayName}}</v-list-item-title>
+          <v-list-item-subtitle v-text="item.email"></v-list-item-subtitle>
+        </v-list-item-content>
+        <v-list-item-action>
+          <v-icon>fas fa-user-friends</v-icon>
+        </v-list-item-action>
     </template>
   </v-autocomplete>
 </template>
@@ -55,21 +55,28 @@ export default {
   components: {
     "user-chip": UserChip
   },
+  props: {
+    value: {
+      type: Array,
+      default: function() {
+        return []
+      }
+    }
+  },
   data: () => ({
-    selectedMembers: [],
     availableUsers: [],
     searchText: null,
     loading: false
   }),
   computed: {
     autocompleteItems: function() {
-      return this.availableUsers.concat(this.selectedMembers)
+      return this.availableUsers.concat(this.value)
     }
   },
   methods: {
     remove(item) {
-      const index = this.selectedMembers.findIndex(member => member.email == item.email)
-      if (index >= 0) this.selectedMembers.splice(index, 1)
+      const index = this.value.findIndex(member => member.email == item.email)
+      if (index >= 0) this.value.splice(index, 1)
     },
     fetchUsers(filterQuery) {
       this.loading = true
