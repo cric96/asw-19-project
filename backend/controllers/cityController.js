@@ -1,11 +1,7 @@
 var mongoose = require('mongoose');
 var City = mongoose.model('City');
-
+var utils = require("../utils/utils")
 const capLength = 5
-
-function isNumeric(num){
-	return !isNaN(num)
-}
 
 function fillCapWithZero(cap, digitsToFillCap) {
 	return cap * (Math.pow(10, digitsToFillCap))
@@ -13,7 +9,7 @@ function fillCapWithZero(cap, digitsToFillCap) {
 
 function createCapFilter(capString) {
 	let digits = capString.length
-	if(!isNumeric(capString) || digits == 0 || digits > capLength) {
+	if(!utils.isNumeric(capString) || digits == 0 || digits > capLength) {
 		return undefined
 	} else {
 		let cap = parseInt(capString)
@@ -34,7 +30,7 @@ function createCapFilter(capString) {
 }
 
 function putLimitIfDefined(query, req) {
-	if(isNumeric(req.query.limit)) {
+	if(utils.isNumeric(req.query.limit)) {
 		return query.limit(parseInt(req.query.limit))
 	} else {
 		return query

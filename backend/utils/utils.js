@@ -24,3 +24,7 @@ module.exports.filterNullElement = function(element, msg = "") {
         return element
     }
 }
+
+module.exports.isNumeric = function(value) {
+    return !isNaN(value)
+}

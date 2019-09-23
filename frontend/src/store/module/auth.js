@@ -1,5 +1,5 @@
 /*import firebase from 'firebase'
-import usersApi from '@/services/users.api'
+import usersApi from '@/services/usersApi'
 
 function fetchUserInfo() {
     return usersApi.get_user()

@@ -2,9 +2,10 @@
 node_modules
 /dist
 
-# local env files
-.env.local
-.env.*.local
+# local env files TODO! It is not a good idea to put 
+# here the ip of server, change this!
+# .env.local
+# .env.*.local
 
 # Log files
 npm-debug.log*

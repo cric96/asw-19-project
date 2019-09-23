@@ -3,37 +3,10 @@ var Trash = mongoose.model('Trash')
 var User = mongoose.model('User')
 var httpCode = require("../httpCode")
 var Exception = require("../utils/Exception")
-var QueryBuilder = require("../utils/QueryBuilder")
 var utils = require("../utils/utils")
 
-function queryBuilding(req, res) {
-    return new Promise((resolve, reject) => {
-        resolve(new QueryBuilder())
-    }) 
-}
-
-function areDatesValid(from, to) {
-    return (from === undefined || isFinite(from)) && (to === undefined || isFinite(to))
-}
-function parseDateOrElse(timestap, orElseDate) {
-    return timestap === undefined ? orElseDate : new Date(parseInt(timestap))
-} 
-function putFilterDateInQuery(req, queryBuilder) {
-    if(!areDatesValid(req.query.to, req.query.from)) {
-        throw new Exception(httpCode.BAD_REQUEST, "Put timestamp in date field")
-    }
-    let to = parseDateOrElse(req.query.to, new Date())
-    let from = parseDateOrElse(req.query.from, new Date(1))
-    return queryBuilder.pushFilter({
-        date: {
-            $lt : to,
-            $gt : from
-        }
-    })
-}
-
-function putBuildingInQuery(building, queryBuilder) {
-    return queryBuilder.pushFilter({
+function putBuildingInQuery(building, AndFilterBuilder) {
+    return AndFilterBuilder.pushFilter({
         building : building._id
     })
 }
@@ -52,9 +25,8 @@ function filterUserInMember(user, buildingFetched) {
     }
 }
 
-function putUserInQuery(user, queryBuilder) {
-    console.log(user)
-    return queryBuilder.pushFilter(
+function putUserInQuery(user, AndFilterBuilder) {
+    return AndFilterBuilder.pushFilter(
         {
             user : user._id
         }
@@ -103,8 +75,7 @@ function createAggregationPipeline(builder) {
 }
 module.exports.binsFetch = function(req, res) {
     let building = res.locals.buildingFetched
-    return queryBuilding()
-        .then(builder => putFilterDateInQuery(req, builder))
+    return Promise.resolve(res.locals.filterBuilder) //enable a thenable chain 
         .then(builder => putBuildingInQuery(building, builder))
         .then(builder => {
             if(req.query.userId === undefined) {
@@ -115,12 +86,11 @@ module.exports.binsFetch = function(req, res) {
                     .then(user => putUserInQuery(user, builder))
             }
         })
-        .then(queryBuilder => Trash.aggregate(createAggregationPipeline(queryBuilder)))
+        .then(builder => Trash.aggregate(createAggregationPipeline(builder)))
 }
 
 module.exports.trashesFetch = function(req, res) {
-    return queryBuilding()
-        .then(builder => putFilterDateInQuery(req, builder))
+    return Promise.resolve(res.locals.filterBuilder) //enable a thenable chain 
         .then(builder => putUserInQuery(res.locals.userAuth, builder))
-        .then(queryBuilder =>  Trash.aggregate(createAggregationPipeline(queryBuilder)))
+        .then(builder => Trash.aggregate(createAggregationPipeline(builder)))
 }

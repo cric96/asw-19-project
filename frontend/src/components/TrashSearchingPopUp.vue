@@ -29,7 +29,7 @@
                 </v-card-text>
 
                 <v-card-actions class="justify-center">
-                <v-btn icon @click="onAccept" :loading="!waitingTrashInsertion"><v-icon>done</v-icon></v-btn>
+                <v-btn icon @click="onAccept" :loading="waitingTrashInsertion"><v-icon>done</v-icon></v-btn>
                 <v-btn v-if="aiMode" icon @click="close"> <v-icon>close</v-icon></v-btn>
                 </v-card-actions>
             </v-card>
@@ -82,13 +82,16 @@ export default {
         onAccept() {
             this.value = false
             this.waitingTrashInsertion = true
-            trashesApi.insertTrash(buildingId, { "name" : category.name })
+            let buildingId = this.$store.state.building.activeBuilding
+            trashesApi.insertTrash(buildingId, { "name" : this.category.name })
                 .then(() => {
-                    this.waitingTrashInsertion = false
                     this.$store.dispatch('msg/addMessage', 'Hai guadagnato ' + this.category.score + ' punti')
                     this.$store.commit('updateScore', this.category.score)
                 })
-            .finally(() => this.close())
+            .finally(() => {
+                this.waitingTrashInsertion = false
+                this.close()
+            })
         },
         open() {
             this.value = true
