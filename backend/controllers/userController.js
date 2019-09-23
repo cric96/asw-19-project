@@ -55,12 +55,10 @@ function filterOrBuilder () {
             }
         }
     }
-
-    return this
 }
 exports.listUsers = function(req, res) {
     let filter = req.query.filter
-    let filterQuery = filterOrBuilder()
+    let filterQuery = new filterOrBuilder()
         .appendIfDefined("name", filter)
         .appendIfDefined("surname", filter)
         .appendIfDefined("email", filter)
