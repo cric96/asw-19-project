@@ -75,6 +75,7 @@ export default {
     computed: {
         collectedTotal() {
             return this.bin.collectedTrashes.reduce((a, b) => a + b.quantity, 0)
+            //TODO catchare qui l'evento di update del trash collezionato dal server ?
         }
     },
     methods: {

@@ -4,6 +4,7 @@ var TrashCategory = mongoose.model('TrashCategory')
 var utils = require('../utils/utils')
 var trashFetching = require("./trashFetch")
 var errorHandler = require("./errorManagement")
+//var io = require('socket.io')(http)
 
 exports.insertTrash = function(req, res) {
     let query = {
@@ -23,6 +24,9 @@ exports.insertTrash = function(req, res) {
             trash.building = res.locals.buildingFetched._id
             trash.user = user._id
             user.score += category.score
+            /*io.on('connection', function(socket){
+                io.sockets.in("room"+res.locals.buildingFetched._id).emit('add trash', category._id)
+            })*/
             return Promise.all([user.save(), trash.save()])//to fix: handle errors in the first promise
         })
         .then(el => res.setNoContent())
