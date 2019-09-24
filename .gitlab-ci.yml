@@ -7,7 +7,7 @@ stages:
   - build
   - deploy
 before_script:
-  - docker login -u $DOCKER_USER --password $DOCKER_PASSWORD $CI_REGISTRY
+  - docker login -u $CI_DOCKER_USER --password $CI_DOCKER_PASSWORD $CI_REGISTRY
 build_docker:
   stage: build
   script: 
