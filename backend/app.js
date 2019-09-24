@@ -9,9 +9,9 @@ var admin = require('firebase-admin');
 var app = express();
 var history = require('connect-history-api-fallback');
 
-let serviceAccount = require('./scanbage-firebase-adminsdk-itzje-52ab1c019c.json')
+let tokenRetriver = require('./firebaseTokenRetriver')
 admin.initializeApp({
-    credential: admin.credential.cert(serviceAccount)
+    credential: admin.credential.cert(tokenRetriver())
 });
 //mongo connection
 
