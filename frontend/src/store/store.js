@@ -2,6 +2,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import buildingModule from './module/building'
+import trashCategoriesModule from './module/trashCategory'
 import fb from '@/firebaseConfig.js'
 import usersApi from '../services/users.api.js'
 import User from '@/model/user'
@@ -12,15 +13,18 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
     plugins: [messagesPlugin],
     modules: {
-        building: buildingModule
+        building: buildingModule,
+        trashCategories : trashCategoriesModule
     },
     state: {
         token: null,
-        userProfile: undefined,
+        userProfile: undefined
     },
     actions: {
-        updateUserData({}, user) {
-           return usersApi.updateUser(user)
+        updateUserData({commit}, user) {
+           return usersApi.updateUser(user).then(updatedUser => {
+               commit('setUserProfile', updatedUser)
+           })
             // TODO: move to right module
         },
         autoSignIn() {
@@ -97,6 +101,9 @@ const store = new Vuex.Store({
         },
         setUserProfile(state, val) {
             state.userProfile = val
+        },
+        updateScore(state, score) {
+            state.userProfile.score += score
         }
     }
 })

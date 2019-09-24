@@ -2,7 +2,7 @@ var mongoose = require('mongoose')
 var City = mongoose.model("City")
 var Bin = mongoose.model("Bin")
 var errorHandler = require("./errorManagement")
-var trashFetching = require("./trashFetch")
+var fetchQueries = require("./trashQueries")
 var utils = require("../utils/utils")
 /**
  * class describe the building's bind.
@@ -20,7 +20,6 @@ class BuildingBin {
             quantity : amount
         })
     }
-
     toJSON() {
         binCategory.trashCategories = undefined
         return {
@@ -29,51 +28,33 @@ class BuildingBin {
         }
     }
 }
-
-function keyOf(element) {
-    return element._id.toString()
-}
-
 /**
- * given the result from aggregate query,
- * this function gruop elements by bin id 
- * @param {*} trashes the query result
+ * this function create the bins by the trashes found into a building
+ * and by the building's bin categories.
  */
-function groupByBin(trashes) {
-    let binMap = new Map()
-    for(trash of trashes) {
-        if(!binMap.has(keyOf(trash.bin))) {
-            binMap.set(keyOf(trash.bin), new BuildingBin(trash.bin))
-        }
-        binMap.get(keyOf(trash.bin)).putTrash(trash.trashCategory, trash.count)
-    }  
-    return Array.from(binMap.values())
-}
-
-function populateEachBin(trashes, binCategories) {
-    var bins = []
+function createBins(trashCollectedInBuilding, binCategories) {
+    var bins = [] //the building's bin 
     for(binCategory of binCategories) {
         let buildingBin = new BuildingBin(binCategory)
         for(trashCategory of binCategory.trashCategories) {
-            let collectedTrash = trashes.find(trash => utils.sameMongoId(trash._id, trashCategory._id))
-            let trashCount = collectedTrash === undefined ? 0 : collectedTrash.count
+            //verify if there is some trashes thrown with this category
+            let collectedTrash = trashCollectedInBuilding.find(trash => utils.sameMongoId(trash._id, trashCategory._id))
+            //if it is undefined, it means that no trashes is thrown
+            let trashCount = collectedTrash === undefined ? 0 : collectedTrash.quantity
+            //put the trash count associated with this trash category
             buildingBin.putTrash(trashCategory, trashCount)
         }
+        //add populate bins in the building's bin
         bins.push(buildingBin.toJSON())
     }
     return bins
 }
-exports.getBinStatus = function(req, res) {
+exports.listBins = function(req, res) {
     City.findById(res.locals.buildingFetched.city)
-        .populate("binCategories")
+        .populate("binCategories") 
         .then(city => city.binCategories)
         .then(binCategories => Bin.populate(binCategories, { path: 'trashCategories' }))
-        .then(categories => trashFetching.binsFetch(req, res).then(trashes => populateEachBin(trashes, categories)))
+        .then(categories => fetchQueries.searchBuildingTrashes(req, res).then(trashesCollected => createBins(trashesCollected, categories)))
         .then(collectedTrash => res.setOk(collectedTrash))
         .catch(err => errorHandler(err, res))
-    /*
-    trashFetching.binsFetch(req,res)
-        .then(groupByBin) 
-        .then(collectedTrashes => res.setOk(collectedTrashes))
-        .catch(err => errorHandler(err, res))*/
 }

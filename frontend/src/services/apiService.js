@@ -25,27 +25,11 @@ class ApiService {
     delete(resource, requireAuth = false) {
         return makeRequest(this.axios.delete, resource, null, requireAuth)
     }
-
-    /**
-     * Perform a custom Axios request.
-     *
-     * data is an object containing the following properties:
-     *  - method
-     *  - url
-     *  - data ... request payload
-     *  - auth (optional)
-     *    - username
-     *    - password
-    **/
-    customRequest(data) {
-        return axios(data)
-    }
 }
 
 export default ApiService
-
 // TODO: change the base url, retrieving it from .env
-export const apiService = new ApiService("http://localhost:3000/api")
+export const apiService = new ApiService(process.env.VUE_APP_NODE_SERVER)
 
 function makeRequest(axiosFunction, resource, queryParams = null, authorization = false, body = undefined) {
     let headers = authorization ? getHeader() : { }

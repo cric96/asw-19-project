@@ -6,8 +6,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors');
 var admin = require('firebase-admin');
-    
 var app = express();
+var history = require('connect-history-api-fallback');
 
 let serviceAccount = require('./scanbage-firebase-adminsdk-itzje-52ab1c019c.json')
 admin.initializeApp({
@@ -18,6 +18,8 @@ admin.initializeApp({
 require("./mongo").setupCloud()
 //express config
 app.use(logger('dev'));
+// allow to use the router of client, this prevent express to send 404 for unknown path
+app.use(history());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());

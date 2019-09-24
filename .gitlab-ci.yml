@@ -1,33 +1,16 @@
-image: node:latest
+
+image: docker:19.03.1
 
 stages:
   - build
-
-cache:
-  paths:
-    - "*/node_modules/"
-
-build_backend:
+  - deploy
+before_script:
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+build_docker:
   stage: build
-  before_script:
-    - cd backend/
-  script:
-    - npm install
+  script: 
+    - docker build -f Dockerfile.base -t asw2019/base-node-server .
+    - docker build -t asw2019/node-server .
+    - docker push asw2019/node-server 
   only:
-    changes:
-      - backend/*
-
-build_frontend:
-  stage: build
-  before_script:
-    - cd frontend/
-    - npm install
-  script:
-    - npm install -g @vue/cli
-    - npm run build
-  artifacts:
-    paths:
-      - frontend/dist/
-  only:
-    changes:
-      - frontend/*
+    - master

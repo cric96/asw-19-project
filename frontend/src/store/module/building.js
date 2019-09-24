@@ -1,8 +1,7 @@
 // import { ApiBuilding } from '@/services/mockApiBuilding'
-import ApiBuilding from '@/services/buildings.api'
+import ApiBuilding from '@/services/buildingsApi'
 import * as types from '../mutationTypes'
-import store from '../store';
-import { stat } from 'fs';
+import store from '../store'
 
 const ACTIVE_BUILDING_KEY = 'activeBuilding' 
 
@@ -46,10 +45,12 @@ export default {
             });
         },
         createBuilding({ commit }, building) {
-            return ApiBuilding.createBuilding(building).then(newBuilding => {
-                commit(types.APPEND_AVAILABLE_BUILDING, newBuilding)
-                return Promise.resolve();
-            })
+            return ApiBuilding.createBuilding(building).then(newBuilding => 
+                ApiBuilding.addMembers(newBuilding._id, building.members).then(addedMembers => {
+                    newBuilding.members = addedMembers
+                    commit(types.APPEND_AVAILABLE_BUILDING, newBuilding)
+                })
+            )
         },
         deactivateBuilding({ commit, state }, buildingId) {
             return ApiBuilding.deleteBuilding(buildingId).then(deleted => {
