@@ -1,9 +1,7 @@
 <template>
   <v-dialog :value="opened"  @input="opened = $event.target.value; emit('input', $event.target.value)" persistent max-width="600px">
     <v-card>
-      <v-alert v-if="alert" :type="alert.type" dense v-model="alert.visible">
-        {{ alert.message }}
-      </v-alert>
+      <alert-message ref="alert" v-model="alertVisible"></alert-message>
       <v-card-title>
         <span class="headline">Completa la registrazione</span>
       </v-card-title>
@@ -23,8 +21,8 @@
       </v-card-text>
       <v-card-actions>
         <div class="flex-grow-1"></div>
-        <v-btn color="blue darken-1" text @click="opened = false">Chiudi</v-btn>
-        <v-btn color="blue darken-1" :disabled="!valid" text @click="save">Completa</v-btn>
+        <v-btn color="blue darken-1" text @click="opened = false" :disabled="pendingOperation">Chiudi</v-btn>
+        <v-btn color="blue darken-1" :disabled="!valid" :loading="pendingOperation" text @click="save">Completa</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -32,8 +30,12 @@
 
 <script>
 import User from "../../model/user"
+import AlertMessageComponent from '@/components/AlertMessageComponent'
 
 export default {
+  components: {
+    'alert-message': AlertMessageComponent
+  },
   props: {
     user: {
       type: User,
@@ -47,11 +49,12 @@ export default {
       'surname',
       'nickname'
     ],
-    alert: null,
+    alertVisible: false,
     finalUser: null,
     generalRules: [v => !!v || "Questo campo è obbligatorio"],
     valid: true,
-    opened: false
+    opened: false,
+    pendingOperation: false
   }),
   watch: {
     value: {
@@ -63,24 +66,23 @@ export default {
     user: {
       immediate: true,
       handler: function(val) {
-        this.finalUser = val
+        this.finalUser = Object.assign({}, val)
       }
     }
   },
   methods:{
     save: function() {
       if(this.$refs.form.validate()) {
+        this.pendingOperation = true
         this.$store.dispatch('updateUserData', this.finalUser).then(response => {
-          this.alert = {
-            type: 'success',
-            message: "Informazioni aggiornate"
-          }
+          this.$refs.alert.changeConfig('Informazioni aggiornate', 'success')
+          this.alertVisible = true
           this.opened = false
         }).catch(err => {
-          this.alert = {
-            type: 'error',
-            message: "Errore durante l'aggiornamento. Riprovare"
-          }
+          this.alertVisible = true
+          this.$refs.alert.changeConfig("Errore durante l'aggiornamento. Riprovare", "error")
+        }).finally(() => {
+          this.pendingOperation = false
         })
       }
     }

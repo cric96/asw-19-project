@@ -1,5 +1,5 @@
 <template>
-    <v-container fluid>
+    <v-layout>
         <building-dialog-form>
             <template v-slot:activator="{on}">
                 <v-btn fab bottom right fixed direction="top" v-on="on">
@@ -38,7 +38,7 @@
                 </v-expansion-panel>
             </template>
         </v-expansion-panels> -->
-    </v-container>
+    </v-layout>
 </template>
 
 <script>

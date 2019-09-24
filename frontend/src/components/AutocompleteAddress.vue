@@ -20,7 +20,7 @@
 
 
 <script>
-import hereService from '@/services/here.api'
+import hereService from '@/services/hereApi'
 
 export default {
     props: {

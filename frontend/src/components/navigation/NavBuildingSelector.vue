@@ -8,9 +8,9 @@
                 </v-list-item-content>
             </template>
 
-            <v-list-item-group :value="activeBuilding" mandatory>
-                <template v-for="(building, i) in buildings">
-                    <v-list-item :key="i" @click="selectBuilding(building)">
+            <v-list-item-group :value="activeBuildingIndex" mandatory>
+                <template v-for="building in buildings">
+                    <v-list-item :key="building._id" @click="selectBuilding(building)">
                         <template v-slot:default="{active}">
                             <v-list-item-content >
                                 <v-list-item-title>{{building.name}}</v-list-item-title>
@@ -38,7 +38,10 @@ export default {
         ...mapGetters([
             'activeBuilding',
             'buildings'
-        ])
+        ]),
+        activeBuildingIndex() {
+            return this.buildings.findIndex(building => building._id == this.activeBuilding._id)
+        }
     },
     methods: {
         ...mapActions([
@@ -49,8 +52,8 @@ export default {
             this.fetchBuildings()
         },
         selectBuilding(building) {
-            this.expanded = false /* trick for collpase the dropdown after selection */
             this.changeActiveBuilding(building._id)
+            this.expanded = false /* trick for collpase the dropdown after selection */
         }
     },
     mounted() {

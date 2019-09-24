@@ -1,13 +1,25 @@
 <template>
   <v-app>
-    <router-view />
+    <splash-screen v-if="isAppLoading"></splash-screen>
+    <transition name="slide-fade" mode="out-in">
+      <router-view />
+    </transition>
   </v-app>
 </template>
 
 <script>
-console.log(process.env.VUE_APP_NODE_SERVER)
+import SplashScreen from '@/components/SplashScreen'
+
 export default {
-  name: 'App'
+  name: 'App',
+  components: {
+    'splash-screen': SplashScreen
+  },
+  computed: {
+    isAppLoading: function() {
+      return this.$store.getters.isUserLoading // && if needed add other conditions
+    }
+  }
 }
 </script>
 

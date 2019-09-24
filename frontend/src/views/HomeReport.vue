@@ -1,12 +1,22 @@
 <template>
-    <v-container fluid>
+    <v-layout>
       <!-- popups -->
       <manual-insertion-form ref="manualInsertionPopUp"/>
       <trash-searching-pop-up ref="trashSearchingPopUp"/>
       <!-- Content loader -->
-      <v-row v-if="loading" justify="center">
+      <v-layout v-if="loading" row wrap align-center justify-center>
         <content-loader :loading="loading"></content-loader>
-      </v-row>
+      </v-layout>
+
+      <v-layout v-else>
+        <v-row dense>
+          <v-col cols="12">
+            <bins-board :bins="bins.data"></bins-board>
+          </v-col>
+        </v-row>
+      </v-layout>
+
+      <!-- Floating action buttons -->
       <v-speed-dial v-if="areLoaded" v-model="fabExpanded" bottom right fixed direction="left" transition="scale-transition" >
         <template v-slot:activator>
           <v-btn fab light v-model="fabExpanded">
@@ -28,27 +38,22 @@
       </v-speed-dial>
       <v-btn v-else fab light bottom right fixed :loading="true"> </v-btn> 
       
-      <v-row dense v-if="!loading">
-        <v-col v-for="(bin, index) in bins" :key="index" cols="12" md="6" sm="6">
-          <bin :bin="bin"></bin>
-        </v-col>
-      </v-row>
-    </v-container>
+    </v-layout>
 </template>
 
 
 <script>
-import DynamicBin from '@/components/DynamicBin.vue'
+import BinsBoard from '@/components/bin/BinsBoard.vue'
 import ManualInsertionForm from '@/components/ManualInsertionForm.vue'
 import TrashSearchingPopUp from '@/components/TrashSearchingPopUp.vue'
-import ApiBin from "@/services/bins.api";
+import ApiBin from "@/services/binsApi";
 import { ScaleLoader } from '@saeris/vue-spinners'
 import { createNamespacedHelpers } from 'vuex'
 import { mapGetters } from 'vuex'
 
 export default {
   components: {
-    'bin': DynamicBin,
+    'bins-board': BinsBoard,
     'content-loader': ScaleLoader,
     'manual-insertion-form': ManualInsertionForm,
     'trash-searching-pop-up' : TrashSearchingPopUp
@@ -58,7 +63,10 @@ export default {
     newTrash: false,
     manualOpened: false,
     score: 0,
-    bins: null
+    bins: {
+      loading: false,
+      data: null
+    }
   }),
   computed: {
     ...mapGetters({
@@ -66,17 +74,26 @@ export default {
       areLoaded : "trashCategories/areLoaded"
     }),
     loading: function() {
-      return !this.bins
+      return this.bins.loading
     }
   },
   watch: {
     activeBuilding(val) {
-      ApiBin.getBins(this.activeBuilding).then(bins => {
-        this.bins = bins
-      });
+      this.updateBins()
     }
   },
+  mounted() {
+    this.updateBins()
+  },
   methods: {
+    updateBins() {
+      if(this.activeBuilding) {
+        this.bins.loading = true
+        ApiBin.getBins(this.activeBuilding).then(bins => {
+          this.bins.data = bins
+        }).finally(() => this.bins.loading = false);
+      }
+    },
     /**
      * change current child screen to manual screen
      */

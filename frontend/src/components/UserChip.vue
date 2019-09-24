@@ -39,7 +39,7 @@ export default {
     name: 'UserChip',
     props: {
         user: {
-            type: User,
+            type: Object,
             default: function() {
                 return new User()
             }
