@@ -18,7 +18,7 @@ const store = new Vuex.Store({
     },
     state: {
         token: null,
-        userProfile: undefined,
+        userProfile: undefined
     },
     actions: {
         updateUserData({commit}, user) {
