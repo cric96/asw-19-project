@@ -9,7 +9,6 @@ stages:
 before_script:
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
   - echo $CI_REGISTRY_PASSWORD > pip.txt
-  - cat pip.txt
 build_docker:
   stage: build
   script: 
