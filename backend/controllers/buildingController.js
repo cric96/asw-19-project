@@ -16,7 +16,6 @@ function populateBuilding(query) {
                 .populate("members")
                 .populate("city")
 }
-//TODO owner must pass explicitly or not?
 /**
  * create building from data passed into body.
  * read SWAGGER docs to see how the body must be structed

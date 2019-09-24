@@ -18,8 +18,8 @@ exports.createUser = function(req, res) {
 exports.getUser = function(req, res) {
     let uid = res.locals.uid
     User.findOne({ firebase_uid: uid })
-        .exec()
-        .then(user => res.setOkIfNotNull(user, "User not found"))
+        .then(utils.filterNullElement)
+        .then(user => res.setOk(user))
         .catch(err => errorHandler(err, res))
 }
 
@@ -27,8 +27,8 @@ exports.updateUser = function(req, res) {
     let uid = res.locals.uid;
     let updateUser = User.prepareUpdate(req.body)
     User.findOneAndUpdate({ firebase_uid: uid }, updateUser, { new: true })
-        .exec()
-        .then(updatedUser => res.setOkIfNotNull(updatedUser, "User not found"))
+        .then(utils.filterNullElement)
+        .then(updatedUser => res.setOk(updatedUser))
         .catch(err => res.setBadRequest())
 };
 
@@ -55,12 +55,10 @@ function filterOrBuilder () {
             }
         }
     }
-
-    return this
 }
 exports.listUsers = function(req, res) {
     let filter = req.query.filter
-    let filterQuery = filterOrBuilder()
+    let filterQuery = new filterOrBuilder()
         .appendIfDefined("name", filter)
         .appendIfDefined("surname", filter)
         .appendIfDefined("email", filter)
