@@ -8,6 +8,12 @@ stages:
   - deploy
 before_script:
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+  # Setup SSH deploy keys
+  - 'which ssh-agent || ( apt-get install -qq openssh-client )'
+  - eval $(ssh-agent -s)
+  - ssh-add <(echo "$SSH_PRIVATE_KEY")
+  - mkdir -p ~/.ssh
+  - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
 build_docker:
   stage: build
   script: 
@@ -15,4 +21,11 @@ build_docker:
     - docker build -t asw2019/node-server .
     - docker push asw2019/node-server 
   only:
-    - master
+    - ci-test
+
+deploy_digitalocean_docker:
+  stage: deploy
+  script:
+    - ssh root@$SERVER "./run-server.sh"
+  only:
+    - ci-test
