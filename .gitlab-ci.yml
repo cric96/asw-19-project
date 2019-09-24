@@ -17,4 +17,4 @@ build_docker:
     - docker build -t asw2019/node-server .
     - docker push asw2019/node-server 
   only:
-    - master
+    - ci-test
