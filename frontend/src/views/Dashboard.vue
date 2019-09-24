@@ -15,10 +15,14 @@
 
       <v-content>
           <v-container fluid fill-height>
-            
+            <!--<v-layout row wrap>
+              <v-breadcrumbs divider="/" ></v-breadcrumbs>
+            </v-layout>-->
             <!-- TODO: insert v-breadcrumbs?? -->
             <!-- Replaced with the childrend view -->
-            <router-view/>
+            <v-layout row wrap>
+             <router-view/>
+            </v-layout>
           </v-container>
       </v-content>
   </v-app>
