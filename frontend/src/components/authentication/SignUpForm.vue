@@ -3,7 +3,7 @@
     <v-card v-bind:style="{ backgroundColor: color}">
       <alert v-model="showAlert" ref="alert"/>
       <v-card-text >
-        <user-form user-form v-bind:userProperties="userProperties" v-bind:user="user" @validateForm="signUp">
+        <user-form v-bind:userProperties="userProperties" v-bind:user="user" @validateForm="signUp">
           Crea utente
         </user-form>
       </v-card-text>
@@ -16,12 +16,12 @@
 
 <script>
 import firebase from "firebase";
-import usersapi from "../../services/users.api";
-import User from "../../model/user";
+import usersapi from "@/services/users.api";
+import User from "@/model/user";
 import * as messages from '@/resource/messages';
 import AlertMessageComponent from '@/components/AlertMessageComponent';
 import UserForm from '@/components/user/UserForm';
-import userProperties from './user/userProperties';
+import {userPropsFilteredBuilder} from '../user/userProperties';
 
 export default {
   components: {
@@ -29,12 +29,16 @@ export default {
     "user-form": UserForm
   },
   data: () => ({
-    userProperties: userProperties.userProps('email','password','name','surname','nickname'),
     user: User.emptyUser(),
     showAlert: false,
     inRegistration: false,
     color:'rgba(255,255,255,0.9)'
   }),
+  computed: {
+    userProperties: function () {
+      return userPropsFilteredBuilder(this.user, 'email','password','passwordConfirm','name','surname','nickname')
+    }
+  },
   methods: {
     reset: function() {
       this.$refs.form.reset()
@@ -60,19 +64,18 @@ export default {
               this.$store.dispatch('signUp', newuser)
               .then((user)=>{
                 this.showAlert = true
-                this.$refs.alert.changeConfig(messages.SIGNUP_SUCCESS, "success")
+                this.$refs.alert.changeConfig(SIGNUP_SUCCESS, "success")
                 setTimeout(() => { this.$router.replace("/dashboard"); }, 1500)
               }).catch((err)=>{
                 // TODO -- check server response (409...)
                 this.inRegistration = false
                 this.showAlert = true
-                this.$refs.alert.changeConfig(err, "Esiste un altro user con lo stesso nickname")
+                this.$refs.alert.changeConfig(SIGNUP_ERR_NICKNAME_CONFLICT, "error")
                 firebase.auth().currentUser.delete().then(function () {
                   console.log('delete successful in firebase because a specified nickname already exist')
                 }).catch(function (error) {
                   console.error('error in firebase account deleting'+ error)
                 })                
-                //this.$refs.alert.changeConfig(messages.SIGNUP_ERR_NICKNAME_CONFLICT, "error")
               })
           }
         })
@@ -93,7 +96,7 @@ export default {
                     })
                 }else{
                   this.showAlert = true
-                  this.$refs.alert.changeConfig(messages.SIGNUP_ERR_EMAIL_CONFLICT, "error")
+                  this.$refs.alert.changeConfig(SIGNUP_ERR_EMAIL_CONFLICT, "error")
                 }
               })
               .then((user) =>{
@@ -107,7 +110,6 @@ export default {
                       // TODO -- check server response (409...)
                       this.showAlert = true
                       this.$refs.alert.changeConfig(err, "error")
-                      //this.$refs.alert.changeConfig(messages.SIGNUP_ERR_NICKNAME_CONFLICT, "error")                      console.log(err)
                     })
                   })
                 }

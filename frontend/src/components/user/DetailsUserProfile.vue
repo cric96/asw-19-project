@@ -41,7 +41,7 @@
 
 <script>
 import UserForm from '@/components/UserForm'
-import userProperties from './user/userProperties';
+import {userPropsFiltered} from './userProperties';
 
 export default {
     props:{
@@ -56,8 +56,11 @@ export default {
     data: () => ({
         isEditing: false,
         hasSaved : false,
-        userProperties: userProperties.userProps('uid', 'email','password','name','surname','nickname')
+        userProperties: userPropsFiltered('uid', 'email','password','confirmPassword','name','surname','nickname')
     }),
+    mounted() {
+        console.log(this.userProperties)
+    },
     methods:{
       updateUser(user){
         hasSaved=true

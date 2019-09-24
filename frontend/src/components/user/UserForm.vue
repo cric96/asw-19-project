@@ -4,39 +4,16 @@
       <v-row v-for="property in userProperties" :key="property">
         <v-col cols="12">
           <v-text-field
-            v-if='property.propertyName==="password"'
+            :disabled="isEditing && property.editable"
             v-model="finalUser[property.propertyName]"
-            :label="property.propertyName"
-            :rules="property.propertyRule"
-            :disabled="isEditing && property.editable"
-            required
-            outlined
-            clearable
-            :append-icon="passwordShow ? 'visibility' : 'visibility_off'"
-            :type="passwordShow ? 'text' : 'password'"
-            @click:append="passwordShow = !passwordShow"
-          ></v-text-field>
-          <v-text-field
-            v-if='property.propertyName==="password"'
-            label="Confirm password"
-            :rules="v=>v==finalUser[password]"
-            :disabled="isEditing && property.editable"
-            required
-            outlined
-            clearable
-            :append-icon="passwordShow ? 'visibility' : 'visibility_off'"
-            :type="passwordShow ? 'text' : 'password'"
-            @click:append="passwordShow = !passwordShow"
-          ></v-text-field>
-          <v-text-field
-            v-else
-            :disabled="isEditing && property.editable"
-            v-model="finalUser[propertyName]"
-            :label="property.propertyName"
+            :label="property.propertyLabel"
             :rules="property.propertyRule"
             required
             outlined
             clearable
+            :append-icon="appendIcon(property)"
+            :type="textType(property)"
+            @click:append="passwordShow = !passwordShow"
           ></v-text-field>
         </v-col>
       </v-row>
@@ -48,10 +25,8 @@
   </v-container>
 </template>
 
-
-
 <script>
-import User from "../../model/user";
+import User from "@/model/user";
 
 export default {
   props: {
@@ -86,11 +61,27 @@ export default {
   methods: {
     validate: function() {
       if (this.$refs.form.validate()) {
-        $emit("validateForm", finalUser);
+        this.$emit("validateForm", this.finalUser);
       }
     },
     reset: function() {
       this.$refs.form.reset();
+    },
+    appendIcon(property){
+      if(property.propertyName=='password' || property.propertyName=='confirmPassword') {
+        return (this.passwordShow) ? 'visibility' : 'visibility_off'
+      }else{
+        return undefined
+      }
+    },
+    textType(property){
+      if(property.propertyName=='password' && this.passwordShow) {
+        return 'text'
+      }else if(property.propertyName=='password' && !this.passwordShow){
+        return 'password'
+      }else{
+        return 'text'
+      }
     }
   }
 };
