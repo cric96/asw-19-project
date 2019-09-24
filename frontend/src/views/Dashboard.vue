@@ -1,0 +1,81 @@
+<template>
+    <v-app light>
+      
+      <snackbar-notification></snackbar-notification>
+
+      <complete-user-info v-if="currentUser" :value="needCompletation" :user="currentUser"/>
+
+      <v-app-bar app clipped-left>
+        <v-app-bar-nav-icon @click="drawer = !drawer"/>
+        <v-toolbar-title>Scanbage</v-toolbar-title>
+        <v-spacer></v-spacer>
+      </v-app-bar>
+
+      <navigation-drawer v-model="drawer" :navItems="navItems"></navigation-drawer>
+
+      <v-content>
+          <v-container fluid fill-height>
+            <!--<v-layout row wrap>
+              <v-breadcrumbs divider="/" ></v-breadcrumbs>
+            </v-layout>-->
+            <!-- TODO: insert v-breadcrumbs?? -->
+            <!-- Replaced with the childrend view -->
+            <v-layout row wrap>
+             <router-view/>
+            </v-layout>
+          </v-container>
+      </v-content>
+  </v-app>
+</template>
+
+<script>
+import NavigationDrawer from '@/components/navigation/NavigationDrawer'
+import CompleteUserInfoForm from '@/components/authentication/CompleteUserInfoForm'
+import SnackbarNotification from '@/components/SnackbarNotification'
+import { mapGetters } from 'vuex'
+import { createNamespacedHelpers } from 'vuex'
+const { mapActions } = createNamespacedHelpers('trashCategories');
+
+
+export default {
+  name: 'Dashboard',
+  data: () => ({
+    drawer: null,
+    newTrash: false,
+    score: 0,
+    navItems: [
+      {
+        path: '/dashboard',
+        icon: 'dashboard',
+        title: 'Dashboard'
+      },
+      {
+        path: '/buildings',
+        title: 'Manage Buldings',
+        icon: 'settings'
+      }
+    ]
+  }),
+  computed: {
+    ...mapGetters([
+      'currentUser'
+    ]),
+    needCompletation: function() {
+      return (this.currentUser !== undefined) ? !this.currentUser.isCompleteProfile() : false;
+    }
+  },
+  components: {
+    'navigation-drawer': NavigationDrawer,
+    'complete-user-info': CompleteUserInfoForm,
+    'snackbar-notification': SnackbarNotification
+  },
+  methods: {
+    ...mapActions([
+      'fetchCategories',
+    ])
+  },
+  beforeMount() {
+    this.fetchCategories()
+  }
+};
+</script>

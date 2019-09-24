@@ -1,0 +1,16 @@
+
+image: docker:19.03.1
+
+stages:
+  - build
+  - deploy
+before_script:
+  - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+build_docker:
+  stage: build
+  script: 
+    - docker build -f Dockerfile.base -t asw2019/base-node-server .
+    - docker build -t asw2019/node-server .
+    - docker push asw2019/node-server 
+  only:
+    - master
