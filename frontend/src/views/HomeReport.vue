@@ -17,7 +17,11 @@
       </v-layout>
 
       <!-- Floating action buttons -->
-      <v-speed-dial v-if="areLoaded" v-model="fabExpanded" bottom right fixed direction="left" transition="scale-transition" >
+      <v-speed-dial v-if="activeBuilding" 
+                          v-model="fabExpanded"
+                          bottom right fixed direction="left" 
+                          transition="scale-transition" 
+                          :loading="areLoaded">
         <template v-slot:activator>
           <v-btn fab light v-model="fabExpanded">
             <v-icon v-if="fabExpanded">close</v-icon>
@@ -36,8 +40,6 @@
             <input ref="barcode" type="file" accept="image/*" @change="onPhotoSelectedBarcode" capture="camera" hidden=true />
         </v-btn>
       </v-speed-dial>
-      <v-btn v-else fab light bottom right fixed :loading="true"> </v-btn> 
-      
     </v-layout>
 </template>
 
