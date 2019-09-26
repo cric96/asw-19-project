@@ -1,16 +1,33 @@
 
-image: docker:19.03.1
+image: docker:latest
 
+services:
+  - docker:dind
+  
 stages:
   - build
   - deploy
+
 before_script:
   - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+  # Setup SSH deploy keys
+  - 'which ssh-agent || ( apk add openssh-client )'
+  - eval $(ssh-agent -s)
+  - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+  - mkdir -p ~/.ssh
+  - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
 build_docker:
   stage: build
   script: 
     - docker build -f Dockerfile.base -t asw2019/base-node-server .
     - docker build -t asw2019/node-server .
     - docker push asw2019/node-server 
+  only:
+    - master
+
+deploy_digitalocean_docker:
+  stage: deploy
+  script:
+    - ssh root@$(echo $SERVER) "./run-server.sh"
   only:
     - master
