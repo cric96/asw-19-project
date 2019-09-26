@@ -1,7 +1,6 @@
 <template>
   <v-card
     class="overflow-hidden"
-    color="grey lighten-1"
     dark
   >
     <v-toolbar
@@ -22,7 +21,7 @@
       </v-btn>
     </v-toolbar>
     <v-card-text>
-        <user-form user-form v-bind:userProperties="userProperties" v-bind:user="user" @validateForm="updateUser">
+        <user-form v-model="isEditing" v-bind:userProperties="userProperties" v-bind:user="user" :beDisabled="true" @validateForm="updateUser">
           Salva modifiche
         </user-form>
     </v-card-text>
@@ -40,13 +39,12 @@
 </template>
 
 <script>
-import UserForm from '@/components/UserForm'
-import {userPropsFiltered} from './userProperties';
+import UserForm from '@/components/user/UserForm'
+import {userPropsFilteredBuilder} from './userProperties';
 
 export default {
     props:{
         user: {
-            type: User,
             required: true
         }
     },
@@ -55,15 +53,24 @@ export default {
     },
     data: () => ({
         isEditing: false,
-        hasSaved : false,
-        userProperties: userPropsFiltered('uid', 'email','password','confirmPassword','name','surname','nickname')
+        hasSaved: false
     }),
-    mounted() {
-        console.log(this.userProperties)
-    },
     methods:{
-      updateUser(user){
-        hasSaved=true
+        updateUser(user){
+          this.$store.dispatch("updateUserData", user)
+          .then(response => {
+              this.showAlert = true
+              this.$refs.alert.changeConfig(UPDATED_INFO, "success")
+              this.opened = false;
+          })
+          .catch(err => {
+              this.hasSaved = true
+          });
+        }
+    },
+    computed: {
+      userProperties: function () {
+        return userPropsFilteredBuilder(this.user, 'firebase_uid', 'email','name','surname','nickname')
       }
     }
 }

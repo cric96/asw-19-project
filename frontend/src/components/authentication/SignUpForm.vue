@@ -3,7 +3,7 @@
     <v-card v-bind:style="{ backgroundColor: color}">
       <alert v-model="showAlert" ref="alert"/>
       <v-card-text >
-        <user-form v-bind:userProperties="userProperties" v-bind:user="user" @validateForm="signUp">
+        <user-form :v-model="true" v-bind:userProperties="userProperties" v-bind:user="user" @validateForm="signUp" :resettable="true">
           Crea utente
         </user-form>
       </v-card-text>
@@ -16,7 +16,7 @@
 
 <script>
 import firebase from "firebase";
-import usersapi from "@/services/users.api";
+import usersapi from "@/services/usersApi";
 import User from "@/model/user";
 import * as messages from '@/resource/messages';
 import AlertMessageComponent from '@/components/AlertMessageComponent';

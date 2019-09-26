@@ -4,11 +4,11 @@
       <v-row v-for="property in userProperties" :key="property">
         <v-col cols="12">
           <v-text-field
-            :disabled="isEditing && property.editable"
+            :disabled="beDisabled && (!property.editable || !isEditing)"
             v-model="finalUser[property.propertyName]"
             :label="property.propertyLabel"
             :rules="property.propertyRule"
-            required
+            
             outlined
             clearable
             :append-icon="appendIcon(property)"
@@ -17,10 +17,10 @@
           ></v-text-field>
         </v-col>
       </v-row>
-      <v-btn :disabled="!valid" color="success" class="mr-4" @click="validate">
+      <v-btn :disabled="!valid && !isEditing " color="success" class="mr-4" @click="validate">
         <slot></slot>
       </v-btn>
-      <v-btn color="error" @click="reset">Reset Form</v-btn>
+      <v-btn v-if="resettable" color="error" @click="reset">Reset Form</v-btn>
     </v-form>
   </v-container>
 </template>
@@ -36,11 +36,22 @@ export default {
     userProperties: {
       type: Array
     },
-    value: Boolean
+    resettable: {
+      type: Boolean,
+      default : false
+    },
+    beDisabled: {
+      type: Boolean,
+      default : false
+    },
+    value: {
+      type: Boolean,
+      default: false
+    }  
   },
   data: () => ({
     finalUser: null,
-    valid: true,
+    valid: false,
     passwordShow: false,
   }),
   computed: {
@@ -61,6 +72,7 @@ export default {
   methods: {
     validate: function() {
       if (this.$refs.form.validate()) {
+        this.valid = true
         this.$emit("validateForm", this.finalUser);
       }
     },

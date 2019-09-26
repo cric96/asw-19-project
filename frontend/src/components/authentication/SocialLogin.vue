@@ -66,11 +66,13 @@ export default {
               this.$store.dispatch('signUp', this.incompleteUser).then((user)=>{
                   this.$router.replace("/dashboard")
               }).catch(err=>{
-                  console.log(err)
+                  console.log("AAA",err)
               })
             }else{
                 this.$store.dispatch('signIn').then((user)=>{
                   this.$router.replace("/dashboard")
+                }).catch(err=>{
+                  console.log("BBB",err)
                 })
             } 
           }

@@ -17,55 +17,51 @@ function passwordConfirmBuilder(user) {
         }
     ]
 }
-const passwordConfirmRule = [ 
-    v => !!v || "il campo conferma password è obbligatorio",
-    //TODO -- check if password match with confirm password through a rule set
-];
 
 function userPropsBuilder(user) {
    return [
        {
-        propertyName : "uid",
-        propertyRule : generalRule,
-        propertyLabel : "ID",
-        editable: false
-   },
-   {
-        propertyName : "email",
-        propertyRule : emailRule, 
-        propertyLabel : "e-mail",
-        editable : false
-   },
-   {
-       propertyName : "password",
-       propertyRule : passwordRule,
-       propertyLabel : "password",
-       editable : true
-   },
-   {
-        propertyName : "passwordConfirm",
-        propertyRule : passwordConfirmBuilder(user),
-        propertyLabel : "password di conferma",
-        editable : true
-    },
-    {
-       propertyName : "name",
-       propertyRule : generalRule,
-       propertyLabel : "nome",
-       editable : true
-    },
-    {
-        propertyName : "surname",
-        propertyRule : generalRule,
-        propertyLabel : "cognome",
-        editable : true
-    },
-    {
-        propertyName : "nickname",
-        propertyRule : generalRule,
-        propertyLabel : "nickname",
-        editable : true
-     }
+            propertyName : "firebase_uid",
+            propertyRule : generalRule,
+            propertyLabel : "ID",
+            editable: false
+        },
+        {
+            propertyName : "email",
+            propertyRule : emailRule, 
+            propertyLabel : "e-mail",
+            editable : false
+        },
+        {
+            propertyName : "password",
+            propertyRule : passwordRule,
+            propertyLabel : "password",
+            editable : true
+        },
+        {
+            propertyName : "passwordConfirm",
+            propertyRule : passwordConfirmBuilder(user),
+            propertyLabel : "password di conferma",
+            editable : true
+        },
+        {
+            propertyName : "name",
+            propertyRule : [],
+            propertyLabel : "nome",
+            editable : true
+        },
+        {
+            propertyName : "surname",
+            propertyRule : [],
+            propertyLabel : "cognome",
+            editable : true
+        },
+        {
+            propertyName : "nickname",
+            propertyRule : [],
+            propertyLabel : "nickname",
+            editable : true
+        }
    ] 
 }
 

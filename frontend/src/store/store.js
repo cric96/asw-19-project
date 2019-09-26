@@ -4,7 +4,7 @@ import Vuex from 'vuex'
 import buildingModule from './module/building'
 import trashCategoriesModule from './module/trashCategory'
 import fb from '@/firebaseConfig.js'
-import usersApi from '../services/users.api.js'
+import usersApi from '../services/usersApi'
 import User from '@/model/user'
 import messagesPlugin from '../plugins/messages'
 

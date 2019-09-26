@@ -8,6 +8,7 @@ import Building from './views/building/Building.vue'
 import SignUp from '@/views/user/SignUp.vue'
 import HomeReport from './views/HomeReport.vue'
 import Intro from './views/Intro.vue'
+import UserInfo from '@/views/user/UserInfo.vue'
 
 Vue.use(Router)
 
@@ -56,6 +57,11 @@ const router = new Router({
           path: '/buildings',
           name: 'Buildings',
           component: Building
+        },
+        {
+          path: '/userProfile',
+          name: 'UserInfo',
+          component: UserInfo,
         }
       ]
     }

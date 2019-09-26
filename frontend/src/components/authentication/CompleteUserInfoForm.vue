@@ -14,6 +14,7 @@
 			<user-form
 			v-bind:userProperties="userProperties"
 			v-bind:user="user"
+      :v-model="true"
 			@validateForm="updateUser"
 			>Completa profilo</user-form>
       	</v-card-text>
@@ -34,7 +35,7 @@ import * as messages from '@/resource/messages';
 
 export default {
   components: {
-	"alert": AlertMessageComponent, 
+	  "alert": AlertMessageComponent, 
     "user-form": UserForm
   },
   props: {
@@ -53,24 +54,28 @@ export default {
     },
   },	
   data: () => ({
-	userProperties: userPropsFilteredBuilder(this.user,"name","surname","nickname"),
     showAlert: false,
     valid: true,
     opened: false
   }),
   methods: {
     updateUser: function(user) {
-      this.$store.dispatch("updateUserData", this.finalUser)
-        .then(response => {
-          	this.showAlert = true
-        	this.$refs.alert.changeConfig(UPDATED_INFO, "success")
-          	this.opened = false;
-        })
-        .catch(err => {
-          
-        });
+      this.$store.dispatch("updateUserData", user)
+      .then(response => {
+          this.showAlert = true
+          this.$refs.alert.changeConfig(UPDATED_INFO, "success")
+          this.opened = false;
+      })
+      .catch(err => {
+        
+      });
     }
-  }
+  }, 
+  computed: {
+    userProperties: function () {
+      return userPropsFilteredBuilder(this.user, 'name','surname','nickname')
+    }
+  },
 };
 </script>
 
