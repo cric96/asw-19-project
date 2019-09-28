@@ -4,8 +4,8 @@ var utils = require("../utils/utils");
 var Building = mongoose.model('Building');
 var User = mongoose.model("User")
 var utils = require("../utils/utils");
-var httpCode = require("../httpCode")
-var errorHandler = require("./errorManagement")
+var httpCode = require("../utils/httpCode")
+var errorHandler = require("../utils/errorManagement")
 /**
  * populate building, return a promise with building fetched.
  * @param {*} query the mongodb query

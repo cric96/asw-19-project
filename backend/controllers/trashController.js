@@ -3,7 +3,7 @@ var Trash = mongoose.model('Trash');
 var TrashCategory = mongoose.model('TrashCategory')
 var utils = require('../utils/utils')
 var fetchQueries = require("./trashQueries")
-var errorHandler = require("./errorManagement")
+var errorHandler = require("../utils/errorManagement")
 
 exports.insertTrash = function(req, res) {
     let query = {
@@ -24,6 +24,7 @@ exports.insertTrash = function(req, res) {
             //create trash to insert into db
             trash.trashCategory = category._id
             trash.building = res.locals.buildingFetched._id
+            trash.city = res.locals.buildingFetched.city
             trash.user = user._id
             //update user
             user.score += category.score
