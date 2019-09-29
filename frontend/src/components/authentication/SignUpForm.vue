@@ -103,6 +103,7 @@ import usersapi from "../../services/usersApi"
 import User from "../../model/user"
 import * as messages from '@/resource/messages'
 import AlertMessageComponent from '@/components/AlertMessageComponent'
+import authService from '@/services/firebaseAuthService'
 
 export default {
   components: {
@@ -149,6 +150,15 @@ export default {
     },
     signUp: function() {
       this.inRegistration = true
+
+      authService.signUpFromEmailPassword(this.email, this.password)
+        .then(firebaseUser => {
+          console.log(firebaseUser)
+        })
+        .catch(errro => {
+          console.log(errro)
+        })
+        /*
       firebase
         .auth()
         .createUserWithEmailAndPassword(this.email, this.password)
@@ -208,7 +218,7 @@ export default {
           } else {
             console.log(err)
           }
-        })
+        })*/
     }
   }
 }
