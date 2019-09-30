@@ -56,7 +56,6 @@ const maskUrl = 'https://i.ibb.co/bRmhY52/trash-clip.png'
 const binUrl = 'https://i.ibb.co/fDXhsy7/trash.png'
 
 import Bin from '@/model/bin'
-
 export default {
     name: 'DynamicBin',
     props: {
@@ -77,10 +76,12 @@ export default {
     },
     mounted() {
         this.draw(this.bin.binCategory.colour)
+        console.log("here")
     },
     computed: {
         collectedTotal() {
             return this.bin.collectedTrashes.reduce((a, b) => a + b.quantity, 0)
+            //TODO catchare qui l'evento di update del trash collezionato dal server ?
         }
     },
     methods: {

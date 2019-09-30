@@ -4,7 +4,7 @@ var TrashCategory = mongoose.model('TrashCategory')
 var utils = require('../utils/utils')
 var fetchQueries = require("./trashQueries")
 var errorHandler = require("../utils/errorManagement")
-
+//var io = require('socket.io')(http)
 exports.insertTrash = function(req, res) {
     let query = {
         name : req.body.name //filter by trash category passed into the body
@@ -28,6 +28,9 @@ exports.insertTrash = function(req, res) {
             trash.user = user._id
             //update user
             user.score += category.score
+            /*io.on('connection', function(socket){
+                io.sockets.in("room"+res.locals.buildingFetched._id).emit('add trash', category._id)
+            })*/
             return Promise.all([user.save(), trash.save()])//to fix: handle errors in the first promise
         })
         .then(el => res.setNoContent()) //all ok, return no content means that the trash is added into the db
