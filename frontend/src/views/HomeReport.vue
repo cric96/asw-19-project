@@ -1,13 +1,27 @@
 <template>
-    <v-container fluid>
+    <v-layout>
       <!-- popups -->
       <manual-insertion-form ref="manualInsertionPopUp"/>
       <trash-searching-pop-up ref="trashSearchingPopUp"/>
       <!-- Content loader -->
-      <v-row v-if="loading" justify="center">
+      <v-layout v-if="loading" row wrap align-center justify-center>
         <content-loader :loading="loading"></content-loader>
-      </v-row>
-      <v-speed-dial v-if="areLoaded" v-model="fabExpanded" bottom right fixed direction="left" transition="scale-transition" >
+      </v-layout>
+
+      <v-layout v-else>
+        <v-row dense>
+          <v-col cols="12">
+            <bins-board :bins="bins"></bins-board>
+          </v-col>
+        </v-row>
+      </v-layout>
+
+      <!-- Floating action buttons -->
+      <v-speed-dial v-if="activeBuilding" 
+                          v-model="fabExpanded"
+                          bottom right fixed direction="left" 
+                          transition="scale-transition" 
+                          :loading="areLoaded">
         <template v-slot:activator>
           <v-btn fab light v-model="fabExpanded">
             <v-icon v-if="fabExpanded">close</v-icon>
@@ -26,55 +40,61 @@
             <input ref="barcode" type="file" accept="image/*" @change="onPhotoSelectedBarcode" capture="camera" hidden=true />
         </v-btn>
       </v-speed-dial>
-      <v-btn v-else fab light bottom right fixed :loading="true"> </v-btn> 
-      
-      <v-row dense v-if="!loading">
-        <v-col v-for="(bin, index) in bins" :key="index" cols="12" md="6" sm="6">
-          <bin :bin="bin"></bin>
-        </v-col>
-      </v-row>
-    </v-container>
+    </v-layout>
 </template>
 
 
 <script>
-import DynamicBin from '@/components/DynamicBin.vue'
+import BinsBoard from '@/components/bin/BinsBoard.vue'
 import ManualInsertionForm from '@/components/ManualInsertionForm.vue'
 import TrashSearchingPopUp from '@/components/TrashSearchingPopUp.vue'
-import ApiBin from "@/services/bins.api";
+import ApiBin from "@/services/binsApi";
 import { ScaleLoader } from '@saeris/vue-spinners'
 import { createNamespacedHelpers } from 'vuex'
 import { mapGetters } from 'vuex'
 
 export default {
   components: {
-    'bin': DynamicBin,
+    'bins-board': BinsBoard,
     'content-loader': ScaleLoader,
     'manual-insertion-form': ManualInsertionForm,
     'trash-searching-pop-up' : TrashSearchingPopUp
   },
   data: () => ({
     fabExpanded: false,
-    bins: null
+    binsAreLoadings: false
   }),
   computed: {
     ...mapGetters({
       activeBuilding: "building/activeBuilding",
-      areLoaded : "trashCategories/areLoaded" //used to see if the trash category are loaded
+      areLoaded : "trashCategories/areLoaded", //used to see if the trash category are loaded
+      bins : "building/bins"
     }),
     loading: function() {
-      return !this.bins
+      return this.binsAreLoadings
     }
   },
   watch: {
     activeBuilding(val) {
-      ApiBin.getBins(this.activeBuilding).then(bins => {
-        this.bins = bins
-      });
+      this.updateBins()
     }
   },
+  mounted() {
+    this.updateBins()
+  },
   methods: {
-    openManualForm() { //show the manual insertionpopup
+    updateBins() {
+      if(this.activeBuilding) {
+        this.binsAreLoadings = true
+        this.$store.dispatch("building/fetchBinsOfActiveBuilding")
+          .finally(() => this.binsAreLoadings = false)
+        
+      }
+    },
+    /**
+     * change current child screen to manual screen
+     */
+    openManualForm() {
       this.$refs.manualInsertionPopUp.open()
     },
     openCamera(ref) {

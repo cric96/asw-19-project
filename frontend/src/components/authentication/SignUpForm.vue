@@ -99,7 +99,7 @@
 
 <script>
 import firebase from "firebase"
-import usersapi from "../../services/users.api"
+import usersapi from "../../services/usersApi"
 import User from "../../model/user"
 import * as messages from '@/resource/messages'
 import AlertMessageComponent from '@/components/AlertMessageComponent'

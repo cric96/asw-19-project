@@ -4,7 +4,7 @@ import Vuex from 'vuex'
 import buildingModule from './module/building'
 import trashCategoriesModule from './module/trashCategory'
 import fb from '@/firebaseConfig.js'
-import usersApi from '../services/users.api.js'
+import usersApi from '../services/usersApi'
 import User from '../model/user'
 import messagesPlugin from '../plugins/messages'
 
@@ -18,11 +18,13 @@ const store = new Vuex.Store({
     },
     state: {
         token: null,
-        userProfile: undefined,
+        userProfile: undefined
     },
     actions: {
-        updateUserData({}, user) {
-           return usersApi.updateUser(user)
+        updateUserData({commit}, user) {
+           return usersApi.updateUser(user).then(updatedUser => {
+               commit('setUserProfile', updatedUser)
+           })
             // TODO: move to right module
         },
         autoSignIn() {

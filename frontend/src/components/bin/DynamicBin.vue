@@ -12,7 +12,7 @@
             <h6 class="ml-2 headline font-weight-light">Collected: {{collectedTotal}}</h6> <!-- or font-weight-thin? -->
             <v-spacer></v-spacer>
             <v-btn icon @click="show = !show">
-                <v-icon>{{ show ? 'keyboard_arrow_down' : 'keyboard_arrow_up' }}</v-icon>
+                <v-icon>{{ show ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</v-icon>
             </v-btn>
         </v-card-actions>
         <v-expand-transition>
@@ -20,16 +20,22 @@
                 <v-container fluid>
                     <template v-for="collectedTrash in bin.collectedTrashes">
                         <v-layout row wrap justify-center :key="collectedTrash._id" class="ma-2" >
-                            {{collectedTrash.trashCategory.name}}
-                            <v-progress-linear height="25" reactive :value="(collectedTrash.quantity / collectedTotal) * 100">
-                                <template v-slot="{ value }">
-                                    <strong>{{ collectedTrash.quantity }}</strong>
-                                </template>
-                            </v-progress-linear>
+                            <v-col cols="auto">
+                                {{collectedTrash.trashCategory.name}}
+                                <v-img :src="collectedTrash.trashCategory.image" width="24"></v-img>
+                            </v-col>
+                            <v-col >
+                                <v-progress-linear height="25" reactive :value="(collectedTrash.quantity / collectedTotal) * 100">
+                                    <template v-slot="{ value }">
+                                        <strong>{{ collectedTrash.quantity }}</strong>
+                                    </template>
+                                </v-progress-linear>
+                            </v-col>
                         </v-layout>
                     </template>
                 </v-container>
             </div>
+            
         </v-expand-transition>
     </v-card>
     

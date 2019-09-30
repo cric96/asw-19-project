@@ -1,5 +1,5 @@
 import trashCategoriesApi from '@/services/trashCategoriesApi'
-
+//TODO riguarda qua, modifica il categoryByName come getters
 export default {
     namespaced: true,
     state: {

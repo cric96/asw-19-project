@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
-var errorHandler = require("./errorManagement")
+var errorHandler = require("../utils/errorManagement")
+var utils = require("../utils/utils")
 
 exports.createUser = function(req, res) {
     var user = new User(req.body);
@@ -17,8 +18,8 @@ exports.createUser = function(req, res) {
 exports.getUser = function(req, res) {
     let uid = res.locals.uid
     User.findOne({ firebase_uid: uid })
-        .exec()
-        .then(user => res.setOkIfNotNull(user, "User not found"))
+        .then(utils.filterNullElement)
+        .then(user => res.setOk(user))
         .catch(err => errorHandler(err, res))
 }
 
@@ -26,13 +27,46 @@ exports.updateUser = function(req, res) {
     let uid = res.locals.uid;
     let updateUser = User.prepareUpdate(req.body)
     User.findOneAndUpdate({ firebase_uid: uid }, updateUser, { new: true })
-        .exec()
-        .then(updatedUser => res.setOkIfNotNull(updatedUser, "User not found"))
+        .then(utils.filterNullElement)
+        .then(updatedUser => res.setOk(updatedUser))
         .catch(err => res.setBadRequest())
 };
 
+function filterOrBuilder () {
+    this.filters = []
+
+    this.appendIfDefined = function(attributeName, attribute) {
+        if(attribute !== undefined) {
+            this.filters.push( {
+                [attributeName] : { $regex: attribute , "$options": "i" }
+            })
+        }
+        return this
+    }
+
+    this.build = function() {
+        if(this.filters.length == 0) {
+            return {}
+        } else {   
+            return { $or : this.filters }
+        }
+    }
+}
 exports.listUsers = function(req, res) {
-    User.find().exec()
+    let filter = req.query.filter
+    let filterQuery = new filterOrBuilder()
+        .appendIfDefined("name", filter)
+        .appendIfDefined("surname", filter)
+        .appendIfDefined("email", filter)
+        .appendIfDefined("nickname", filter)
+        .build()
+    console.log(filterQuery)
+    let query = User.find(filterQuery)
+    console.log("LIMIT " + req.query.limit)
+    if(req.query.limit !== undefined && utils.isNumeric(req.query.limit)) {
+        query.limit(parseInt(req.query.limit))
+    }
+    query
         .then(users => res.setOk(users))
         .catch(err => res.setInternalError(err))
 }

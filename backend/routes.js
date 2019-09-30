@@ -7,6 +7,7 @@ module.exports.setup = function(app, version = "v0") {
     var cityRoutes = require('./routes/cityRoutes')
     var trashRoutes = require('./routes/trashRoutes')
     var trashCategoryRoutes = require('./routes/trashCategoryRoutes')
+    var rankRoutes = require('./routes/rankRoutes')
     app.use('/api', userRoutes)
     app.use('/api', buildingRoutes)
     app.use('/api', memberRoutes)
@@ -14,4 +15,5 @@ module.exports.setup = function(app, version = "v0") {
     app.use('/api', cityRoutes)
     app.use('/api', trashRoutes)
     app.use('/api', trashCategoryRoutes)
+    app.use('/api', rankRoutes)
 }

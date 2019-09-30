@@ -1,6 +1,6 @@
 var mongoose = require('mongoose')
 var TrashCategory = mongoose.model("TrashCategory")
-var errorHandler = require("./errorManagement")
+var errorHandler = require("../utils/errorManagement")
 
 exports.listTrashCategories = function(req, res) {
     TrashCategory.find()

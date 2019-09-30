@@ -1,4 +1,4 @@
-var httpCode = require("./httpCode")
+var httpCode = require("./utils/httpCode")
 /*
     The function "decore" it is used to decore the express's resut object.
     It enable to make more result (with json response) building more "readable".

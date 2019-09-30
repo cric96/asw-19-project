@@ -1,4 +1,4 @@
-var httpCode = require("../httpCode")
+var httpCode = require("./httpCode")
 var Exception = require("./Exception")
 module.exports.exclude = function(obj, ...fields) {
     fields.forEach(field => {
@@ -23,4 +23,21 @@ module.exports.filterNullElement = function(element, msg = "") {
     } else {
         return element
     }
+}
+
+module.exports.isNumeric = function(value) {
+    return !isNaN(value)
+}
+/**
+ * a shorthand to if statement, if you want to avoid to
+ * write these sentece:
+ * if(cond) { something } else { something else}
+ * with is you can do these with a chain:
+ * is(cond).then( something ).catch(something else)
+ */
+module.exports.is = function(condition) {
+    if(typeof condition !== "boolean") {
+        throw Exception("Wrong condition statement")
+    }
+    return new Promise((accept, reject) => condition ? accept() : reject())
 }
