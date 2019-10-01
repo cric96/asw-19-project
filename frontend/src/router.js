@@ -63,14 +63,15 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  if(store.getters.isUserLoading) {
+ /* if(store.getters.isUserLoading) {
     const unwatch = store.watch((state, getters) => getters.userProfile, function() {
       routeGuard(to, from, next)
       unwatch()
     })
   } else {
     routeGuard(to, from, next)
-  }
+  }*/
+  next()
 })
 
 function routeGuard(to, from, next) {

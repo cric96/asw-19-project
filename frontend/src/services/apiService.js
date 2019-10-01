@@ -37,7 +37,7 @@ function makeRequest(axiosFunction, resource, queryParams = null, authorization 
         resource += `?${querystring.stringify(queryParams)}`
     }
     let request = (body != undefined) ? axiosFunction(resource, body, headers) : axiosFunction(resource, headers)
-    return request.then(response => Promise.resolve(response.data)).catch(err => Promise.reject(err))
+    return request.then(response => Promise.resolve(response.data)).catch(err => { throw err.response })
 }
 
 function getHeader() {

@@ -1,31 +1,4 @@
 import firebase from "firebase"
-import store from '../store/store'
-
-function fail(messagge = "", data = undefined) {
-    return Promise.reject(
-        {
-            messagge: messagge,
-            data: data
-        }
-    )
-}
-
-function success(data = undefined) {
-    return Promise.resolve(data)
-}
-
-
-function FirebaseException(messagge) {
-    this.messagge = messagge
-}
-
-const WRONG_PASSWORD = fail("wrong password")
-const SIGNUP_ERROR = fail("error during sign up")
-
-function createUser(userId) {
-    return {}
-}
-
 
 /* 1. create with email and password
  * 2. create a backend new user
@@ -36,25 +9,45 @@ function createUser(userId) {
 function signUpFromEmailPassword(email, password) {
     return firebase.auth()
         .createUserWithEmailAndPassword(email, password)
-        .then(newUserCredential => {
-            if(newUserCredential) {
-                return success(newUserCredential.user)
-                // return signUpBackend(createUser(firebaseUser.user.uid))
-            }
-            return SIGNUP_ERROR
-        })
+        .then(newUserCredential => newUserCredential.user)
         .catch(error => {
-            console.log(error)
             if (error.code == "auth/email-already-in-use") {
                 console.log('linking...')
                 // fetch sign in methods error.email
                 let credential = firebase.auth.EmailAuthProvider.credential(email, password)
                 return signInLinkEmailToProvider(email, credential)
             } else {
-                return fail(error)
+                throw new FirebaseException(error.code)
             }
 
         })    
+}
+
+function signInFromEmailPassword(email, password) {
+    return firebase.auth()
+        .signInWithEmailAndPassword(email, password)
+        .then(retrieveUserToken)
+        .catch(err => { throw new FirebaseException(err.code) })
+}
+
+function signInWithProvider(provider) {
+    return firebase.auth()
+        .signInWithPopup(provider)
+        .catch(error => {
+            if (error.code == "auth/account-exists-with-different-credential") {
+                let email = error.email
+                let credential = error.credential
+                // Lookup existing account’s provider ID.
+                
+            }
+            throw new FirebaseException(error.code)
+        })
+}
+
+function logout() {
+    return new Promise((resolve, reject) => {
+        firebase.auth().signOut().then(() => resolve(), () => reject())
+    })
 }
 
 function signInLinkEmailToProvider(existingEmail, newCredential) {
@@ -90,7 +83,35 @@ function getActiveProvider(providers) {
     }
 }
 
+function retrieveUserToken(firebaseUser=null,refresh=true) {
+    let promiseUser = !firebaseUser ? retrieveFirebaseCurrentUser() : Promise.resolve(firebaseUser)
+    return promiseUser.then(firebaseUser => firebaseUser.getIdToken(refresh).then(token => {
+        return {
+            user: firebaseUser,
+            token: token
+        }
+    }))
+}
+
+function retrieveFirebaseCurrentUser() {
+    return new Promise((resolve, reject) => {
+        const unsub = firebase.auth().onAuthStateChanged(firebaseUser => {
+            unsub()
+            resolve(firebaseUser)
+        })
+    })
+}
+
+function success(data = undefined) {
+    return Promise.resolve(data)
+}
+
+function FirebaseException(code) {
+    this.code = code
+}
 
 export default {
-    signUpFromEmailPassword
+    signUpFromEmailPassword,
+    logout,
+    signInFromEmailPassword
 }

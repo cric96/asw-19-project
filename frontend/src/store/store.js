@@ -2,6 +2,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import buildingModule from './module/building'
+import authModule from './module/auth'
 import trashCategoriesModule from './module/trashCategory'
 import fb from '@/firebaseConfig.js'
 import usersApi from '../services/usersApi'
@@ -14,7 +15,8 @@ const store = new Vuex.Store({
     plugins: [messagesPlugin],
     modules: {
         building: buildingModule,
-        trashCategories : trashCategoriesModule
+        trashCategories : trashCategoriesModule,
+        auth: authModule
     },
     state: {
         token: null,
@@ -29,14 +31,6 @@ const store = new Vuex.Store({
         },
         autoSignIn() {
             return this.dispatch('signIn')
-        },
-        signUp({}, user) {
-            return usersApi.createUser(user).then(() => {
-                return this.dispatch('signIn')
-            }).catch(err => {
-                this.dispatch('logout')
-                return Promise.reject(err)
-            })
         },
         signInAndUpdate({ commit }, userToUpdate) {
             return this.dispatch('signIn').then((user)=>{

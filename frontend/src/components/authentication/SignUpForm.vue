@@ -105,6 +105,8 @@ import * as messages from '@/resource/messages'
 import AlertMessageComponent from '@/components/AlertMessageComponent'
 import authService from '@/services/firebaseAuthService'
 
+import { mapActions } from 'vuex'
+
 export default {
   components: {
     "alert": AlertMessageComponent 
@@ -132,93 +134,39 @@ export default {
   methods: {
     validate: function() {
       if (this.$refs.form.validate()) {
-        this.signUp()
+        this.doSignUp()
       }
     },
     reset: function() {
       this.$refs.form.reset()
     },
-    createNewUser(firebase_uid) {
+    createNewUser() {
       return new User(
               undefined,
-              firebase_uid,
+              undefined,
               this.name,
               this.surname,
               this.email,
               this.nickname
             )
     },
-    signUp: function() {
+    ...mapActions('auth', [
+      'signUp'
+    ]),
+    doSignUp: function() {
       this.inRegistration = true
-
-      authService.signUpFromEmailPassword(this.email, this.password)
-        .then(firebaseUser => {
-          console.log(firebaseUser)
-        })
-        .catch(errro => {
-          console.log(errro)
-        })
-        /*
-      firebase
-        .auth()
-        .createUserWithEmailAndPassword(this.email, this.password)
-        .then(response => {
-          if (response) {
-              let newuser = this.createNewUser(response.user.uid)
-              this.$store.dispatch('signUp', newuser)
-              .then((user)=>{
-                this.showAlert = true
-                this.$refs.alert.changeConfig(messages.SIGNUP_SUCCESS, "success")
-                setTimeout(() => { this.$router.replace("/dashboard"); }, 1500)
-              }).catch((err)=>{
-                // TODO -- check server response (409...)
-                this.inRegistration = false
-                this.showAlert = true
-                this.$refs.alert.changeConfig(err, "error")
-                //this.$refs.alert.changeConfig(messages.SIGNUP_ERR_NICKNAME_CONFLICT, "error")
-              })
-          }
-        })
-        .catch(err => {
-          if (err.code == "auth/email-already-in-use") {
-            const existingEmail = this.email
-            const password = this.password
-            firebase.auth().fetchSignInMethodsForEmail(existingEmail).then((providers) =>{
-                const fbProvider = new firebase.auth.FacebookAuthProvider()
-                if (providers.indexOf(firebase.auth.FacebookAuthProvider.PROVIDER_ID) != -1) {
-                  // Sign in user to fb with same account.
-                  fbProvider.setCustomParameters({ login_hint: existingEmail })
-                  return firebase
-                    .auth()
-                    .signInWithPopup(fbProvider)
-                    .then(function(result) {
-                      return result.user
-                    })
-                }else{
-                  this.showAlert = true
-                  this.$refs.alert.changeConfig(messages.SIGNUP_ERR_EMAIL_CONFLICT, "error")
-                }
-              })
-              .then((user) =>{
-                if (user) {
-                  user.linkWithCredential(firebase.auth.EmailAuthProvider.credential(existingEmail,password)).then((userLinked)=>{
-                    let newuser = this.createNewUser(userLinked.uid)
-                    this.$store.dispatch('signInAndUpdate', newuser)
-                    .then((user)=>{
-                      this.$router.replace("/dashboard")
-                    }).catch(err=>{
-                      // TODO -- check server response (409...)
-                      this.showAlert = true
-                      this.$refs.alert.changeConfig(err, "error")
-                      //this.$refs.alert.changeConfig(messages.SIGNUP_ERR_NICKNAME_CONFLICT, "error")                      console.log(err)
-                    })
-                  })
-                }
-              })
-          } else {
-            console.log(err)
-          }
-        })*/
+      let newUser = this.createNewUser()
+      this.signUp({ user : newUser, password : this.password}).then(user => {
+        this.$refs.alert.changeConfig(messages.SIGNUP_SUCCESS, "success")
+        setTimeout(() => { this.$router.replace("/dashboard"); }, 1500)
+      })
+      .catch(error => {
+        this.$refs.alert.changeConfig((!error) ? messages.SIGNUP_ERR : error, "error")
+      })
+      .finally(() => {
+        this.showAlert = true
+        this.inRegistration = false
+      })
     }
   }
 }
