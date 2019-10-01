@@ -27,7 +27,7 @@ exports.insertTrash = function(req, res) {
             trash.city = res.locals.buildingFetched.city
             trash.user = user._id
             //update user
-            user.score += category.score
+            user.updateScore(category.score) 
             /*io.on('connection', function(socket){
                 io.sockets.in("room"+res.locals.buildingFetched._id).emit('add trash', category._id)
             })*/

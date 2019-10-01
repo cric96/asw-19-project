@@ -6,11 +6,12 @@ import vuetify from './plugins/vuetify';
 import './firebaseConfig'
 import filters from './filters'
 import './utils'
+import ImageUploader from 'vue-image-upload-resize'
 
 Vue.config.productionTip = false;
 
 Vue.use(filters)
-
+Vue.use(ImageUploader);
 new Vue({
   router,
   vuetify,

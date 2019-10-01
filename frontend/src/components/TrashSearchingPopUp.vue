@@ -28,9 +28,7 @@
                 
                 <v-card-text>
                 <p>Va in <em class="font-italic font-weight-bold"> {{ binName }} </em> </p>
-                </v-card-text>
-                <v-card-text v-if="aiMode">
-                <p>Confermi?</p>
+                <p v-if="aiMode">Confermi?</p>
                 </v-card-text>
 
                 <v-card-actions class="justify-center">
