@@ -6,7 +6,7 @@ import authModule from './module/auth'
 import trashCategoriesModule from './module/trashCategory'
 import fb from '@/firebaseConfig.js'
 import usersApi from '../services/usersApi'
-import User from '../model/user'
+import User from '@/model/user'
 import messagesPlugin from '../plugins/messages'
 
 Vue.use(Vuex)

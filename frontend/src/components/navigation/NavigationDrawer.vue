@@ -38,7 +38,7 @@ export default {
     },
     methods: {
         clickUser() {
-            console.log('Edit pen clicked nav user')
+            this.$router.replace("/userProfile")
         },
         logout : function(){
             this.$store.dispatch('logout').then(() => {

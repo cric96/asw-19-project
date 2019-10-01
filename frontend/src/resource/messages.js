@@ -6,3 +6,4 @@ export const SIGNUP_ERR_PASS_TOO_SHORT = "La password deve essere almeno di 6 ca
 export const SIGNUP_ERR = "Si è verificato un errore nella registrazione"
 export const SIGNUP_ERR_EMAIL_CONFLICT = "Esiste già un account registrato con questa email"
 export const SIGNUP_ERR_NICKNAME_CONFLICT = "Esiste già un account registrato con questo nickname"
+export const UPDATED_INFO = "Informazioni aggiornate"

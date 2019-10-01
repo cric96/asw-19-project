@@ -38,7 +38,7 @@
 </template>
 
 <script>
-import User from '../model/user'
+import User from '@/model/user'
 import UserChip from '@/components/UserChip'
 import hereApi from '@/services/hereApi'
 

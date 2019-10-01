@@ -4,7 +4,7 @@
       <!--TODO. use src set for dimension-->
       <v-flex xs12 sm8 md4>
         <v-img
-          :src="require('../assets/logo.png')"
+          :src="require('@/assets/logo.png')"
           class="my-3, centered_img"
           height="300"
           width="300"
