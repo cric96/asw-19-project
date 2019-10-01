@@ -56,12 +56,9 @@
 </template>
 <script>
 import prediction from '@/services/predictionApi'
-import  color  from '@/plugins/vuetify'
-import { ScaleLoader } from '@saeris/vue-spinners'
-import { functions } from 'firebase';
 import { createNamespacedHelpers } from 'vuex'
 import trashesApi from '../services/trashesApi'
-const { mapActions } = createNamespacedHelpers('trashCategories');
+const { mapActions } = createNamespacedHelpers('trashCategories')
 const { mapGetters } = createNamespacedHelpers('building')
 
 export default {
@@ -135,9 +132,6 @@ export default {
             }) //if there are some error, show error code on client
             .finally(() => this.waitingPrediction = false) //the prediction is over, show result 
         }
-    },
-    components: {
-        'scale-loader' : ScaleLoader
     }
 }
 </script>

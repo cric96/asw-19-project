@@ -11,14 +11,32 @@
                     -->
                     <v-autocomplete
                         v-model="category"
-                        :items="categories.map(category => category.name)"
+                        :items="categoriesAndBins"
                         flat
                         hide-no-data
                         hide-details
                         label="Digita..."
+                        multiple
                         solo
+                        item-text="categoryName"
+                        item-value="categoryName"
                         menu-props="auto"                    
-                    ></v-autocomplete>
+                    >
+                      <template v-slot:item="data">
+                        <template v-if="typeof data.item !== 'object'">
+                          <v-list-item-content v-text="data.item"></v-list-item-content>
+                        </template>
+                        <template v-else>
+                          <v-list-item-avatar>
+                            <img :src="data.item.trashAvatar">
+                          </v-list-item-avatar>
+                          <v-list-item-content>
+                            <v-list-item-title v-html="data.item.categoryName"></v-list-item-title>
+                            <v-list-item-subtitle v-html="data.item.binName"></v-list-item-subtitle>
+                          </v-list-item-content>
+                        </template>
+                      </template>
+                    </v-autocomplete>
                     <v-btn icon @click="onAccept" :disabled="confirmDisabled">
                         <v-icon>done</v-icon>
                     </v-btn>
@@ -33,8 +51,9 @@
 </template>
 <script>
   import { createNamespacedHelpers } from 'vuex'
+  import { mapGetters } from 'vuex'
   import trashesApi from '../services/trashesApi'
-  const { mapGetters, mapActions } = createNamespacedHelpers('trashCategories');
+  const { mapActions } = createNamespacedHelpers('trashCategories')
 
   export default {
     data: () => ({
@@ -43,9 +62,23 @@
         confirmDisabled: true //confirm is disable as long as the user write a trash category 
     }),
     computed: {
-      ...mapGetters([
-        'categories'
-      ])
+      ...mapGetters({
+        'categories' : 'trashCategories/categories',
+        'binFromTrashCategoryName' : 'building/binFromTrashCategoryName',
+        'bins' : 'building/bins'
+      }),
+      categoriesAndBins : function(){
+        if(this.bins.length == 0) { //used to prevent console error if the system fetches this component before bins
+          return []
+        }
+        return this.categories.map(category => {
+          return {
+            categoryName : category.name, 
+            binName : this.binFromTrashCategoryName(category.name).binCategory.name, 
+            trashAvatar: category.image
+          }
+        })
+      }
     },
     watch: {
       category: function(val) { //watch category value, when there is some value, user can confirm the category
