@@ -4,9 +4,9 @@
         <v-layout align-center justify-center fill-height>
             <!-- TODO: spiegare il problema e riesportare png -->
             <v-flex lg3 md4 sm7 xs10>
-                <div class="logo-animation-box">
-                    <v-img src="../assets/animationlogo/lens.png" class="mx-auto overlay rotate-90-ccw" width="200" height="200"/>
-                    <v-img src="../assets/animationlogo/recycle.png" class="mx-auto background" width="300" height="300"></v-img>
+                <div class="logo-animation-box mx-auto">
+                    <v-img src="../assets/animationlogo/lens.png" class="overlay rotate-90-ccw" width="300" height="300"/>
+                    <v-img src="../assets/animationlogo/recycle.png" class="background" width="300" height="300"></v-img>
                 </div>
                 <v-row>
                     <v-col align="center">
@@ -21,16 +21,19 @@
 
 <style scoped>
 .logo-animation-box {
-    position: relative;
-    overflow: visible;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .logo-animation-box .background {
-    z-index: 1;
+  position: relative;
+  z-index: 1;
 }
 .logo-animation-box .overlay {
-    position: absolute;
-    z-index: 2;
-        overflow: visible;
+  position: absolute;
+  z-index: 2;
+  overflow: visible;
 }
 
 /* Animation for text blur effect enter transition */

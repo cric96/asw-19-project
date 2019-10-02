@@ -65,10 +65,14 @@ export default {
               this.incompleteUser = new User(undefined, userLogged.uid, userLogged.displayName.split(" ")[0], userLogged.displayName.split(" ")[1], userLogged.email)
               this.$store.dispatch('signUp', this.incompleteUser).then((user)=>{
                   this.$router.replace("/dashboard")
-                })
+              }).catch(err=>{
+                  console.log("AAA",err)
+              })
             }else{
                 this.$store.dispatch('signIn').then((user)=>{
                   this.$router.replace("/dashboard")
+                }).catch(err=>{
+                  console.log("BBB",err)
                 })
             } 
           }

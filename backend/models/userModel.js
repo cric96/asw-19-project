@@ -42,7 +42,6 @@ var userSchema = new Schema({
     nickname: {
         type: String,
         trim: true,
-        default: null,
         unique: true,
         index: true,
         sparse: true
@@ -52,6 +51,7 @@ var userSchema = new Schema({
         ref: 'Reward'
     }]
 });
+
 /*
     virtual properties are used to create a virtual attribute not directly stored
     in mongodb, but computed when its value is requested.

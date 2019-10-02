@@ -3,7 +3,7 @@
     <v-layout align-center justify-center >
       <!--TODO. use src set for dimension-->
       <v-flex lg3 md4 sm7 xs10>
-        <v-img :src="require('../assets/logo.png')" class="mx-auto" height="300" width="300" style="background-color:rgba(255,255,255,0.8);border-radius: 50%"></v-img>
+        <v-img :src="require('@/assets/logo.png')" class="mx-auto" height="300" width="300" style="background-color:rgba(255,255,255,0.8);border-radius: 50%"></v-img>
         <v-row>
             <v-col align="center" class="pr-sm-1">
                 <v-btn color="teal" block dark :to="'/sign-up'">
