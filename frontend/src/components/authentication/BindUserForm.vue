@@ -36,7 +36,8 @@
 </template>
 
 <script>
-    import firebase from "firebase"
+import firebase from "firebase"
+import { mapActions } from 'vuex'
 
 export default {
   data: () => ({
@@ -69,40 +70,23 @@ export default {
     }
   },
   methods: {
+    ...mapActions('auth', [
+      'signInBindSocialToEmail'
+    ]),
+
+    // Existing email/password or Google user signed in.
+    // Link Facebook OAuth credential to existing account.
     bind: function() {
-      firebase
-      .auth()
-      .signInWithEmailAndPassword(this.existingEmail, this.password)
-      .then((user) => {
-        // Existing email/password or Google user signed in.
-        // Link Facebook OAuth credential to existing account.
-        if (user) {
-          this.successMessage = "La password inserita è corretta. I due account verranno immediatamente collegati"
-          this.error = false
-          //TODO show dialog
-          firebase.auth().currentUser.linkWithCredential(this.pendingCred).then((userLinked)=>{
-            this.$store.dispatch('signIn').then((user)=>{
-              this.successMessage = "Collegamento completato con successo"
-              this.$router.replace("/dashboard")
-            }).catch(err=>{
-              //todo chack erros
-              console.log(err)
-              this.error = true
-              this.errorMessage = "Errore nel collegamento dei due account"
-            })
-          }).catch((err)=>{
-            console.log(err)
-          })
-          
-        }else {
-          this.error = true
-          this.errorMessage = "Attenzione, si è veirificato un errore nel login"
-        }
-      }).catch((err)=>{
-        if(err.code='auth/wrong-password'){
-            this.error = true
-            this.errorMessage = "ERRORE; la password inserita non è corretta; riprova inserendo una nuova password"
-        }
+      this.error = false
+      this.signInBindSocialToEmail({
+        email: this.existingEmail,
+        password: this.password,
+        socialCrendential: this.pendingCred
+      }).then(user => {
+        this.successMessage = "Collegamento completato con successo"
+      }).catch(error => {
+        this.error = true
+        this.errorMessage = error
       })
     }
   }

@@ -41,6 +41,13 @@ export default {
                 commit('setUserProfile', null)
             })
         },
+        signInBindSocialToEmail({ dispatch }, {email, password, socialCrendential}) {
+            firebaseAuthService.linkSocialCredentialToEmail(email, password, socialCrendential)
+                .then(firebaseUser => {
+                    return dispatch('refreshToken').then(() => dispatch('fetchUserProfile', firebaseUser.uid))
+                })
+                .catch(error => handleAuthError(error.status || error.code))
+        },
         refreshToken({ commit }) {
             return firebaseAuthService.retrieveUserToken().then(token => {
                 console.log('Token: ' + token)

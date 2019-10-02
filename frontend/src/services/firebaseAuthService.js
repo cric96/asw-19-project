@@ -1,11 +1,11 @@
 import firebase from "firebase"
 
-/* 1. create with email and password
- * 2. create a backend new user
- * 3. if email already in use, login with the provider
- * 4. link the email to the provider
- * 5. update the backend
- */ 
+/* Sign up a new user to firebase auth backend
+ * starting from email and password, it handle some errors:
+ *  - when the email is already in use, it try to link the email to another account's provider.
+ *  - in other cases, throw a FirebaseException that contains the firebase's error code.
+ * @return {Promise.<FirebaseUser>} it contains the firebase user already authenticated
+ */
 function signUpFromEmailPassword(email, password) {
     return firebase.auth()
         .createUserWithEmailAndPassword(email, password)
@@ -23,16 +23,29 @@ function signUpFromEmailPassword(email, password) {
         })    
 }
 
+/* Sign an existing user starting from email and password.
+ * @return {Promise.<FirebaseUser>} 
+ */
 function signInFromEmailPassword(email, password) {
     return firebase.auth()
         .signInWithEmailAndPassword(email, password)
         .then(firebaseUser => firebaseUser.user)
-        .catch(err => { throw new FirebaseException(err.code) })
+        .catch(throwFirebaseError)
+}
+
+/* Logout the current logged firebase user
+ * @return {Promise}
+ */
+function logout() {
+    return new Promise((resolve, reject) => {
+        firebase.auth().signOut().then(() => resolve(), () => reject())
+    })
 }
 
 function signInWithProvider(provider) {
     return firebase.auth()
         .signInWithPopup(provider)
+        .then(firebaseUser => firebaseUser)
         .catch(error => {
             if (error.code == "auth/account-exists-with-different-credential") {
                 let email = error.email
@@ -44,15 +57,17 @@ function signInWithProvider(provider) {
         })
 }
 
+// Same functionality of bindUserForm
+function linkSocialCredentialToEmail(email, password, socialCredential) {
+    return signInFromEmailPassword(email, password)
+        .then(firebaseUser => firebaseUser.linkWithCredential(socialCredential))
+        .catch(throwFirebaseError)
+}
+
 function deleteCurrentUser() {
     return retrieveFirebaseCurrentUser().then(firebaseUser => firebaseUser.delete())
 }
 
-function logout() {
-    return new Promise((resolve, reject) => {
-        firebase.auth().signOut().then(() => resolve(), () => reject())
-    })
-}
 
 function signInLinkEmailToProvider(existingEmail, newCredential) {
     return tryToSignInWithProvider(existingEmail)
@@ -97,12 +112,17 @@ function retrieveFirebaseCurrentUser() {
     })
 }
 
+function throwFirebaseError(firebaseError) {
+    throw new FirebaseException(firebaseError.code)
+}
+
 function FirebaseException(code) {
     this.code = code
 }
 
 export default {
     signUpFromEmailPassword,
+    linkSocialCredentialToEmail,
     logout,
     signInFromEmailPassword,
     deleteCurrentUser,
