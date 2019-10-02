@@ -26,7 +26,7 @@ function signUpFromEmailPassword(email, password) {
 function signInFromEmailPassword(email, password) {
     return firebase.auth()
         .signInWithEmailAndPassword(email, password)
-        .then(retrieveUserToken)
+        .then(firebaseUser => firebaseUser.user)
         .catch(err => { throw new FirebaseException(err.code) })
 }
 
@@ -44,6 +44,10 @@ function signInWithProvider(provider) {
         })
 }
 
+function deleteCurrentUser() {
+    return retrieveFirebaseCurrentUser().then(firebaseUser => firebaseUser.delete())
+}
+
 function logout() {
     return new Promise((resolve, reject) => {
         firebase.auth().signOut().then(() => resolve(), () => reject())
@@ -51,15 +55,9 @@ function logout() {
 }
 
 function signInLinkEmailToProvider(existingEmail, newCredential) {
-    console.log(existingEmail)
     return tryToSignInWithProvider(existingEmail)
         .then(firebaseLoggedUser => firebaseLoggedUser.linkWithCredential(newCredential))
-        .then(linkedUserCredential => {
-            console.log(linkedUserCredential.user)
-            return success(linkedUserCredential.user)
-            // let newuser = createUser(linkedUser.uid)
-            // return signInBackend(newuser)
-        })
+        .then(linkedUserCredential => linkedUserCredential.user)
 }
 
 /* return a promise that have success when a user is logged with another provider
@@ -78,19 +76,16 @@ function tryToSignInWithProvider(email) {
 function getActiveProvider(providers) {
     if(providers.indexOf(firebase.auth.FacebookAuthProvider.PROVIDER_ID) != -1) {
         return new firebase.auth.FacebookAuthProvider()
+    } else if(providers.indexOf(firebase.auth.EmailAuthProvider.PROVIDER_ID) != -1) {
+        return new firebase.auth.EmailAuthProvider()
     } else {
         throw new FirebaseException("No valid active provider is found")
     }
 }
 
-function retrieveUserToken(firebaseUser=null,refresh=true) {
-    let promiseUser = !firebaseUser ? retrieveFirebaseCurrentUser() : Promise.resolve(firebaseUser)
-    return promiseUser.then(firebaseUser => firebaseUser.getIdToken(refresh).then(token => {
-        return {
-            user: firebaseUser,
-            token: token
-        }
-    }))
+function retrieveUserToken(user=null, refresh=true) {
+    let promiseUser = !user ? retrieveFirebaseCurrentUser() : Promise.resolve(user)
+    return promiseUser.then(firebaseUser => firebaseUser.getIdToken(refresh))
 }
 
 function retrieveFirebaseCurrentUser() {
@@ -102,10 +97,6 @@ function retrieveFirebaseCurrentUser() {
     })
 }
 
-function success(data = undefined) {
-    return Promise.resolve(data)
-}
-
 function FirebaseException(code) {
     this.code = code
 }
@@ -113,5 +104,7 @@ function FirebaseException(code) {
 export default {
     signUpFromEmailPassword,
     logout,
-    signInFromEmailPassword
+    signInFromEmailPassword,
+    deleteCurrentUser,
+    retrieveUserToken
 }

@@ -3,7 +3,7 @@
     <v-card v-bind:style="{ backgroundColor: color}">
       <alert v-model="showAlert" ref="alert"/>
       <v-card-text >
-        <user-form :v-model="true" v-bind:userProperties="userProperties" v-bind:user="user" @validateForm="signUp" :resettable="true">
+        <user-form :v-model="true" v-bind:userProperties="userProperties" v-bind:user="user" @validateForm="doSignUp" :resettable="true">
           Crea utente
         </user-form>
       </v-card-text>
@@ -42,36 +42,21 @@ export default {
     }
   },
   methods: {
-    validate: function() {
-      if (this.$refs.form.validate()) {
-        this.doSignUp()
-      }
-    },
     reset: function() {
       this.$refs.form.reset()
-    },
-    createNewUser(user) {
-      return new User(
-              undefined,
-              undefined,
-              user.name,
-              user.surname,
-              user.email,
-              user.nickname
-            );
     },
     ...mapActions('auth', [
       'signUp'
     ]),
-    doSignUp: function() {
+    doSignUp: function(newUser) {
       this.inRegistration = true
-      // let newUser = this.createNewUser()
+      console.log(newUser)
       this.signUp({ user : this.user, password : this.user.password}).then(user => {
-        this.$refs.alert.changeConfig(SIGNUP_SUCCESS, "success")
+        this.$refs.alert.changeConfig(messages.SIGNUP_SUCCESS, "success")
         setTimeout(() => { this.$router.replace("/dashboard"); }, 1500)
       })
       .catch(error => {
-        this.$refs.alert.changeConfig((!error) ? SIGNUP_ERR : error, "error")
+        this.$refs.alert.changeConfig((!error) ? messages.SIGNUP_ERR : error, "error")
       })
       .finally(() => {
         this.showAlert = true

@@ -1,8 +1,6 @@
 /* eslint-disable no-empty-pattern */
 import firebaseAuthService from '@/services/firebaseAuthService'
 import usersApi from '../../services/usersApi'
-import User from '../../model/user'
-import fb from '../../firebaseConfig'
 import handleAuthError from '@/resource/authErrors'
 
 export default {
@@ -12,13 +10,10 @@ export default {
         userProfile: undefined
     },
     actions: {
-        signInEmailPassword({ commit, dispatch }, {email, password}) {
-            console.log(dispatch)
-            console.log(email + " " + password)
+        signInEmailPassword({ dispatch }, {email, password}) {
             return firebaseAuthService.signInFromEmailPassword(email, password)
-                .then(userWithToken => {
-                    commit('updateToken', userWithToken.token)
-                    return dispatch('fetchUserProfile', userWithToken.user.uid)
+                .then(firebaseUser => {
+                    return dispatch('refreshToken').then(() => dispatch('fetchUserProfile', firebaseUser.uid))
                 })
                 .catch(error => {
                     dispatch('logout')
@@ -33,8 +28,11 @@ export default {
                 })
                 .then(newUser => dispatch('refreshToken').then(() => newUser))
                 .catch(error => {
-                    dispatch('logout')
-                    throw handleAuthError(error.status || error.code)
+                    let errorType = error.status || error.code
+                    if(errorType == 409) { // handle conflit on own backend
+                        firebaseAuthService.deleteCurrentUser().then(() => dispatch('logout'))
+                    }
+                    throw handleAuthError(errorType)
                 })
         },
         logout({ commit }) {
@@ -54,6 +52,11 @@ export default {
                 commit('setUserProfile', user)
                 return user
             })
+        }
+    },
+    getters: {
+        token(state){
+            return state.token
         }
     },
     mutations: {

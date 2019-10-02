@@ -41,7 +41,7 @@ function makeRequest(axiosFunction, resource, queryParams = null, authorization 
 }
 
 function getHeader() {
-    let token = store.getters.token
+    let token = store.getters['auth/token']
     return {
         headers: {
             'Content-Type': 'application/json',
