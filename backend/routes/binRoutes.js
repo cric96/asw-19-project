@@ -4,7 +4,7 @@ var auth = require('./middleware/authMiddleware');
 var buildingFetching = require("./middleware/fetchBuildingMiddleware")
 var validateObjectId = require('./middleware/objectIdMiddleware');
 var filterBuilderMiddleware = require('./middleware/filterBuilderMiddleware')
-var dateIntoFilter = require('./middleware/addDateToFilter')
+var dateIntoFilter = require('./middleware/validateDateMiddleware')
 
 router.route('/buildings/:id/bins')
     .get(auth, 

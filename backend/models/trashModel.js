@@ -17,6 +17,11 @@ var trashSchema = new Schema({
         required: true,
         ref: 'Building'
     },
+    city: {
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: 'City'
+    },
     user: {
         type: Schema.Types.ObjectId,
         required: true,
@@ -24,5 +29,5 @@ var trashSchema = new Schema({
     }
 });
 
-trashSchema.index({ building: 1, user: 1, bin: 1, date: 1})
+trashSchema.index({ building: 1, user: 1, bin: 1, date: 1, city: 1})
 module.exports = mongoose.model('Trash', trashSchema);

@@ -10,9 +10,9 @@ class BaseCache {
     /**
      * @param {*} mongoSchema: the schema associated to the elements you want to cache 
      */
-    constructor({find}) {
+    constructor(mongoSchema) {
         this.elements = []
-        this.elementsRetriever = find
+        this.mongoSchema = mongoSchema
     }
     /**
      * invalidate the cache and gets the new values from 
@@ -20,7 +20,7 @@ class BaseCache {
      * return the promise that complete when the new values are retrived
      */
     invalidate() {
-        return Reward.find().then(elements => this.elements = elements)
+        return this.mongoSchema.find().then(elements => this.elements = elements)
     }
     /**
      * find the element store in the cache, with the same id passed

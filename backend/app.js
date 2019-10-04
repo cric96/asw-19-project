@@ -7,28 +7,26 @@ var logger = require('morgan');
 var cors = require('cors');
 var admin = require('firebase-admin');
 var app = express();
-var history = require('connect-history-api-fallback');
+var fallback = require('connect-history-api-fallback');
 
 let tokenRetriver = require('./firebaseTokenRetriver')
 admin.initializeApp({
     credential: admin.credential.cert(tokenRetriver())
 });
 //mongo connection
-
 require("./mongo").setupCloud()
 //express config
 app.use(logger('dev'));
-//link routes to app
-require("./routes").setup(app)
 // allow to use the router of client, this prevent express to send 404 for unknown path
-app.use(history());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(cors());
+//link routes to app
+require("./routes").setup(app)
 //link frontend with the backend, that the site generated with npm run build
 app.use(express.static(path.join(__dirname, '../frontend/dist')))
-
+app.use(fallback());
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

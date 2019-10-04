@@ -1,4 +1,4 @@
-var httpCode = require("../httpCode")
+var httpCode = require("./utils/httpCode")
 const MONGO_DB_DUPLICATE = 11000
 
 //map each code with the setting action in express result, it is used to allow the default message when msg is empty
