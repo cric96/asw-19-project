@@ -20,11 +20,6 @@ var trashCategorySchema = new Schema({
         match: regex.url
     }
 });
-
-trashCategorySchema.statics.findByName = function(name, res) {
-    return module.exports.findOne({name : name})
-        .then(category => utils.filterNullElement(category, "Trash category not found"))
-}
 trashCategorySchema.options.toJSON = {
     transform: function(doc, ret, options) {
         return ret;

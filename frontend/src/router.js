@@ -3,11 +3,12 @@ import fb from './firebaseConfig'
 import store from './store/store'
 import Router from 'vue-router'
 import Dashboard from './views/Dashboard.vue'
-import Login from './views/Login.vue'
+import Login from '@/views/user/Login.vue'
 import Building from './views/building/Building.vue'
-import SignUp from './views/SignUp.vue'
+import SignUp from '@/views/user/SignUp.vue'
 import HomeReport from './views/HomeReport.vue'
 import Intro from './views/Intro.vue'
+import UserInfo from '@/views/user/UserInfo.vue'
 
 Vue.use(Router)
 
@@ -56,6 +57,11 @@ const router = new Router({
           path: '/buildings',
           name: 'Buildings',
           component: Building
+        },
+        {
+          path: '/userProfile',
+          name: 'UserInfo',
+          component: UserInfo,
         }
       ]
     }
