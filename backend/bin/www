@@ -7,6 +7,7 @@
 var app = require('../app');
 var debug = require('debug')('backend:server');
 var http = require('http');
+var cache = require("../models/cache")
 
 /**
  * Get port from environment and store in Express.
@@ -21,13 +22,24 @@ app.set('port', port);
 
 var server = http.createServer(app);
 
-/**
- * Listen on provided port, on all network interfaces.
- */
-
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+/*
+* server can start only if the cache is loaded
+*/
+cache.refresh()
+  .then(() => {  
+    /**
+      * Listen on provided port, on all network interfaces.
+    */  
+    server.listen(port);
+    server.on('error', onError);
+    server.on('listening', onListening);
+  })
+  .catch(err => {
+    console.log("problem with loading values from mongodb")
+    console.log(err)
+})
+//each day the cache is invalidated
+cache.daily()
 
 /**
  * Normalize a port into a number, string, or false.

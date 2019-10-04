@@ -18,6 +18,8 @@ admin.initializeApp({
 require("./mongo").setupCloud()
 //express config
 app.use(logger('dev'));
+//link routes to app
+require("./routes").setup(app)
 // allow to use the router of client, this prevent express to send 404 for unknown path
 app.use(history());
 app.use(express.json());
@@ -27,8 +29,6 @@ app.use(cors());
 //link frontend with the backend, that the site generated with npm run build
 app.use(express.static(path.join(__dirname, '../frontend/dist')))
 
-//link routes to app
-require("./routes").setup(app)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
