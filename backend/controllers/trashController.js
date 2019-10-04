@@ -16,24 +16,6 @@ exports.insertTrash = function(req, res) {
         return
     }
     //TODO remember to add socket io and to add score in user
-<<<<<<< HEAD
-    TrashCategory.findOne(query)
-        .then(utils.filterNullElement) //the trash category could be "fake", if isn't found into the data, thrown Not found
-        .then(category => {
-            var trash = new Trash()
-            //create trash to insert into db
-            trash.trashCategory = category._id
-            trash.building = res.locals.buildingFetched._id
-            trash.city = res.locals.buildingFetched.city
-            trash.user = user._id
-            //update user
-            user.updateScore(category.score) 
-            /*io.on('connection', function(socket){
-                io.sockets.in("room"+res.locals.buildingFetched._id).emit('add trash', category._id)
-            })*/
-            return Promise.all([user.save(), trash.save()])//to fix: handle errors in the first promise
-        })
-=======
     let category = trashCategories.findByName(req.body.name)
     if(category === undefined) {
         res.setNotFound()
@@ -48,7 +30,6 @@ exports.insertTrash = function(req, res) {
     //update user
     user.score += category.score
     Promise.all([user.save(), trash.save()]) //to fix: handle errors in the first promise    
->>>>>>> master
         .then(el => res.setNoContent()) //all ok, return no content means that the trash is added into the db
         .catch(err => errorHandler(err, res))
     

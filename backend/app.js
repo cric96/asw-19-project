@@ -24,9 +24,10 @@ app.use(cookieParser());
 app.use(cors());
 //link routes to app
 require("./routes").setup(app)
+//vue history: is used to using vue routers
+app.use(fallback());
 //link frontend with the backend, that the site generated with npm run build
 app.use(express.static(path.join(__dirname, '../frontend/dist')))
-app.use(fallback());
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
