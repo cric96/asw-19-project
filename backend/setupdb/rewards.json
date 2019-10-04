@@ -1,1 +1,43 @@
-[]
+[{
+        "name": "Riciclone",
+        "picture": "",
+        "description": "Hai riciclato più di 20 rifiuti!",
+        "availableAtLevel": 1,
+        "unlockData": {
+            "type": "genericTrash",
+            "quantity": 20
+        }
+    },
+    {
+        "name": "Greta",
+        "picture": "",
+        "description": "Wow! Hai riciclato più di 50 rifiuti!",
+        "availableAtLevel": 1,
+        "unlockData": {
+            "type": "genericTrash",
+            "quantity": 50
+        }
+    },
+    {
+        "name": "Per sempre",
+        "picture": "",
+        "description": "Quanto vetro! Hai riciclato 10 rifiuti di vetro",
+        "availableAtLevel": 1,
+        "unlockData": {
+            "type": "trash",
+            "categories": ["Vetro"],
+            "quantity": 10
+        }
+    },
+    {
+        "name": "Salvatore di alberi",
+        "picture": "",
+        "description": "La natura ti ringrazia! Hai gettato 50 rifiuti di carta",
+        "availableAtLevel": 2,
+        "unlockData": {
+            "type": "trash",
+            "categories": ["Carta"],
+            "quantity": 50
+        }
+    }
+]

@@ -1,9 +1,5 @@
-var mongoose = require('mongoose')
-var TrashCategory = mongoose.model("TrashCategory")
-var errorHandler = require("../utils/errorManagement")
+var cache = require("../models/cache")
 
 exports.listTrashCategories = function(req, res) {
-    TrashCategory.find()
-        .then(categories => res.setOk(categories))
-        .catch(err => errorHandler(err, res))
+    res.setOk(cache.trashCategories.elements)
 }

@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var Trash = mongoose.model('Trash');
-var TrashCategory = mongoose.model('TrashCategory')
+var trashCategories = require("../models/cache").trashCategories
 var utils = require('../utils/utils')
 var fetchQueries = require("./trashQueries")
 var errorHandler = require("../utils/errorManagement")
@@ -15,8 +15,8 @@ exports.insertTrash = function(req, res) {
         res.setForbidden("Forbidden, you must be a building's member")
         return
     }
-    //TODO verify also the new level 
     //TODO remember to add socket io and to add score in user
+<<<<<<< HEAD
     TrashCategory.findOne(query)
         .then(utils.filterNullElement) //the trash category could be "fake", if isn't found into the data, thrown Not found
         .then(category => {
@@ -33,8 +33,25 @@ exports.insertTrash = function(req, res) {
             })*/
             return Promise.all([user.save(), trash.save()])//to fix: handle errors in the first promise
         })
+=======
+    let category = trashCategories.findByName(req.body.name)
+    if(category === undefined) {
+        res.setNotFound()
+        return
+    }
+    var trash = new Trash({
+        trashCategory : category._id,
+        building : res.locals.buildingFetched._id,
+        city : res.locals.buildingFetched.city,
+        user : user._id
+    })
+    //update user
+    user.score += category.score
+    Promise.all([user.save(), trash.save()]) //to fix: handle errors in the first promise    
+>>>>>>> master
         .then(el => res.setNoContent()) //all ok, return no content means that the trash is added into the db
         .catch(err => errorHandler(err, res))
+    
 };
 /**
  * this function is used to create the response.

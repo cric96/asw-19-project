@@ -1,12 +1,15 @@
 var mongoose = require('mongoose')
 var User = mongoose.model("User")
-var TrashCategory = mongoose.model("TrashCategory")
+var trashCategories = require("../models/cache").trashCategories
 var City = mongoose.model("City")
-var Building = mongoose.model("Building")
 var trashQuery = require("./trashQueries")
 var errorHandler = require("../utils/errorManagement")
 var utils = require("../utils/utils")
+var Exception = require("../utils/Exception")
+var httpCode = require("../utils/httpCode")
 var AndBuilder = require("../utils/AndFilterBuilder")
+
+//TODO Comments
 /**
  * This function map the user with the
  * reppresentation used in ranks
@@ -29,26 +32,46 @@ function prepareResponse(res, promise, attributeName){
         .catch(err => errorHandler(err, res))
 }
 
-function createRankFor(req, res, queryStrategy) {
-    let builder = new AndBuilder()
-    var capPassed = req.query.cap !== undefined
-    var fetchCity = Promise.resolve()
-    var fetchTrashCategory = TrashCategory.findByName(req.query.orderBy, res)
-        .then(category => builder.pushFilter({trashCategory : mongoose.Types.ObjectId(category._id)}))
-    if(capPassed){
-        fetchCity = City.findOne({cap : req.query.cap})
-            .then(city => utils.filterNullElement(city, "City not found"))
-            .then(city => builder.pushFilter({city : mongoose.Types.ObjectId(city._id)}))
-    }
-    
-    Promise.all([fetchTrashCategory, fetchCity])
-        .then(() => {
-            return queryStrategy(builder, res.locals.sort)
-                .then(rank => res.setOk(rank))
-        })
-        .catch(err => errorHandler(err, res)) 
+function putCategoryInFilter(name, builder) {
+    return new Promise((resolve, reject) => {
+        let category = trashCategories.findByName(name)
+        if(category === undefined) { //category doesn't found
+            reject(new Exception(httpCode.NOT_FOUND, "Category not found"))
+        } else {
+            builder.pushFilter({trashCategory : mongoose.Types.ObjectId(category._id)})
+            resolve(builder)
+        }
+    })
 }
 
+function putCityIfDefinedInFilter(cap, builder) {
+    if(cap === undefined) {
+        return Promise.resolve(builder)
+    }
+    return City.findOne({cap : cap})
+        .then(city => utils.filterNullElement(city, "City not found"))
+        .then(city => {
+            builder.pushFilter({city : mongoose.Types.ObjectId(city._id)})
+            console.log(builder)
+            return builder
+        })
+}
+function createRankByCityAndCategory(category, cap, res, queryStrategy) {
+    let builder = new AndBuilder()
+    putCategoryInFilter(category, builder)
+        .then(builder => putCityIfDefinedInFilter(cap, builder))
+        .then(builder => queryStrategy(builder, res.locals.sort))
+        .then(rank => res.setOk(rank))
+        .catch(err => errorHandler(err, res))
+}
+
+function createRankByCategory(category, res, queryStrategy) {
+    let builder = new AndBuilder()
+    putCategoryInFilter(category, builder)
+        .then(builder => queryStrategy(builder, res.locals.sort))
+        .then(rank => res.setOk(rank))
+        .catch(err => errorHandler(err, res))
+}
 exports.getRankOfUsers = function(req, res) {
     let orderBy = req.query.orderBy
     switch(orderBy) {
@@ -75,15 +98,19 @@ exports.getRankOfUsers = function(req, res) {
             break
 
         default:
-            createRankFor(req, res, trashQuery.trashesThrownByUsers)
+            var category = req.query.orderBy
+            var cap = req.query.cap
+            createRankByCityAndCategory(category, cap, res, trashQuery.trashesThrownByUsers, )
     }
 }
 
 exports.getRankOfBuildings = function(req, res) {
-    createRankFor(req, res, trashQuery.trashesThrownInBuildings)
+    var category = req.query.orderBy
+    var cap = req.query.cap
+    createRankByCityAndCategory(category, cap, res, trashQuery.trashesThrownInBuildings, req.query.cap)
 }
 
 exports.getRankOfCities = function(req, res) {
-    req.query.cap = undefined //clear the cap because in city query it has to be ignored
-    createRankFor(req, res, trashQuery.trashesThrownInCities)
+    var category = req.query.orderBy
+    createRankByCategory(category, res, trashQuery.trashesThrownInCities)
 }

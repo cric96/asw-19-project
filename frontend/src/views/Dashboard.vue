@@ -51,7 +51,7 @@ export default {
       },
       {
         path: '/buildings',
-        title: 'Manage Buldings',
+        title: 'Manage Buildings',
         icon: 'settings'
       }
     ]
