@@ -9,6 +9,7 @@ import SignUp from '@/views/user/SignUp.vue'
 import HomeReport from './views/HomeReport.vue'
 import Intro from './views/Intro.vue'
 import UserInfo from '@/views/user/UserInfo.vue'
+import ChangePassword from '@/views/user/ChangePassword.vue'
 
 Vue.use(Router)
 
@@ -62,6 +63,11 @@ const router = new Router({
           path: '/userProfile',
           name: 'UserInfo',
           component: UserInfo,
+        },
+        {
+          path: '/changePassword',
+          name: 'ChangePassword',
+          component: ChangePassword,
         }
       ]
     }
