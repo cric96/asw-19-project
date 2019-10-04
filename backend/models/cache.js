@@ -69,9 +69,7 @@ module.exports.refresh = function() {
         module.exports.rewards.invalidate()
     ]).then(() => console.log("Cache reloaded"))
 }
-const dayInMilliseconds = 1000 /** 60 * 60 * 24*/
-const weekInMilliseconds = dayInMilliseconds * 7
-
+const dayInMilliseconds = 1000 * 60 * 60 * 24
 module.exports.daily = function() {
     setInterval(this.refresh, dayInMilliseconds)
 }
