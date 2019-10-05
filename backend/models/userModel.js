@@ -1,13 +1,18 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
-var utils = require("../utils/utils");
-var regex = require("../utils/regex");
-//all level in user, put in DB?
-let levelsScoreThreshould = [10, 50, 100, 200, 500]
+var mongoose = require('mongoose')
+var Schema = mongoose.Schema
+var utils = require("../utils/utils")
+var regex = require("../utils/regex")
+var levels = require("./level.json")
+
 function hasNewLevel(user) {
-    let currentLevel = user.level
-    let levelComputed = levelsScoreThreshould.findIndex(scoreRequired => scoreRequired > user.score)
-    return levelComputed !== undefined && currentLevel < (levelComputed + 1) 
+    var currentLevel = user.level
+    var nextReachableLevel = levels.find(level => level.scoreRequested > user.score)
+    if(nextEligibleLevel == undefined) {
+        return false
+    } else{
+        var computedLevel = nextReachableLevel.level - 1
+        return currentLevel < computedLevel 
+    }
 }
 /**
  * User schema: user are identify (client-side) with firebase uid
