@@ -100,11 +100,11 @@ export default {
       this.loggingIn = true;
       this.signInEmailPassword({email: this.email, password: this.password})
         .then(user => {
-          this.$refs.alert.changeConfig(messages.LOGIN_SUCCESS, "success");
+          this.$refs.alert.showSuccess(messages.LOGIN_SUCCESS);
           setTimeout(() => { this.$router.replace("/dashboard"); }, 1500);
         })
         .catch(error => {
-          this.$refs.alert.changeConfig((!error) ? messages.LOGIN_ERROR : error, "error");
+          this.$refs.alert.showError(error.description);
         })
         .finally(() => {
           this.showAlert = true

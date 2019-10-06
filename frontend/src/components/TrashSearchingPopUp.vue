@@ -86,7 +86,7 @@ export default {
             trashesApi.insertTrash(buildingId, { "name" : this.category.name })
                 .then(() => {
                     this.$store.dispatch('msg/addMessage', 'Hai guadagnato ' + this.category.score + ' punti')
-                    this.$store.commit('updateScore', this.category.score)
+                    this.$store.commit('auth/updateScore', this.category.score)
                 })
             .finally(() => {
                 this.waitingTrashInsertion = false

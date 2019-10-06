@@ -52,11 +52,11 @@ export default {
       this.inRegistration = true
       console.log(newUser)
       this.signUp({ user : this.user, password : this.user.password}).then(user => {
-        this.$refs.alert.changeConfig(messages.SIGNUP_SUCCESS, "success")
+        this.$refs.alert.showSuccess(messages.SIGNUP_SUCCESS)
         setTimeout(() => { this.$router.replace("/dashboard"); }, 1500)
       })
       .catch(error => {
-        this.$refs.alert.changeConfig((!error) ? messages.SIGNUP_ERR : error, "error")
+        this.$refs.alert.showError(error.description)
       })
       .finally(() => {
         this.showAlert = true

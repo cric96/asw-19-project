@@ -1,17 +1,7 @@
 <template>
   <v-dialog v-model="show" persistent max-width="600px">
     <v-card>
-      <v-alert 
-        dismissable      
-        v-if="showSuccessAlert"
-        type="success">{{successMessage}}
-      </v-alert>
-      <v-alert  
-        v-if="showErrorAlert"
-        dismissable
-        type="error">
-        {{errorMessage}}
-      </v-alert>
+      <alert-message ref="alert" v-model="showAlert"></alert-message>
       <v-card-title>
         <span class="headline">Esiste già un account (registrato con username e password) con la mail {{existingEmail}}; fornire la password per collegarlo all'account facebook con cui si vuole accedere:</span>
       </v-card-title>
@@ -27,8 +17,8 @@
       </v-card-text>
       <v-card-actions>
         <div class="flex-grow-1"></div>
-        <v-btn color="blue darken-1" text @click="show=false">Chiudi</v-btn>
-        <v-btn color="blue darken-1" text @click="bind">Collega</v-btn>
+        <v-btn color="blue darken-1" text @click="show=false" :disabled="pendingOperation">Chiudi</v-btn>
+        <v-btn color="blue darken-1" text @click="bind" :disabled="pendingOperation" :loading="pendingOperation">Collega</v-btn>
       </v-card-actions>
     </v-card>
     
@@ -39,25 +29,23 @@
 import firebase from "firebase"
 import { mapActions } from 'vuex'
 
+import AlertMessage from '@/components/AlertMessageComponent'
+
 export default {
+  components: {
+    'alert-message': AlertMessage
+  },
   data: () => ({
     password: null,
-    error: null,
-    errorMessage: "",
-    successMessage:""
+    showAlert: false,
+    pendingOperation: false
   }),
   props: {
-    pendingCred:String,
+    pendingCred: String,
     existingEmail: String,
     value: Boolean
   },
   computed: {
-    showSuccessAlert: function(){
-      return !this.error && this.error!=null
-    },
-    showErrorAlert: function(){
-      return this.error && this.error!=null
-    },
     show: {
       get() {
         return this.value
@@ -77,16 +65,20 @@ export default {
     // Existing email/password or Google user signed in.
     // Link Facebook OAuth credential to existing account.
     bind: function() {
-      this.error = false
+      this.showAlert = false
+      this.pendingOperation = true
       this.signInBindSocialToEmail({
         email: this.existingEmail,
         password: this.password,
         socialCrendential: this.pendingCred
       }).then(user => {
-        this.successMessage = "Collegamento completato con successo"
+        this.$refs.alert.showSuccess("Collegamento completato con successo")
+        this.$router.replace("/dashboard")
       }).catch(error => {
-        this.error = true
-        this.errorMessage = error
+        this.$refs.alert.showError(error.description)
+      }).finally(() => {
+        this.showAlert = true
+        this.pendingOperation = false
       })
     }
   }
