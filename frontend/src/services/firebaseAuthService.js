@@ -1,5 +1,21 @@
 import firebase from "firebase"
 
+const tokenProvider = {
+    currentToken: null,
+    refreshToken: function() {
+        return retrieveFirebaseCurrentUser()
+            .then(firebaseUser => firebaseUser.getIdToken(true))
+            .then(token => {
+                console.log("New token:")
+                console.log(token)
+                this.currentToken = token
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }
+}
+
 /* Sign up a new user to firebase auth backend
  * starting from email and password, it handle some errors:
  *  - when the email is already in use, it try to link the email to another account's provider.
@@ -9,18 +25,22 @@ import firebase from "firebase"
 function signUpFromEmailPassword(email, password) {
     return firebase.auth()
         .createUserWithEmailAndPassword(email, password)
-        .then(newUserCredential => newUserCredential.user)
         .catch(error => {
             if (error.code == "auth/email-already-in-use") {
-                console.log('linking...')
-                // fetch sign in methods error.email
+                // link a social account to this new one.
                 let credential = firebase.auth.EmailAuthProvider.credential(email, password)
-                return signInLinkEmailToProvider(email, credential)
+                return checkAvailableProvider(email, firebase.auth.FacebookAuthProvider.PROVIDER_ID)
+                    .then(provider => {
+                        if(!provider) throw new FirebaseException(error.code)
+                        provider.setCustomParameters({login_hint: email})
+                        return signInWithProvider(provider)
+                    })
+                    .then(firebaseUser => firebaseUser.user.linkWithCredential(credential))
             } else {
                 throw new FirebaseException(error.code)
             }
-
-        })    
+        })
+        .then(firebaseUser => tokenProvider.refreshToken().then(() => firebaseUser))
 }
 
 /* Sign an existing user starting from email and password.
@@ -29,7 +49,7 @@ function signUpFromEmailPassword(email, password) {
 function signInFromEmailPassword(email, password) {
     return firebase.auth()
         .signInWithEmailAndPassword(email, password)
-        .then(firebaseUser => firebaseUser.user)
+        .then(firebaseUser => tokenProvider.refreshToken().then(() => firebaseUser))
         .catch(throwFirebaseError)
 }
 
@@ -42,65 +62,59 @@ function logout() {
     })
 }
 
-function signInWithProvider(provider) {
-    return firebase.auth()
-        .signInWithPopup(provider)
-        .then(firebaseUser => firebaseUser)
-        .catch(error => {
-            if (error.code == "auth/account-exists-with-different-credential") {
-                let email = error.email
-                let credential = error.credential
-                // Lookup existing account’s provider ID.
-                
-            }
-            throw new FirebaseException(error.code)
-        })
-}
-
-// Same functionality of bindUserForm
-function linkSocialCredentialToEmail(email, password, socialCredential) {
-    return signInFromEmailPassword(email, password)
-        .then(firebaseUser => firebaseUser.linkWithCredential(socialCredential))
-        .catch(throwFirebaseError)
-}
-
 function deleteCurrentUser() {
     return retrieveFirebaseCurrentUser().then(firebaseUser => firebaseUser.delete())
 }
 
-
-function signInLinkEmailToProvider(existingEmail, newCredential) {
-    return tryToSignInWithProvider(existingEmail)
-        .then(firebaseLoggedUser => firebaseLoggedUser.linkWithCredential(newCredential))
-        .then(linkedUserCredential => linkedUserCredential.user)
-}
-
-/* return a promise that have success when a user is logged with another provider
- * and the promise's result contains it.
- * The promise fail if there is some error of login with another provider */
-function tryToSignInWithProvider(email) {
-    return firebase.auth().fetchSignInMethodsForEmail(email)
-        .then(providers => getActiveProvider(providers))
-        .then(provider => {
-            // Sign in user using provider with same account.
-            provider.setCustomParameters({login_hint: email})
-            return firebase.auth().signInWithPopup(provider).then(result => result.user)
+function signInWithProvider(provider) {
+    return firebase.auth()
+        .signInWithPopup(provider)
+        .then(firebaseUser => tokenProvider.refreshToken().then(() => firebaseUser))
+        .catch(error => {
+            if(error.code == "auth/account-exists-with-different-credential") {
+                // Check if exist a Email provider for the user, if there is
+                // it throw an exception providing all information for link
+                return checkAvailableProvider(error.email, firebase.auth.EmailAuthProvider.PROVIDER_ID).then(() => {
+                    throw new FirebaseException(error.code, {
+                        email: error.email,
+                        credential: error.credential
+                    })
+                })
+            }
+            throwFirebaseError(error)
         })
 }
 
-function getActiveProvider(providers) {
-    if(providers.indexOf(firebase.auth.FacebookAuthProvider.PROVIDER_ID) != -1) {
-        return new firebase.auth.FacebookAuthProvider()
-    } else if(providers.indexOf(firebase.auth.EmailAuthProvider.PROVIDER_ID) != -1) {
-        return new firebase.auth.EmailAuthProvider()
-    } else {
-        throw new FirebaseException("No valid active provider is found")
-    }
+function silentSignIn() {
+    return retrieveFirebaseCurrentUser().then(firebaseUser => {
+        if(!firebaseUser) throw new FirebaseException("auth/failed-silent-signin")
+        return tokenProvider.refreshToken().then(() => firebaseUser)
+    })
 }
 
-function retrieveUserToken(user=null, refresh=true) {
-    let promiseUser = !user ? retrieveFirebaseCurrentUser() : Promise.resolve(user)
-    return promiseUser.then(firebaseUser => firebaseUser.getIdToken(refresh))
+function linkEmailToSocialCredential(email, password, socialCredential) {
+    return signInFromEmailPassword(email, password)
+        .then(firebaseUser => firebaseUser.linkWithCredential(socialCredential))
+        .then(firebaseUser => tokenProvider.refreshToken().then(() => firebaseUser))
+        .catch(throwFirebaseError)
+}
+
+function checkAvailableProvider(email, providerId) {
+    return firebase.auth().fetchSignInMethodsForEmail(email)
+        .then(providers => providers.find(provider => provider == providerId))
+        .then(getProviderFromId)
+        .catch(throwFirebaseError)
+}
+
+function getProviderFromId(providerId) {
+    switch(providerId) {
+        case firebase.auth.FacebookAuthProvider.PROVIDER_ID:
+            return new firebase.auth.FacebookAuthProvider()
+        case firebase.auth.EmailAuthProvider.PROVIDER_ID:
+            return new firebase.auth.EmailAuthProvider()
+        default:
+            return undefined 
+    }
 }
 
 function retrieveFirebaseCurrentUser() {
@@ -116,15 +130,21 @@ function throwFirebaseError(firebaseError) {
     throw new FirebaseException(firebaseError.code)
 }
 
-function FirebaseException(code) {
+function FirebaseException(code, data=null) {
     this.code = code
+    this.data = data
+}
+
+export {
+    tokenProvider
 }
 
 export default {
-    signUpFromEmailPassword,
-    linkSocialCredentialToEmail,
-    logout,
     signInFromEmailPassword,
-    deleteCurrentUser,
-    retrieveUserToken
+    signInWithProvider,
+    silentSignIn,
+    signUpFromEmailPassword,
+    logout,
+    linkEmailToSocialCredential,
+    deleteCurrentUser
 }

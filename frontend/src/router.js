@@ -41,8 +41,8 @@ const router = new Router({
     },
     {
       path: '/dashboard',
-      name: 'Dashboard',
       component: Dashboard,
+      name: "Dashboard",
       meta: {
         requiresAuth: true,
         title: 'Dashboard'
@@ -69,20 +69,19 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
- /* if(store.getters.isUserLoading) {
-    const unwatch = store.watch((state, getters) => getters.userProfile, function() {
+  if(store.getters['auth/isUserLoading']) {
+    const unwatch = store.watch((state, getters) => getters['auth/userProfile'], function() {
       routeGuard(to, from, next)
       unwatch()
     })
   } else {
     routeGuard(to, from, next)
-  }*/
-  next()
+  }
 })
 
 function routeGuard(to, from, next) {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
-  let isAuth = store.getters.isAuthenticated
+  let isAuth = store.getters['auth/isAuthenticated']
 
   if (requiresAuth && !isAuth) next('intro')
   else if (!requiresAuth && isAuth) { next('dashboard') }
