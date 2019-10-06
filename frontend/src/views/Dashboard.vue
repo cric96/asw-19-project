@@ -3,7 +3,7 @@
       
       <snackbar-notification></snackbar-notification>
 
-      <complete-user-info v-if="currentUser" :value="needCompletation" :user="currentUser"/>
+      <complete-user-info v-if="userProfile" :value="needCompletation" :user="userObject"/>
 
       <v-app-bar app clipped-left>
         <v-app-bar-nav-icon @click="drawer = !drawer"/>
@@ -36,6 +36,7 @@ import { mapGetters } from 'vuex'
 import { createNamespacedHelpers } from 'vuex'
 const { mapActions } = createNamespacedHelpers('trashCategories');
 
+import User from '@/model/user'
 
 export default {
   name: 'Dashboard',
@@ -57,11 +58,14 @@ export default {
     ]
   }),
   computed: {
-    ...mapGetters([
-      'currentUser'
+    ...mapGetters('auth', [
+      'userProfile'
     ]),
     needCompletation: function() {
-      return (this.currentUser !== undefined) ? !this.currentUser.isCompleteProfile() : false;
+      return (this.userObject !== undefined) ? !this.userObject.isCompleteProfile() : false;
+    },
+    userObject: function() {
+      return User.fromJson(this.userProfile)
     }
   },
   components: {

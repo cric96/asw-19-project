@@ -3,7 +3,7 @@
     <v-card v-bind:style="{ backgroundColor: color}">
       <alert v-model="showAlert" ref="alert"/>
       <v-card-text >
-        <user-form :v-model="true" v-bind:userProperties="userProperties" v-bind:user="user" @validateForm="signUp" :resettable="true">
+        <user-form :v-model="true" v-bind:userProperties="userProperties" v-bind:user="user" @validateForm="doSignUp" :resettable="true">
           Crea utente
         </user-form>
       </v-card-text>
@@ -15,13 +15,15 @@
 </template>
 
 <script>
-import firebase from "firebase";
-import usersapi from "@/services/usersApi";
-import User from "@/model/user";
-import * as messages from '@/resource/messages';
-import AlertMessageComponent from '@/components/AlertMessageComponent';
-import UserForm from '@/components/user/UserForm';
-import {userPropsFilteredBuilder} from '../user/userProperties';
+import { mapActions } from 'vuex'
+import firebase from "firebase"
+import usersapi from "@/services/usersApi"
+import authService from '@/services/firebaseAuthService'
+import AlertMessageComponent from '@/components/AlertMessageComponent'
+import UserForm from '@/components/user/UserForm'
+import User from "@/model/user"
+import * as messages from '@/resource/messages'
+import { userPropsFilteredBuilder } from '../user/userProperties'
 
 export default {
   components: {
@@ -43,81 +45,23 @@ export default {
     reset: function() {
       this.$refs.form.reset()
     },
-    createNewUser(firebase_uid, user) {
-      return new User(
-              undefined,
-              firebase_uid,
-              user.name,
-              user.surname,
-              user.email,
-              user.nickname
-            );
-    },
-    signUp(user) {
-      this.inRegistration = true;
-      firebase
-        .auth()
-        .createUserWithEmailAndPassword(user.email, user.password)
-        .then(response => {
-          if (response) {
-              let newuser = this.createNewUser(response.user.uid, user)
-              this.$store.dispatch('signUp', newuser)
-              .then((user)=>{
-                this.showAlert = true
-                this.$refs.alert.changeConfig(SIGNUP_SUCCESS, "success")
-                setTimeout(() => { this.$router.replace("/dashboard"); }, 1500)
-              }).catch((err)=>{
-                // TODO -- check server response (409...)
-                this.inRegistration = false
-                this.showAlert = true
-                this.$refs.alert.changeConfig(SIGNUP_ERR_NICKNAME_CONFLICT, "error")
-                firebase.auth().currentUser.delete().then(function () {
-                  console.log('delete successful in firebase because a specified nickname already exist')
-                }).catch(function (error) {
-                  console.error('error in firebase account deleting'+ error)
-                })                
-              })
-          }
-        })
-        .catch(err => {
-          if (err.code == "auth/email-already-in-use") {
-            const existingEmail = user.email;
-            const password = user.password;
-            firebase.auth().fetchSignInMethodsForEmail(existingEmail).then((providers) =>{
-                const fbProvider = new firebase.auth.FacebookAuthProvider()
-                if (providers.indexOf(firebase.auth.FacebookAuthProvider.PROVIDER_ID) != -1) {
-                  // Sign in user to fb with same account.
-                  fbProvider.setCustomParameters({ login_hint: existingEmail })
-                  return firebase
-                    .auth()
-                    .signInWithPopup(fbProvider)
-                    .then(function(result) {
-                      return result.user
-                    })
-                }else{
-                  this.showAlert = true
-                  this.$refs.alert.changeConfig(SIGNUP_ERR_EMAIL_CONFLICT, "error")
-                }
-              })
-              .then((user) =>{
-                if (user) {
-                  user.linkWithCredential(firebase.auth.EmailAuthProvider.credential(existingEmail,password)).then((userLinked)=>{
-                    let newuser = this.createNewUser(userLinked.uid, user);
-                    this.$store.dispatch('signInAndUpdate', newuser)
-                    .then((user)=>{
-                      this.$router.replace("/dashboard")
-                    }).catch(err=>{
-                      // TODO -- check server response (409...)
-                      this.showAlert = true
-                      this.$refs.alert.changeConfig(err, "error")
-                    })
-                  })
-                }
-              })
-          } else {
-            console.log(err)
-          }
-        })
+    ...mapActions('auth', [
+      'signUp'
+    ]),
+    doSignUp: function(newUser) {
+      this.inRegistration = true
+      console.log(newUser)
+      this.signUp({ user : this.user, password : this.user.password}).then(user => {
+        this.$refs.alert.showSuccess(messages.SIGNUP_SUCCESS)
+        setTimeout(() => { this.$router.replace("/dashboard"); }, 1500)
+      })
+      .catch(error => {
+        this.$refs.alert.showError(error.description)
+      })
+      .finally(() => {
+        this.showAlert = true
+        this.inRegistration = false
+      })
     }
   }
 }

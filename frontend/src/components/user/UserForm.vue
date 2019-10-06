@@ -1,7 +1,7 @@
 <template>
   <v-container v-if="finalUser" fluid>
     <v-form ref="form" v-model="valid" lazy-validation>
-      <v-row v-for="property in userProperties" :key="property">
+      <v-row v-for="property in userProperties" :key="property.propertyName">
         <v-col cols="12">
           <v-text-field
             :disabled="beDisabled && (!property.editable || !isEditing)"

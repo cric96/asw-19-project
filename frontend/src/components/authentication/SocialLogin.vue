@@ -17,10 +17,11 @@
     <complete-user-dialog-form v-if="incompleteUser" v-model="showCompleteDialog"
       :user="incompleteUser" @save="socialRegister"></complete-user-dialog-form>
     <user-binding-dialog-form 
-      :existing-email="this.existingEmail" 
-      :pending-cred="this.pendingCred" 
-      v-model="showBindingDialog"
-      @close="showBindingDialog=false">
+      v-if="pendingBinding"
+      v-model="pendingBinding"
+      :existing-email="pendingBinding.email" 
+      :pending-cred="pendingBinding.credential"
+      @close="pendingBinding=null">
     </user-binding-dialog-form>
   </v-container>
 </template>
@@ -30,6 +31,8 @@ import firebase from "firebase";
 import CompleteUserInfoForm from '@/components/authentication/CompleteUserInfoForm'
 import BindUserForm from '@/components/authentication/BindUserForm'
 import User from '@/model/user'
+import firebaseAuthService from '@/services/firebaseAuthService'
+import { mapActions } from 'vuex'
 
 export default {
   components: { 
@@ -38,62 +41,37 @@ export default {
  },
   data: () => ({
     showCompleteDialog: false,
-    showBindingDialog: false,
     incompleteUser: null,
-    existingEmail: null,
-    pendingCred : null
+    pendingBinding: null
   }),
   methods: {
+    ...mapActions('auth', [
+      'signInSocial'
+    ]),
     loginWithFb() {
-      var provider = new firebase.auth.FacebookAuthProvider()
+      let provider = new firebase.auth.FacebookAuthProvider()
       this.providerLogin(provider)
     },
     loginWithGoogle() {
-      var provider = new firebase.auth.GoogleAuthProvider()
+      let provider = new firebase.auth.GoogleAuthProvider()
       this.providerLogin(provider)
     },
     providerLogin(provider) {
-      firebase
-        .auth()
-        .signInWithPopup(provider)
-        .then(result => {
-          if(result) {
-            // show dialog form to add loss info (nickname)
-            if (result.additionalUserInfo.isNewUser) {
-              //sand and save data user in backend
-              var userLogged = result.user
-              this.incompleteUser = new User(undefined, userLogged.uid, userLogged.displayName.split(" ")[0], userLogged.displayName.split(" ")[1], userLogged.email)
-              this.$store.dispatch('signUp', this.incompleteUser).then((user)=>{
-                  this.$router.replace("/dashboard")
-              }).catch(err=>{
-                  console.log("AAA",err)
-              })
-            }else{
-                this.$store.dispatch('signIn').then((user)=>{
-                  this.$router.replace("/dashboard")
-                }).catch(err=>{
-                  console.log("BBB",err)
-                })
-            } 
+      this.signInSocial(provider)
+        .then(user => {
+          this.$router.replace("/dashboard")
+        })
+        .catch(error => {
+          if(error.code == "auth/account-exists-with-different-credential") {
+            // show the binding dialog, that ask a password 
+            // for email account and link it with current provider
+            this.pendingBinding = {
+              email: error.data.email,
+              credential: error.data.credential
+            }
+            console.log(this.pendingBinding)
           }
         })
-        .catch((error) => {
-          if (error.code == "auth/account-exists-with-different-credential") {
-            this.existingEmail = error.email
-            this.pendingCred = error.credential
-            // Lookup existing account’s provider ID.
-            firebase
-              .auth()
-              .fetchSignInMethodsForEmail(error.email)
-              .then((providers) =>{
-                if (providers.indexOf(firebase.auth.EmailAuthProvider.PROVIDER_ID) != -1) {
-                  // Password account already exists with the same email.
-                  // Ask user to provide password associated with that account.
-                  this.showBindingDialog= true
-                }
-              })
-          } 
-      })
     }
   }
 }

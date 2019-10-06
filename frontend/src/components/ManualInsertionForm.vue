@@ -101,7 +101,7 @@
           return trashesApi.insertTrash(buildingId, { "name" : category.name })
             .then(() => {
               this.$store.dispatch('msg/addMessage', 'Hai guadagnato '+ category.score + ' punti')
-              this.$store.commit('updateScore', category.score)
+              this.$store.commit('auth/updateScore', category.score)
             })
         })
         .catch(err => console.log(err)) //find a way to show erros

@@ -27,6 +27,14 @@ export default {
         changeConfig: function(newmessage, newtype){
           this.type = newtype
           this.message = newmessage
+        },
+        showError(newmessage) {
+            this.type = "error"
+            this.message = newmessage
+        },
+        showSuccess(newmessage) {
+            this.type = "success"
+            this.message = newmessage
         }
     }
 }

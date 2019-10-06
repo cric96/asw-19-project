@@ -13,7 +13,7 @@ function passwordConfirmBuilder(user) {
         v => !!v || "il campo password è obbligatorio",
         v => {
             console.log(user.password)
-            return v == user.password || "La figa deve essere almeno di 6 caratteri"
+            return v == user.password || "La password deve essere almeno di 6 caratteri"
         }
     ]
 }
