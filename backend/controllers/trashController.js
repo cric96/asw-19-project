@@ -1,17 +1,16 @@
-var mongoose = require('mongoose');
-var Trash = mongoose.model('Trash');
+var mongoose = require('mongoose')
+var Trash = mongoose.model('Trash')
 var trashCategories = require("../models/cache").trashCategories
 var utils = require('../utils/utils')
 var fetchQueries = require("./trashQueries")
 var errorHandler = require("../utils/errorManagement")
-//var io = require('socket.io')(http)
+var socket = require("../socket")
+
 exports.insertTrash = function(req, res) {
-    let query = {
-        name : req.body.name //filter by trash category passed into the body
-    }
     let user = res.locals.userAuth
+    let buildingFetched = res.locals.buildingFetched
     //i can trown trash only if I am a member of the building 
-    if(!res.locals.buildingFetched.isMember(user)) {
+    if(!buildingFetched.isMember(user)) {
         res.setForbidden("Forbidden, you must be a building's member")
         return
     }
@@ -23,14 +22,17 @@ exports.insertTrash = function(req, res) {
     }
     var trash = new Trash({
         trashCategory : category._id,
-        building : res.locals.buildingFetched._id,
-        city : res.locals.buildingFetched.city,
+        building : buildingFetched._id,
+        city : buildingFetched.city,
         user : user._id
     })
     //update user
     user.score += category.score
     Promise.all([user.save(), trash.save()]) //to fix: handle errors in the first promise    
-        .then(el => res.setNoContent()) //all ok, return no content means that the trash is added into the db
+        .then(el => {
+            res.setNoContent()
+            socket.io.webSocket.to("room/"+buildingFetched._id).emit('newTrash', category.name)
+        }) //all ok, return no content means that the trash is added into the db
         .catch(err => errorHandler(err, res))
     
 };

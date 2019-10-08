@@ -8,7 +8,6 @@ var httpCode = require("./utils/httpCode")
 */
 module.exports.decore = (express) => {
     express.response.setResponse = function(httpCode, message) {
-        console.log("HTTP-Status: " + httpCode + " Message: " + message);
         return this.status(httpCode).json(message);
     }
 

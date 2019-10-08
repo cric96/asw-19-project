@@ -2,7 +2,7 @@ var mongoose = require('mongoose')
 var Schema = mongoose.Schema
 var utils = require("../utils/utils")
 var regex = require("../utils/regex")
-var levels = require("./level.json")
+var levels = require("./levels.json")
 
 function hasNewLevel(user) {
     var currentLevel = user.level

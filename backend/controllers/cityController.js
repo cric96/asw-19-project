@@ -24,7 +24,7 @@ function createCapFilter(capString) {
 		*/
 		let lowerCap = fillCapWithZero(cap, digitsToFillCap)
 		let upperCap = fillCapWithZero(cap + 1, digitsToFillCap) - 1
-		console.log(lowerCap, upperCap)
+		 
 		//gte measn greater then equal and lte means less then or equal
 		return {
 			$gte : lowerCap,
