@@ -1,5 +1,5 @@
 <template>
-    <v-card>
+    <v-card v-if="building">
       <v-img height="250" :src="mapImage"></v-img>
       <v-card-title class="display-1">{{ building.name }}</v-card-title>
       <v-card-text class="subtitle-1">
@@ -79,14 +79,15 @@ export default {
     ...mapGetters('building', [
       'activeBuilding'
     ]),
-    ...mapGetters([
+    ...mapGetters('auth', [
       'userProfile'
     ]),
     canEdit: function() {
-      return this.building.owner._id == this.userProfile._id
+      return this.building.owner.firebase_uid == this.userProfile.firebase_uid
     },
     buildingMembers: function() {
-      return this.building.members.filter(member => member._id.toString() !== this.building.owner._id.toString())
+      let ownerId = this.building.owner.firebase_uid
+      return this.building.members.filter(member => member.firebase_uid.toString() !== ownerId.toString())
     },
     mapImage: function() {
       return hereApi.mapImageURL(this.building.city.state, this.building.city.name, this.building.address, this.building.apartmentNumber, 400)

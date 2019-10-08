@@ -9,7 +9,8 @@ const ACTIVE_BUILDING_KEY = 'activeBuilding'
 function getDefaultActiveBuilding(state) {
     if((state.activeBuilding == null && state.availableBuildings.length > 0) ||
         !state.availableBuildings.map(building => building._id).includes(state.activeBuilding)) {
-        return state.availableBuildings[0]._id
+            let firstBuilding = state.availableBuildings[0]
+            return (!firstBuilding) ? null : firstBuilding._id
     }
     return state.activeBuilding
 }
@@ -49,10 +50,19 @@ export default {
             commit(types.SET_ACTIVE_BUILDING, newBuilding)
         },
         fetchBuildings({commit}) {
+<<<<<<< HEAD
             let userUid = store.getters.userProfile.firebase_uid
             ApiBuilding.getAllOfUser(userUid).then(buildings => {
                 commit(types.SET_AVAILABLE_BUILDING, buildings)
             });
+=======
+            let currentUser = store.getters['auth/userProfile']
+            if(currentUser) {
+                ApiBuilding.getAllOfUser(currentUser.firebase_uid).then(buildings => {
+                    commit(types.SET_AVAILABLE_BUILDING, buildings);
+                })
+            }
+>>>>>>> develop
         },
         createBuilding({ commit }, building) {
             return ApiBuilding.createBuilding(building).then(newBuilding => 

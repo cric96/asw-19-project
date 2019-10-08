@@ -1,6 +1,7 @@
 import axios from 'axios'
 import store from '../store/store'
 import querystring from 'querystring'
+import { tokenProvider } from './firebaseAuthService'
 
 class ApiService {
     
@@ -37,11 +38,11 @@ function makeRequest(axiosFunction, resource, queryParams = null, authorization 
         resource += `?${querystring.stringify(queryParams)}`
     }
     let request = (body != undefined) ? axiosFunction(resource, body, headers) : axiosFunction(resource, headers)
-    return request.then(response => Promise.resolve(response.data)).catch(err => Promise.reject(err))
+    return request.then(response => Promise.resolve(response.data)).catch(err => { throw err.response })
 }
 
 function getHeader() {
-    let token = store.getters.token
+    let token = tokenProvider.currentToken
     return {
         headers: {
             'Content-Type': 'application/json',

@@ -30,7 +30,7 @@ new Vue({
   store,
   beforeCreate() {
     // .catch(() => {}) prevent uncaught promise
-    store.dispatch('autoSignIn').catch(() => {})
+    store.dispatch('auth/silentSignIn').catch(() => {})
   },
   render: h => h(App)
 }).$mount('#app')
