@@ -3,7 +3,13 @@
     <v-card v-bind:style="{ backgroundColor: color}">
       <alert v-model="showAlert" ref="alert"/>
       <v-card-text >
-        <user-form :v-model="true" v-bind:userProperties="userProperties" v-bind:user="user" @validateForm="doSignUp" :resettable="true">
+        <user-form 
+            @validateForm="doSignUp"
+            :v-model="true" 
+            v-bind:userProperties="userProperties" 
+            v-bind:user="user"
+            :resettable="true"
+            :loading="inRegistration">
           Crea utente
         </user-form>
       </v-card-text>
@@ -50,7 +56,6 @@ export default {
     ]),
     doSignUp: function(newUser) {
       this.inRegistration = true
-      console.log(newUser)
       this.signUp({ user : this.user, password : this.user.password}).then(user => {
         this.$refs.alert.showSuccess(messages.SIGNUP_SUCCESS)
         setTimeout(() => { this.$router.replace("/dashboard"); }, 1500)
