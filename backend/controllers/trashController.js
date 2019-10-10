@@ -5,7 +5,7 @@ var utils = require('../utils/utils')
 var fetchQueries = require("./trashQueries")
 var errorHandler = require("../utils/errorManagement")
 var socket = require("../socket")
-
+var cache = require("../modeles/cache")
 exports.insertTrash = function(req, res) {
     let user = res.locals.userAuth
     let buildingFetched = res.locals.buildingFetched
@@ -59,11 +59,9 @@ function createResponseArray(trashCategories, trashesCollected) {
     })
 }
 exports.listUserTrashes = function(req, res) {
-    TrashCategory.find()
-        .then(trashCategories => {
-            return fetchQueries.searchUserTrashes(req, res)
-                .then(collectedTrashes => createResponseArray(trashCategories, collectedTrashes))
-        })
+    let trashCategories = cache.trashCategories.elements
+    fetchQueries.searchUserTrashes(user, res.locals.filterBuilder)
+        .then(collectedTrashes => createResponseArray(trashCategories, collectedTrashes))
         .then(collectedTrashes => res.setOk(collectedTrashes))
         .catch(err => errorHandler(err, res))
 }

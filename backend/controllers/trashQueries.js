@@ -4,6 +4,7 @@ var User = mongoose.model('User')
 var httpCode = require("../utils/httpCode")
 var Exception = require("../utils/Exception")
 var utils = require("../utils/utils")
+var QueryBuilder = require("../utils/AndFilterBuilder")
 
 /**
  * add another filter based on the building id: take 
@@ -40,8 +41,8 @@ function filterUserInMember(user, building) {
  * add another filter based on user id, take trashes
  * if the user id match with the user id fatched
  */
-function putUserInQuery(user, filterBuilder) {
-    return filterBuilder.pushFilter({ user : user._id })
+function putUserInQuery({_id}, filterBuilder) {
+    return filterBuilder.pushFilter({ user : _id })
 }
 /**
  * group element by attribute name passed, and count elements
@@ -132,17 +133,15 @@ module.exports.searchBuildingTrashes = function(req, res) {
 }
 /**
  * return all trash thrown by a user.
- * the query has optionally a filter in date, using to and from value passed in query.
- * the query has optionally a filter in user, using userId value passed in query. 
+ * the query has optionally a filter passed by builder.
  * this function return a Promise that wrap an array of collectedTrash. a collected
  * trash is an object with two values: trashCategory and quantity.
  */
-module.exports.searchUserTrashes = function(req, res) {
-    return Promise.resolve(res.locals.filterBuilder) //enable a thenable chain 
-        .then(builder => putUserInQuery(res.locals.userAuth, builder))
+module.exports.searchUserTrashes = function(user, builder = new QueryBuilder) {
+    return Promise.resolve(builder) //enable a thenable chain 
+        .then(builder => putUserInQuery(user, builder))
         .then(builder => Trash.aggregate(createTrashPipeline(builder)))
 }
-
 
 module.exports.trashesThrownByUsers = function(builder, sort) {
     let pipeline = createPipelineWithSorting(builder, "user", "users", "value", sort)

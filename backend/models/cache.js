@@ -3,6 +3,7 @@ var mongoose = require('mongoose');
 var utils = require("../utils/utils")
 var TrashCategory = mongoose.model('TrashCategory')
 var Reward = mongoose.model('Reward')
+var trashQuery = require("../controllers/trashQueries")
 /**
  * the base class used to manage cache
  */
@@ -52,6 +53,34 @@ module.exports.trashCategories = new CacheTrashCategory()
 class CacheReward extends BaseCache {
     constructor() {
         super(Reward)
+    }
+
+    getUnlockedByUser({_id,rewards,score,level}) {
+        let toUnlock = this.getRewardToUnlock(rewards)
+        let unlockByScore = this.getUnlockedByScore()
+    }
+
+    getRewardToUnlock(userRewards) {
+        this.elements.filter(reward => {
+            return ! userRewards.find(userReward => utils.sameMongoId(reward._id, userReward._id))
+        })
+    }
+
+    getUnlockedByScore(score, rewards) {
+        return rewards.filter(reward => reward.aboutScore())
+                    .filter(reward => reward.unlockData.score < score)
+    }
+
+    getUnlockedByLevel(level, rewards) {
+        return rewards.filter(reward => reward.aboutLevel())
+            .filter(reward => reward.unlockData.level < level)
+    }
+
+    getUnlockedByTrash(user, rewards) {
+        trashQuery.searchUserTrashes(user)
+            .then(collectedTrashes => {
+
+            })
     }
 }
 

@@ -16,7 +16,6 @@
                         hide-no-data
                         hide-details
                         label="Digita..."
-                        multiple
                         solo
                         item-text="categoryName"
                         item-value="categoryName"
