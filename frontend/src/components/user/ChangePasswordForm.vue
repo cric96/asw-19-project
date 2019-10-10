@@ -1,7 +1,7 @@
   
 <template>
     <v-container>
-        <confirm-change-password-dialog v-model="dialog" @confirmChange="changePassword(password)"/>
+        <confirm-change-password-dialog v-model="dialog" @confirmChange="changePassword(newPassword)"/>
        <v-card
             class="mx-auto"
             max-width="500"
@@ -10,7 +10,7 @@
             <v-list-item three-line>
             <v-list-item-content>
                 <div class="overline mb-4">CAMBIA PASSWORD</div>
-                <v-list-item-subtitle> 
+                <v-list-item-subtitle><!-- TODO: scrivere qualcosa di diverso --> 
                     Se cambi la password verrai disconnesso e dovrai inserire la nuova password al login successivo. 
                 </v-list-item-subtitle>
             </v-list-item-content>
@@ -70,6 +70,7 @@
     import * as messages from '@/resource/messages';
     import store  from '@/store/store.js'
     import fb from '@/firebaseConfig.js'
+    import firebaseAuthService from '@/services/firebaseAuthService'
 
     export default {
         data() {
@@ -92,25 +93,17 @@
                 this.dialog = true
             },
             changePassword: function(password){
-                var user = fb.auth.currentUser;
-                console.log(fb)
-                console.log(fb.auth)
-                console.log(fb.authentication.EmailAuthProvider.credential(user.email, this.oldPassword))
-                console.log(user)
-                var credentials = fb.authentication.EmailAuthProvider.credential(user.email, this.oldPassword);
-                user.reauthenticateWithCredential(credentials).then(()=>{
-                    console.log(this)
-                    user.updatePassword(this.newPassword).then(()=>{
-                        console.log(this)
+                console.log(password)
+                firebaseAuthService.changePassword(this.oldPassword, this.newPassword)
+                    .then(() => {
                         this.showAlert = true
                         this.$refs.alert.changeConfig(messages.CHANGE_PASSWORD_SUCCESS, "success")
-                    }).catch((error)=> {
-                        console.log(this)
+                    })
+                    .catch(error => {
                         console.log(error)
                         this.showAlert = true
                         this.$refs.alert.changeConfig(messages.CHANGE_PASSWORD_ERROR, "error")
-                    });
-                });   
+                    })
             }
         },
         components: {
