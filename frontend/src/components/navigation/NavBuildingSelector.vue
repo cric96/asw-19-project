@@ -1,5 +1,5 @@
 <template>
-    <v-list app nav dense v-if="availableBuildings.length > 0">
+    <v-list app nav dense v-if="buildings.length > 0">
         <v-list-group prepend-icon="home" append-icon="mdi-menu-down" v-model="expanded">
             <template slot="activator" v-if="activeBuilding != null">
                 <v-list-item-content>
@@ -8,9 +8,9 @@
                 </v-list-item-content>
             </template>
 
-            <v-list-item-group :value="activeItem" mandatory>
-                <template v-for="(building, i) in availableBuildings">
-                    <v-list-item :key="i" @click="selectBuilding(building)">
+            <v-list-item-group :value="activeBuildingIndex" mandatory>
+                <template v-for="building in buildings">
+                    <v-list-item :key="building._id" @click="selectBuilding(building)">
                         <template v-slot:default="{active}">
                             <v-list-item-content >
                                 <v-list-item-title>{{building.name}}</v-list-item-title>
@@ -19,16 +19,7 @@
                         </template>
                     </v-list-item>
                 </template>
-            </v-list-item-group>
-            
-            <v-list-item >
-                <v-list-item-icon>
-                    <v-icon>settings</v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                    <v-list-item-title>Manage Buildings</v-list-item-title>
-                </v-list-item-content>
-            </v-list-item>  
+            </v-list-item-group> 
         </v-list-group>
     </v-list>
 </template>
@@ -36,7 +27,7 @@
 
 <script>
 import { createNamespacedHelpers } from 'vuex'
-const { mapState, mapActions } = createNamespacedHelpers('building');
+const { mapGetters, mapActions } = createNamespacedHelpers('building')
 
 export default {
     name: 'NavBuildingSelector',
@@ -44,12 +35,12 @@ export default {
         expanded: false
     }),
     computed: {
-        ...mapState([
+        ...mapGetters([
             'activeBuilding',
-            'availableBuildings'
+            'buildings'
         ]),
-        activeItem() {
-            return this.availableBuildings.indexOf(this.activeBuilding);
+        activeBuildingIndex() {
+            return this.buildings.findIndex(building => building._id == this.activeBuilding._id)
         }
     },
     methods: {
@@ -58,15 +49,16 @@ export default {
             'fetchBuildings'
         ]),
         init() {
-            this.fetchBuildings();
+            this.fetchBuildings()
         },
         selectBuilding(building) {
-            this.expanded = false; /* trick for collpase the dropdown after selection */
-            this.changeActiveBuilding(building);
+            this.changeActiveBuilding(building._id)
+            //TODO inviare richiesta per joinarsi alla room del building
+            this.expanded = false /* trick for collpase the dropdown after selection */
         }
     },
     mounted() {
-        this.init();
+        this.init()
     }
 }
 </script>

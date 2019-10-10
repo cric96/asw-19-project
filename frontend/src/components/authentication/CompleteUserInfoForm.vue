@@ -1,30 +1,43 @@
 <template>
-  <v-dialog v-model="show" persistent max-width="600px">
+  <v-dialog
+    :value="opened"
+    @input="opened = $event.target.value; emit('input', $event.target.value)"
+    persistent
+    max-width="600px"
+  >
     <v-card>
-      <v-card-title>
-        <span class="headline">Complete User Profile info</span>
-      </v-card-title>
-      <v-card-text>
-        <v-container>
-          <v-row v-for="(value, propertyName) in simpleUser" :key="propertyName">
-            <v-col cols="12" sm="6" md="4">
-              <v-text-field :label="''+ propertyName" :value="''+value!=null?value:''" required></v-text-field>
-            </v-col>
-          </v-row>
-        </v-container>
-      </v-card-text>
-      <v-card-actions>
-        <div class="flex-grow-1"></div>
-        <v-btn color="blue darken-1" text @click="show = false">Close</v-btn>
-        <v-btn color="blue darken-1" text @click="continueSaving">Continue</v-btn>
-      </v-card-actions>
+    	<alert v-model="showAlert" ref="alert"/>
+	  	<v-card-title>
+        	<span class="headline">Completa la registrazione</span>
+      	</v-card-title>
+      	<v-card-text>
+			<user-form
+			v-bind:userProperties="userProperties"
+			v-bind:user="user"
+      :v-model="true"
+			@validateForm="updateUser"
+			>Completa profilo</user-form>
+      	</v-card-text>
+      	<v-card-actions>
+        	<div class="flex-grow-1"></div>
+        	<v-btn color="blue darken-1" text @click="opened = false">Chiudi</v-btn>
+      	</v-card-actions>
     </v-card>
   </v-dialog>
 </template>
 
 <script>
-import User from "../../model/user";
+import User from "@/model/user";
+import UserForm from "@/components/user/UserForm";
+import { userPropsFilteredBuilder } from "@/components/user/userProperties";
+import AlertMessageComponent from '@/components/AlertMessageComponent';
+import * as messages from '@/resource/messages';
+
 export default {
+  components: {
+	  "alert": AlertMessageComponent, 
+    "user-form": UserForm
+  },
   props: {
     user: {
       type: User,
@@ -32,30 +45,37 @@ export default {
     },
     value: Boolean
   },
-  computed: {
-    show: {
-      get() {
-        return this.value;
-      },
-      set(value) {
-        this.$emit("input", value);
+  watch: {
+    value: {
+      immediate: true,
+      handler: function(val) {
+        this.opened = val
       }
     },
-    simpleUser: function() {
-      return {
-        name: this.user.surname,
-        surname: this.user.name,
-        email: this.user.email,
-        nickname: this.user.nickname
-      };
+  },	
+  data: () => ({
+    showAlert: false,
+    valid: true,
+    opened: false
+  }),
+  methods: {
+    updateUser: function(user) {
+      this.$store.dispatch("auth/updateUserData", user)
+      .then(response => {
+          this.showAlert = true
+          this.$refs.alert.changeConfig(UPDATED_INFO, "success")
+          this.opened = false;
+      })
+      .catch(err => {
+        
+      });
+    }
+  }, 
+  computed: {
+    userProperties: function () {
+      return userPropsFilteredBuilder(this.user, 'name','surname','nickname')
     }
   },
-  methods:{
-    continueSaving: function(){
-      console.log(usersapi.create_user(user));
-      show=false;
-    }
-  }
 };
 </script>
 

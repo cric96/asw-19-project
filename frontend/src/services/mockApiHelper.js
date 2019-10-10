@@ -22,7 +22,7 @@ export default class MockApiHelper {
     }
 
     insert(resource) {
-        return simulateDelay(() => this.resources += resource, 700);
+        return simulateDelay(() => { this.resources.push(resource); return resource; }, 700);
     }
 
     delete(resource) {

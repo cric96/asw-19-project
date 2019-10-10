@@ -2,7 +2,7 @@
     <v-navigation-drawer v-bind:value.sync="value" @input="val => $emit('input', val)" app clipped>
         <!-- Header navigation drawer -->
         <template v-slot:prepend>
-            <nav-user-header/>
+            <nav-user-header v-if="userProfile" :user="userObject" @clickEditUser="clickUser"/>
         </template>
         <v-divider/>
         <!-- Main content navigation drawer -->
@@ -29,6 +29,9 @@
 <script>
 import NavUserHeader from '@/components/navigation/NavUserHeader'
 import NavBuildingSelector from '@/components/navigation/NavBuildingSelector'
+import { mapGetters } from 'vuex'
+import User from '@/model/user'
+
 
 export default {
     name: 'NavigationDrawer',
@@ -37,8 +40,21 @@ export default {
         'nav-building-selector': NavBuildingSelector
     },
     methods: {
+        clickUser() {
+            this.$router.replace("/userProfile")
+        },
         logout : function(){
-            this.$store.dispatch('logout')
+            this.$store.dispatch('auth/logout').then(() => {
+                this.$router.replace("/intro")
+            })
+        }
+    },
+    computed: {
+        ...mapGetters('auth', [
+            'userProfile'
+        ]),
+        userObject: function() {
+            return User.fromJson(this.userProfile)
         }
     },
     props: {

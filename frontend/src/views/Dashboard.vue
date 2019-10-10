@@ -1,5 +1,10 @@
 <template>
     <v-app light>
+      
+      <snackbar-notification></snackbar-notification>
+
+      <complete-user-info v-if="userProfile" :value="needCompletation" :user="userObject"/>
+
       <v-app-bar app clipped-left>
         <v-app-bar-nav-icon @click="drawer = !drawer"/>
         <v-toolbar-title>Scanbage</v-toolbar-title>
@@ -9,23 +14,29 @@
       <navigation-drawer v-model="drawer" :navItems="navItems"></navigation-drawer>
 
       <v-content>
-          <v-container fluid>
+          <v-container fluid fill-height>
+            <!--<v-layout row wrap>
+              <v-breadcrumbs divider="/" ></v-breadcrumbs>
+            </v-layout>-->
             <!-- TODO: insert v-breadcrumbs?? -->
             <!-- Replaced with the childrend view -->
-            <router-view v-on:score-received="onScoreReceived"/>
+            <v-layout row wrap>
+             <router-view/>
+            </v-layout>
           </v-container>
       </v-content>
-      <v-snackbar
-            v-model="newTrash"
-            :timeout=2000
-        >
-        <p> Hai guadagnato {{score}} punti </p>
-      </v-snackbar>
   </v-app>
 </template>
 
 <script>
 import NavigationDrawer from '@/components/navigation/NavigationDrawer'
+import CompleteUserInfoForm from '@/components/authentication/CompleteUserInfoForm'
+import SnackbarNotification from '@/components/SnackbarNotification'
+import { mapGetters } from 'vuex'
+import { createNamespacedHelpers } from 'vuex'
+const { mapActions } = createNamespacedHelpers('trashCategories');
+
+import User from '@/model/user'
 
 export default {
   name: 'Dashboard',
@@ -40,32 +51,35 @@ export default {
         title: 'Dashboard'
       },
       {
-        path: '/dashboard/other',
-        title: 'Other'
+        path: '/buildings',
+        title: 'Manage Buildings',
+        icon: 'settings'
       }
     ]
   }),
   computed: {
-    isAuth: function(){
-      return this.$store.state.isAuthenticated;
-    }
-  },
-  watch: {
-    isAuth: function (val) {
-      if(!val){
-        this.$router.replace('/intro')
-      }
+    ...mapGetters('auth', [
+      'userProfile'
+    ]),
+    needCompletation: function() {
+      return (this.userObject !== undefined) ? !this.userObject.isCompleteProfile() : false;
+    },
+    userObject: function() {
+      return User.fromJson(this.userProfile)
     }
   },
   components: {
-    'navigation-drawer': NavigationDrawer
+    'navigation-drawer': NavigationDrawer,
+    'complete-user-info': CompleteUserInfoForm,
+    'snackbar-notification': SnackbarNotification
   },
   methods: {
-    onScoreReceived(scoreReceived) {
-      console.log("event reiceved")
-      this.newTrash = true
-      this.score = scoreReceived
-    }
+    ...mapActions([
+      'fetchCategories',
+    ])
+  },
+  beforeMount() {
+    this.fetchCategories()
   }
 };
 </script>

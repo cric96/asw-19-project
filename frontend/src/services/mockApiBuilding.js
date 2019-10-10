@@ -17,21 +17,28 @@ class MockApiBuilding {
     getById(id) {
         return this.apiHelper.query((entry) => entry.id == id)
     }
+
+    createBuilding(building) {
+        return this.apiHelper.query(() => true).then(results => {
+            building._id = results.length + 1;
+            return this.apiHelper.insert(building);
+        });
+    }
 }
 
 export const ApiBuilding = new MockApiBuilding(new MockApiHelper([
         {
-            id: 1,
+            _id: 1,
             name: 'Montefelcino House',
             address: 'Via via via',
         },
         {
-            id: 2, 
+            _id: 2, 
             name: "Mone ufficio",
             address: 'Via Mone'
         },
         {
-            id: 3,
+            _id: 3,
             name: "Gianlu's home",
             address: 'San michele'
         }

@@ -1,14 +1,15 @@
 import Vue from 'vue'
-import firebase from 'firebase'
+import fb from './firebaseConfig'
+import store from './store/store'
 import Router from 'vue-router'
 import Dashboard from './views/Dashboard.vue'
-import Login from './views/Login.vue'
-import SignUp from './views/SignUp.vue'
+import Login from '@/views/user/Login.vue'
+import Building from './views/building/Building.vue'
+import SignUp from '@/views/user/SignUp.vue'
 import HomeReport from './views/HomeReport.vue'
 import Intro from './views/Intro.vue'
-import ManualInsertion from './views/scan/ManualInsertion.vue'
-import AiInsertion from './views/scan/AiInsertion.vue'
-import BarcodeInsertion from './views/scan/BarcodeInsertion.vue'
+import UserInfo from '@/views/user/UserInfo.vue'
+import ChangePassword from '@/views/user/ChangePassword.vue'
 
 Vue.use(Router)
 
@@ -41,8 +42,8 @@ const router = new Router({
     },
     {
       path: '/dashboard',
-      name: 'Dashboard',
       component: Dashboard,
+      name: "Dashboard",
       meta: {
         requiresAuth: true,
         title: 'Dashboard'
@@ -54,42 +55,43 @@ const router = new Router({
           component: HomeReport
         },
         {
-          path: '/ai',
-          name: 'AiInsertion',
-          component: AiInsertion,
-          props: true
+          path: '/buildings',
+          name: 'Buildings',
+          component: Building
         },
         {
-          path: '/barcode',
-          name: 'BarcodeInsertion',
-          component: BarcodeInsertion,
-          props: true
+          path: '/userProfile',
+          name: 'UserInfo',
+          component: UserInfo,
         },
         {
-          path: '/manual',
-          name: 'Manual',
-          component: ManualInsertion
-        },
-        {
-          path: 'other', // TODO: replace it with a main home page.
-          name: 'Other',
-          component: Login,
-          meta: {
-            title: 'Other'
-          },
+          path: '/changePassword',
+          name: 'ChangePassword',
+          component: ChangePassword,
         }
       ]
     }
   ]
-});
+})
 
 router.beforeEach((to, from, next) => {
-  const currentUser = firebase.auth().currentUser;
-  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+  if(store.getters['auth/isUserLoading']) {
+    const unwatch = store.watch((state, getters) => getters['auth/userProfile'], function() {
+      routeGuard(to, from, next)
+      unwatch()
+    })
+  } else {
+    routeGuard(to, from, next)
+  }
+})
 
-  if (requiresAuth && !currentUser) next('intro');
-  else if (!requiresAuth && currentUser) next('dashboard');
-  else next();
-});
+function routeGuard(to, from, next) {
+  const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
+  let isAuth = store.getters['auth/isAuthenticated']
 
-export default router;
+  if (requiresAuth && !isAuth) next('intro')
+  else if (!requiresAuth && isAuth) { next('dashboard') }
+  else next()
+}
+
+export default router

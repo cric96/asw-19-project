@@ -1,26 +1,14 @@
 <template>
   <v-dialog v-model="show" persistent max-width="600px">
     <v-card>
-      <v-alert 
-      dismissable      
-      v-model="showSuccessAlert"
-      type="success">
-      Binding completed with success
-    </v-alert>
-    <v-alert  
-      v-model="showErrorAlert"
-      dismissable
-      type="error">
-      An error occurred; the insered password is not correct; try again with another password
-    </v-alert>
+      <alert-message ref="alert" v-model="showAlert"></alert-message>
       <v-card-title>
-        <span class="headline">An account already exists with the same email provided by facebook.
-           Please provide the password for: {{existingEmail}}</span>
+        <span class="headline">Esiste già un account (registrato con username e password) con la mail {{existingEmail}}; fornire la password per collegarlo all'account facebook con cui si vuole accedere:</span>
       </v-card-title>
       <v-card-text>
         <v-container>
               <v-text-field 
-                :clearable="true"
+                clearable=true
                 v-model="password"
                 label="password" 
                 type="password"
@@ -29,8 +17,8 @@
       </v-card-text>
       <v-card-actions>
         <div class="flex-grow-1"></div>
-        <v-btn color="blue darken-1" text @click="show = false">Close</v-btn>
-        <v-btn color="blue darken-1" text @click="bind">Bind</v-btn>
+        <v-btn color="blue darken-1" text @click="show=false" :disabled="pendingOperation">Chiudi</v-btn>
+        <v-btn color="blue darken-1" text @click="bind" :disabled="pendingOperation" :loading="pendingOperation">Collega</v-btn>
       </v-card-actions>
     </v-card>
     
@@ -38,51 +26,60 @@
 </template>
 
 <script>
-    import firebase from "firebase";
+import firebase from "firebase"
+import { mapActions } from 'vuex'
+
+import AlertMessage from '@/components/AlertMessageComponent'
 
 export default {
+  components: {
+    'alert-message': AlertMessage
+  },
   data: () => ({
     password: null,
-    error: null
+    showAlert: false,
+    pendingOperation: false
   }),
   props: {
-    pendingCred:String,
+    pendingCred: String,
     existingEmail: String,
     value: Boolean
   },
   computed: {
-    showSuccessAlert: function(){
-      return !this.error && this.error!=null
-    },
-    showErrorAlert: function(){
-      return this.error && this.error!=null
-    },
     show: {
       get() {
-        return this.value;
+        return this.value
       },
       set(value) {
-        this.$emit("input", value);
+        if(!value){
+          this.$emit('close')
+        }
       }
     }
   },
   methods: {
+    ...mapActions('auth', [
+      'signInBindSocialToEmail'
+    ]),
+
+    // Existing email/password or Google user signed in.
+    // Link Facebook OAuth credential to existing account.
     bind: function() {
-      firebase
-      .auth()
-      .signInWithEmailAndPassword(this.existingEmail, this.password)
-      .then((user) => {
-        // Existing email/password or Google user signed in.
-        // Link Facebook OAuth credential to existing account.
-        if (user) {
-          //TODO show dialog
-          firebase.auth().currentUser.linkWithCredential(this.pendingCred);
-          this.error = false
-          this.show = false
-        }else {
-          this.error = true
-        }
-      });
+      this.showAlert = false
+      this.pendingOperation = true
+      this.signInBindSocialToEmail({
+        email: this.existingEmail,
+        password: this.password,
+        socialCrendential: this.pendingCred
+      }).then(user => {
+        this.$refs.alert.showSuccess("Collegamento completato con successo")
+        this.$router.replace("/dashboard")
+      }).catch(error => {
+        this.$refs.alert.showError(error.description)
+      }).finally(() => {
+        this.showAlert = true
+        this.pendingOperation = false
+      })
     }
   }
 };

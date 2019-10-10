@@ -1,82 +1,132 @@
 <template>
-    <v-container fluid>
+    <v-layout>
+      <!--TODO refactor-->
+      <!-- popups -->
+      <manual-insertion-form ref="manualInsertionPopUp"/>
+      <trash-searching-pop-up ref="trashSearchingPopUp"/>
+      <!-- image resizer-->
+      <image-uploader
+        hidden
+        id="ia-insertion"
+        capture="camera"
+        :maxWidth="512"
+        :quality="quality"
+        outputFormat="blob"
+        @input="onPhotoSelectedAi"
+      />
+      <image-uploader
+        hidden
+        id="barcode-insertion"
+        capture="camera"
+        :maxWidth="1024"
+        outputFormat="blob"
+        @input="onPhotoSelectedBarcode"
+      />
       <!-- Content loader -->
-      <v-row v-if="loading" justify="center">
+      <v-layout v-if="loading" row wrap align-center justify-center>
         <content-loader :loading="loading"></content-loader>
-      </v-row>
+      </v-layout>
 
-      <v-speed-dial v-model="fabExpanded" bottom right fixed direction="top" transition="scale-transition">
+      <v-layout v-else>
+        <v-row dense>
+          <v-col cols="12">
+            <bins-board :bins="bins"></bins-board>
+          </v-col>
+        </v-row>
+      </v-layout>
+
+      <!-- Floating action buttons -->
+      <v-speed-dial v-if="activeBuilding" 
+                          v-model="fabExpanded"
+                          bottom right fixed direction="left" 
+                          transition="scale-transition" 
+                          :loading="areLoaded">
         <template v-slot:activator>
           <v-btn fab light v-model="fabExpanded">
             <v-icon v-if="fabExpanded">close</v-icon>
-            <v-icon v-else>add</v-icon>
+            <img style="width: 35%" v-else src="@/assets/addTrash.png"/>
           </v-btn>
         </template>
-        <v-btn fab light @click='openCamera("camera")'>
+        <v-btn fab light @click='openCamera("ia-insertion")'>
             <v-icon>camera</v-icon>
-            <input id="camera" type="file" accept="image/*" @change="onPhotoSelectedCamera" capture="camera" hidden=true />
         </v-btn>
-        <v-btn fab light to="/manual">
+        <v-btn fab light @click="openManualForm">
             <v-icon>edit</v-icon>
         </v-btn>
-        <v-btn fab light @click='openCamera("barcode")'>
-            <v-icon>fa-barcode</v-icon>
-            <input id="barcode" type="file" accept="image/*" @change="onPhotoSelectedBarcode" capture="camera" hidden=true />
+        <v-btn fab light @click='openCamera("barcode-insertion")'>
+            <img style="width: 32%" src="@/assets/barcode.png"/>
         </v-btn>
       </v-speed-dial>
-      
-      <v-row dense v-if="!loading">
-          <v-col v-for="(bin, index) in bins" :key="index" cols="12" md="3" sm="4">
-            <bin :bin="bin"></bin>
-          </v-col>
-      </v-row>
-    </v-container>
+    </v-layout>
 </template>
 
 
 <script>
-import DynamicBin from '@/components/DynamicBin.vue'
-import {ApiBin} from '../services/mockApiBin'
+import BinsBoard from '@/components/bin/BinsBoard.vue'
+import ManualInsertionForm from '@/components/ManualInsertionForm.vue'
+import TrashSearchingPopUp from '@/components/TrashSearchingPopUp.vue'
+import ApiBin from "@/services/binsApi";
 import { ScaleLoader } from '@saeris/vue-spinners'
+import { createNamespacedHelpers } from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default {
   components: {
-    'bin': DynamicBin,
-    'content-loader': ScaleLoader
+    'bins-board': BinsBoard,
+    'content-loader': ScaleLoader,
+    'manual-insertion-form': ManualInsertionForm,
+    'trash-searching-pop-up' : TrashSearchingPopUp
   },
-  data:() => ({
+  data: () => ({
     fabExpanded: false,
-    newTrash: false,
-    score: 0,
-    bins: null
+    binsAreLoadings: false,
+    quality: 0.5
   }),
   computed: {
+    ...mapGetters({
+      activeBuilding: "building/activeBuilding",
+      areLoaded : "trashCategories/areLoaded", //used to see if the trash category are loaded
+      bins : "building/bins"
+    }),
     loading: function() {
-      return !this.bins;
+      return this.binsAreLoadings
+    }
+  },
+  watch: {
+    activeBuilding(val) {
+      this.updateBins()
     }
   },
   mounted() {
-    ApiBin.getAll("das").then(result => {
-      console.log('Bin: ' + result);
-      this.bins = result;
-    })
+    this.updateBins()
   },
   methods: {
-    /**
-     * change current child screen to manual screen
-     */
-    goToManual() {
-      this.$router.replace('/manual')
+    updateBins() {
+      if(this.activeBuilding) {
+        this.binsAreLoadings = true
+        this.$store.dispatch("building/fetchBinsOfActiveBuilding")
+          .finally(() => this.binsAreLoadings = false)
+      }
     },
-    openCamera(id) {
-      document.getElementById(id).click()
+    openManualForm() {
+      this.$refs.manualInsertionPopUp.open()
     },
-    onPhotoSelectedCamera(event) {
-      this.$router.push({name : 'AiInsertion', params : {img : event.target.files[0]}})
+    openCamera(ref) {
+      document.getElementById(ref).click();
     },
-    onPhotoSelectedBarcode(event) {
-      this.$router.push({name : 'BarcodeInsertion', params : {img : event.target.files[0]}})
+    onPhotoSelectedAi(image) {
+      this.$refs.trashSearchingPopUp.open()
+      this.$refs.trashSearchingPopUp.aiPrediction(image)
+    },
+    onPhotoSelectedBarcode(image) {
+      this.$refs.trashSearchingPopUp.open()
+      this.$refs.trashSearchingPopUp.barcodePrediction(image)
     }
   }
-}
+};
 </script>
+<style>
+#fileInput {
+  display: none;
+}
+</style>

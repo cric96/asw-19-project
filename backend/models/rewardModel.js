@@ -19,22 +19,35 @@ var rewardSchema = new Schema({
         trim: true,
         required: 'We need a description for the reward'
     },
-    availableAtLevel: {
-        type: Number,
-        required: 'You must specify the level to unlock it'
-    },
-    eventType: {
-        type: String,
-        // TODO: use enum?
-    },
-    conditions: {
-        type: Map,
-        of: String
-    },
     video: {
         type: String,
         match: regex.url
+    },
+    /**
+     * unlock data are a set of metadata used to tell
+     * when a rewards could be unlock by an user.
+     * The object must have type attribute
+     */
+    unlockData: {
+        type: Object,
+        required: 'You must specify the data to unlock the reward'
     }
 });
+
+rewardSchema.methods.aboutScore = function() {
+    return this.unlockData.type == "score"
+}
+
+rewardSchema.methods.aboutLevel = function() {
+    return this.unlockData.type == "level"
+}
+
+rewardSchema.methods.aboutTrashCategory = function() {
+    return this.unlockData.type == "trash"
+}
+
+rewardSchema.methods.aboutTotalTrash = function() {
+    return this.unlockData.type == "genericTrash"
+}
 
 module.exports = mongoose.model('Reward', rewardSchema);

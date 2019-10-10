@@ -1,52 +1,52 @@
 import axios from 'axios'
 import store from '../store/store'
+import querystring from 'querystring'
+import { tokenProvider } from './firebaseAuthService'
 
 class ApiService {
-
-    constructor(baseURL){
-        this.baseURL = baseURL
+    
+    constructor(baseURL = ""){
+        this.axios = axios.create({
+            baseURL: baseURL
+        })
     }
 
-    getHeader() {
-        let token = store.getters.token;
-        return {
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': token
-            }
-        }
+    get(resource, queryParams = null, requireAuth = false) {
+        return makeRequest(this.axios.get, resource, queryParams, requireAuth)
     }
 
-    get(resource, requireAuth = false) {
-        return axios.get(this.baseURL+ resource, requireAuth ? this.getHeader() : {})
+    post(resource, data, queryParams = null, requireAuth= false) {
+        return makeRequest(this.axios.post, resource, queryParams, requireAuth, data)
     }
 
-    post(resource, data, requireAuth= false) {
-        return axios.post(this.baseURL+resource, data, requireAuth ? this.getHeader() : {})
-    }
-
-    put(resource, data, requireAuth= false) {
-        return axios.put(this.baseURL+resource, requireAuth ? this.getHeader() : {}, data)
+    put(resource, data, queryParams = null, requireAuth= false) {
+        return makeRequest(this.axios.put, resource, queryParams, requireAuth, data)
     }
 
     delete(resource, requireAuth = false) {
-        return axios.delete(this.baseURL+ resource, requireAuth ? this.getHeader() : {})
-    }
-
-    /**
-     * Perform a custom Axios request.
-     *
-     * data is an object containing the following properties:
-     *  - method
-     *  - url
-     *  - data ... request payload
-     *  - auth (optional)
-     *    - username
-     *    - password
-    **/
-    customRequest(data) {
-        return axios(data)
+        return makeRequest(this.axios.delete, resource, null, requireAuth)
     }
 }
 
 export default ApiService
+// TODO: change the base url, retrieving it from .env
+export const apiService = new ApiService(process.env.VUE_APP_NODE_SERVER)
+
+function makeRequest(axiosFunction, resource, queryParams = null, authorization = false, body = undefined) {
+    let headers = authorization ? getHeader() : { }
+    if(queryParams !== null) {
+        resource += `?${querystring.stringify(queryParams)}`
+    }
+    let request = (body != undefined) ? axiosFunction(resource, body, headers) : axiosFunction(resource, headers)
+    return request.then(response => Promise.resolve(response.data)).catch(err => { throw err.response })
+}
+
+function getHeader() {
+    let token = tokenProvider.currentToken
+    return {
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token
+        }
+    }
+}

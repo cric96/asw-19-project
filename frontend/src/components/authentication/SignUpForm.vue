@@ -1,199 +1,68 @@
 <template>
   <v-container>
     <v-card v-bind:style="{ backgroundColor: color}">
+      <alert v-model="showAlert" ref="alert"/>
       <v-card-text >
-        <v-form  ref="form" v-model="valid" lazy-validation>
-          <v-flex xs12 sm8 md4 class="mb-4">
-            <v-avatar size="96" class="mr-4">
-              <img
-                :src="'https://st2.depositphotos.com/8440746/11336/v/950/depositphotos_113366940-stock-illustration-user-icon-profile-man-businessman.jpg'"
-                alt="Avatar"
-              />
-            </v-avatar>
-            <v-btn @click="openAvatarPicker">Change Avatar</v-btn>
-          </v-flex>
-          <v-text-field 
-            v-model="email"
-            label="E-mail"
-            prepend-icon="person"
-            outlined="true"
-            :rules="emailRules"
-            solo="true"
-            clearable="true"
-            required>
-          </v-text-field>
-          <v-text-field
-            outlined="true"
-            solo="true"
-            clearable="true"
-            prepend-icon="lock"
-            v-model="password"
-            :rules="passwordRules"
-            label="Password"
-            required
-            :append-icon="passwordShow ? 'visibility' : 'visibility_off'"
-            :type="passwordShow ? 'text' : 'password'"
-            @click:append="passwordShow = !passwordShow"
-          ></v-text-field>
-
-          <v-text-field
-            v-model="confirmPassword"
-            outlined="true"
-            solo="true"
-            clearable="true"
-            prepend-icon="lock"
-            label="Confirm Password"
-            :rules="passwordRules"
-            required
-            :append-icon="confirmPasswordShow ? 'visibility' : 'visibility_off'"
-            :type="confirmPasswordShow ? 'text' : 'password'"
-            @click:append="confirmPasswordShow = !confirmPasswordShow"
-          ></v-text-field>
-
-          <v-text-field 
-            v-model="name" 
-            outlined="true"
-            solo="true"
-            clearable="true"
-            prepend-icon="perm_identity"
-            label="Name" 
-            :rules="generalRules" 
-            required>
-          </v-text-field>
-
-          <v-text-field 
-            v-model="surname" 
-            label="Surname" 
-            outlined="true"
-            solo="true"
-            clearable="true"
-            prepend-icon="perm_identity"
-            :rules="generalRules" 
-            required>
-          </v-text-field>
-
-          <v-text-field 
-            v-model="nickname" 
-            label="Nickname" 
-            outlined="true"
-            solo="true"
-            clearable="true"
-            prepend-icon="perm_identity"
-            :rules="generalRules" 
-            required>
-          </v-text-field>
-        </v-form>
+        <user-form :v-model="true" v-bind:userProperties="userProperties" v-bind:user="user" @validateForm="doSignUp" :resettable="true">
+          Crea utente
+        </user-form>
       </v-card-text>
-      <v-card-actions>
-        <v-btn :disabled="!valid" color="success" @click="validate">Register</v-btn>
-        <v-btn color="error" @click="reset">Reset Form</v-btn>
-      </v-card-actions>
       <v-card-text>
-        <p>Have you already an account? <router-link to="/login">Log in</router-link></p>
+        <p> Hai già un account? <router-link to="/login">Log in</router-link></p>
       </v-card-text>
     </v-card>
   </v-container>
 </template>
 
 <script>
-import firebase from "firebase";
-import usersapi from "../../services/users.api";
-import User from "../../model/user";
+import { mapActions } from 'vuex'
+import firebase from "firebase"
+import usersapi from "@/services/usersApi"
+import authService from '@/services/firebaseAuthService'
+import AlertMessageComponent from '@/components/AlertMessageComponent'
+import UserForm from '@/components/user/UserForm'
+import User from "@/model/user"
+import * as messages from '@/resource/messages'
+import { userPropsFilteredBuilder } from '../user/userProperties'
+
 export default {
+  components: {
+    "alert": AlertMessageComponent, 
+    "user-form": UserForm
+  },
   data: () => ({
-    color:'rgba(255,255,255,0.9)',
-    passwordShow: false,
-    confirmPasswordShow: false,
-    valid: true,
-    email: "",
-    name: "",
-    surname: "",
-    nickname: "",
-    emailRules: [
-      v => !!v || "il campo E-mail è obbligatorio",
-      v => /.+@.+/.test(v) || "L'e-mail deve essere valida"
-    ],
-    generalRules: [v => !!v || "Questo campo è obbligatorio"],
-    password: "",
-    confirmPassword: "",
-    passwordRules: [v => !!v || "La Password e la sua conferma sono obbligatorie"],
+    user: User.emptyUser(),
+    showAlert: false,
+    inRegistration: false,
+    color:'rgba(255,255,255,0.9)'
   }),
+  computed: {
+    userProperties: function () {
+      return userPropsFilteredBuilder(this.user, 'email','password','passwordConfirm','name','surname','nickname')
+    }
+  },
   methods: {
-    validate() {
-      if (this.$refs.form.validate()) {
-        this.snackbar = true;
-        this.signUp();
-      }
+    reset: function() {
+      this.$refs.form.reset()
     },
-    reset() {
-      this.$refs.form.reset();
-    },
-    signUp: function() {
-      firebase
-        .auth()
-        .createUserWithEmailAndPassword(this.email, this.password)
-        .then(user => {
-          if (user) {
-            let newuser = new User(
-              user.user.uid,
-              this.name,
-              this.surname,
-              this.email,
-              null,
-              null,
-              this.nickname
-            );
-            usersapi.create_user(newuser);
-            //TODO check if registration of new user is ok
-            this.$router.replace("/intro");
-          }
-        })
-        .catch(err => {
-          if (err.code == "auth/email-already-in-use") {
-            const existingEmail = this.email;
-            const password = this.password;
-            firebase
-              .auth()
-              .fetchSignInMethodsForEmail(existingEmail)
-              .then(function(providers) {
-                const fbProvider = new firebase.auth.FacebookAuthProvider();
-                if (
-                  providers.indexOf(
-                    firebase.auth.FacebookAuthProvider.PROVIDER_ID
-                  ) != -1
-                ) {
-                  // Sign in user to fb with same account.
-                  fbProvider.setCustomParameters({ login_hint: existingEmail });
-                  return firebase
-                    .auth()
-                    .signInWithPopup(fbProvider)
-                    .then(function(result) {
-                      return result.user;
-                    });
-                }
-              })
-              .then(function(user) {
-                if (user) {
-                  if (
-                    firebase
-                      .auth()
-                      .currentUser.linkWithCredential(
-                        firebase.auth.EmailAuthProvider.credential(
-                          existingEmail,
-                          password
-                        )
-                      )
-                  ) {
-                    this.$router.replace("/login");
-                  }
-                }
-              });
-          } else {
-            console.log(err);
-            alert(err);
-          }
-        });
+    ...mapActions('auth', [
+      'signUp'
+    ]),
+    doSignUp: function(newUser) {
+      this.inRegistration = true
+      console.log(newUser)
+      this.signUp({ user : this.user, password : this.user.password}).then(user => {
+        this.$refs.alert.showSuccess(messages.SIGNUP_SUCCESS)
+        setTimeout(() => { this.$router.replace("/dashboard"); }, 1500)
+      })
+      .catch(error => {
+        this.$refs.alert.showError(error.description)
+      })
+      .finally(() => {
+        this.showAlert = true
+        this.inRegistration = false
+      })
     }
   }
-};
+}
 </script>
