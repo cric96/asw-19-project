@@ -1,8 +1,27 @@
 <template>
     <v-layout>
+      <!--TODO refactorize-->
       <!-- popups -->
       <manual-insertion-form ref="manualInsertionPopUp"/>
       <trash-searching-pop-up ref="trashSearchingPopUp"/>
+      <!-- image resizer-->
+      <image-uploader
+        hidden
+        id="ia-insertion"
+        capture="camera"
+        :maxWidth="512"
+        :quality="quality"
+        outputFormat="blob"
+        @input="onPhotoSelectedAi"
+      />
+      <image-uploader
+        hidden
+        id="barcode-insertion"
+        capture="camera"
+        :maxWidth="1024"
+        outputFormat="blob"
+        @input="onPhotoSelectedBarcode"
+      />
       <!-- Content loader -->
       <v-layout v-if="loading" row wrap align-center justify-center>
         <content-loader :loading="loading"></content-loader>
@@ -11,7 +30,7 @@
       <v-layout v-else>
         <v-row dense>
           <v-col cols="12">
-            <bins-board :bins="bins.data"></bins-board>
+            <bins-board :bins="bins"></bins-board>
           </v-col>
         </v-row>
       </v-layout>
@@ -28,16 +47,14 @@
             <img style="width: 35%" v-else src="@/assets/addTrash.png"/>
           </v-btn>
         </template>
-        <v-btn fab light @click='openCamera("ai")'>
+        <v-btn fab light @click='openCamera("ia-insertion")'>
             <v-icon>camera</v-icon>
-            <input ref="ai" type="file" accept="image/*" @change="onPhotoSelectedAi" capture="camera" hidden=true />
         </v-btn>
         <v-btn fab light @click="openManualForm">
             <v-icon>edit</v-icon>
         </v-btn>
-        <v-btn fab light @click='openCamera("barcode")'>
+        <v-btn fab light @click='openCamera("barcode-insertion")'>
             <img style="width: 32%" src="@/assets/barcode.png"/>
-            <input ref="barcode" type="file" accept="image/*" @change="onPhotoSelectedBarcode" capture="camera" hidden=true />
         </v-btn>
       </v-speed-dial>
     </v-layout>
@@ -62,21 +79,17 @@ export default {
   },
   data: () => ({
     fabExpanded: false,
-    newTrash: false,
-    manualOpened: false,
-    score: 0,
-    bins: {
-      loading: false,
-      data: null
-    }
+    binsAreLoadings: false,
+    quality: 0.5
   }),
   computed: {
     ...mapGetters({
       activeBuilding: "building/activeBuilding",
-      areLoaded : "trashCategories/areLoaded"
+      areLoaded : "trashCategories/areLoaded", //used to see if the trash category are loaded
+      bins : "building/bins"
     }),
     loading: function() {
-      return this.bins.loading
+      return this.binsAreLoadings
     }
   },
   watch: {
@@ -90,10 +103,9 @@ export default {
   methods: {
     updateBins() {
       if(this.activeBuilding) {
-        this.bins.loading = true
-        ApiBin.getBins(this.activeBuilding).then(bins => {
-          this.bins.data = bins
-        }).finally(() => this.bins.loading = false);
+        this.binsAreLoadings = true
+        this.$store.dispatch("building/fetchBinsOfActiveBuilding")
+          .finally(() => this.binsAreLoadings = false)
       }
     },
     /**
@@ -103,16 +115,21 @@ export default {
       this.$refs.manualInsertionPopUp.open()
     },
     openCamera(ref) {
-      this.$refs[ref].click()
+      document.getElementById(ref).click();
     },
-    onPhotoSelectedAi(event) {
+    onPhotoSelectedAi(image) {
       this.$refs.trashSearchingPopUp.open()
-      this.$refs.trashSearchingPopUp.aiPrediction(event.target.files[0])
+      this.$refs.trashSearchingPopUp.aiPrediction(image)
     },
-    onPhotoSelectedBarcode(event) {
+    onPhotoSelectedBarcode(image) {
       this.$refs.trashSearchingPopUp.open()
-      this.$refs.trashSearchingPopUp.barcodePrediction(event.target.files[0])
+      this.$refs.trashSearchingPopUp.barcodePrediction(image)
     }
   }
 };
 </script>
+<style>
+#fileInput {
+  display: none;
+}
+</style>

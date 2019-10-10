@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var User = mongoose.model('User');
-var errorHandler = require("./errorManagement")
+var errorHandler = require("../utils/errorManagement")
 var utils = require("../utils/utils")
 
 exports.createUser = function(req, res) {
@@ -38,9 +38,7 @@ function filterOrBuilder () {
     this.appendIfDefined = function(attributeName, attribute) {
         if(attribute !== undefined) {
             this.filters.push( {
-                [attributeName] : {
-                    $regex: attribute , "$options": "i" 
-                }
+                [attributeName] : { $regex: attribute , "$options": "i" }
             })
         }
         return this
@@ -50,9 +48,7 @@ function filterOrBuilder () {
         if(this.filters.length == 0) {
             return {}
         } else {   
-            return {
-                $or : this.filters
-            }
+            return { $or : this.filters }
         }
     }
 }

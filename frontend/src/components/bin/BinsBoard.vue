@@ -20,6 +20,7 @@ export default {
     props: {
         bins: Array,
         loading: false
-    }
+    },
+    
 }
 </script>

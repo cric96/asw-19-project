@@ -1,7 +1,7 @@
 var mongoose = require('mongoose')
 var City = mongoose.model("City")
 var Bin = mongoose.model("Bin")
-var errorHandler = require("./errorManagement")
+var errorHandler = require("../utils/errorManagement")
 var fetchQueries = require("./trashQueries")
 var utils = require("../utils/utils")
 /**

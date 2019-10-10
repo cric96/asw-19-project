@@ -3,7 +3,7 @@ class User {
     /* Level and score must be undefined by default, it allow to backend 
      * to use default value when a new user is created. If set to null, the backend
      * use the 'null' as value for level and score. */
-    constructor(id, firebase_uid, name, surname, email, nickname = undefined, score = undefined, level = undefined) {
+    constructor(id = undefined, firebase_uid, name, surname, email, nickname = undefined, score = undefined, level = undefined) {
         this._id = id;
         this.firebase_uid = firebase_uid;
         this.avatar = "";
@@ -33,7 +33,7 @@ class User {
     }
 
     static emptyUser() {
-        return new User(null, null, null, null)
+        return new User(undefined, undefined, undefined, undefined, undefined)
     }
 }
 

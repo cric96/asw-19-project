@@ -15,7 +15,7 @@
         <v-card v-bind:style="{ backgroundColor: color}" class="mx-auto ma-3 mp-5">
           <alert v-model="showAlert" ref="alert"/>
           <v-card-text>
-            <v-form ref="form" v-model="valid" lazy-validation>
+            <v-form ref="form" v-model="valid" lazy-validation @keyup.native.enter="validate">
               <v-text-field
                 v-model="email"
                 label="E-mail"
@@ -63,6 +63,9 @@
 import firebase from "firebase";
 import AlertMessageComponent from '@/components/AlertMessageComponent';
 import * as messages from '@/resource/messages';
+
+import { mapActions } from 'vuex';
+
 export default {
   components: {
     "alert": AlertMessageComponent 
@@ -90,28 +93,23 @@ export default {
     reset: function() {
       this.$refs.form.reset();
     },
+    ...mapActions('auth', [
+      'signInEmailPassword'
+    ]),
     login: function() {
       this.loggingIn = true;
-      firebase
-        .auth()
-        .signInWithEmailAndPassword(this.email, this.password)
-        .then(response => {
-          this.$store.dispatch("signIn").then(user=>{
-            this.showAlert = true;
-            this.$refs.alert.changeConfig(messages.LOGIN_SUCCESS, "success");
-            setTimeout(() => { this.$router.replace("/dashboard"); }, 1500);
-          }).catch(err => {
-            this.loggingIn = false;
-            this.showAlert = true;
-            this.$refs.alert.changeConfig(messages.LOGIN_ERROR, "error");
-          });
-        }).catch(err => {
-          if(err.code="auth/wrong-password"){
-            this.loggingIn = false;
-            this.showAlert = true;
-            this.$refs.alert.changeConfig(messages.LOGIN_WRONG_PASSWORD, "error");
-          }
-        });
+      this.signInEmailPassword({email: this.email, password: this.password})
+        .then(user => {
+          this.$refs.alert.showSuccess(messages.LOGIN_SUCCESS);
+          setTimeout(() => { this.$router.replace("/dashboard"); }, 1500);
+        })
+        .catch(error => {
+          this.$refs.alert.showError(error.description);
+        })
+        .finally(() => {
+          this.showAlert = true
+          this.loggingIn = false
+        })
     }
   }
 };

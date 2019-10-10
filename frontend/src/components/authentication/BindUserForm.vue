@@ -1,17 +1,7 @@
 <template>
   <v-dialog v-model="show" persistent max-width="600px">
     <v-card>
-      <v-alert 
-        dismissable      
-        v-if="showSuccessAlert"
-        type="success">{{successMessage}}
-      </v-alert>
-      <v-alert  
-        v-if="showErrorAlert"
-        dismissable
-        type="error">
-        {{errorMessage}}
-      </v-alert>
+      <alert-message ref="alert" v-model="showAlert"></alert-message>
       <v-card-title>
         <span class="headline">Esiste già un account (registrato con username e password) con la mail {{existingEmail}}; fornire la password per collegarlo all'account facebook con cui si vuole accedere:</span>
       </v-card-title>
@@ -27,8 +17,8 @@
       </v-card-text>
       <v-card-actions>
         <div class="flex-grow-1"></div>
-        <v-btn color="blue darken-1" text @click="show=false">Chiudi</v-btn>
-        <v-btn color="blue darken-1" text @click="bind">Collega</v-btn>
+        <v-btn color="blue darken-1" text @click="show=false" :disabled="pendingOperation">Chiudi</v-btn>
+        <v-btn color="blue darken-1" text @click="bind" :disabled="pendingOperation" :loading="pendingOperation">Collega</v-btn>
       </v-card-actions>
     </v-card>
     
@@ -36,27 +26,26 @@
 </template>
 
 <script>
-    import firebase from "firebase"
+import firebase from "firebase"
+import { mapActions } from 'vuex'
+
+import AlertMessage from '@/components/AlertMessageComponent'
 
 export default {
+  components: {
+    'alert-message': AlertMessage
+  },
   data: () => ({
     password: null,
-    error: null,
-    errorMessage: "",
-    successMessage:""
+    showAlert: false,
+    pendingOperation: false
   }),
   props: {
-    pendingCred:String,
+    pendingCred: String,
     existingEmail: String,
     value: Boolean
   },
   computed: {
-    showSuccessAlert: function(){
-      return !this.error && this.error!=null
-    },
-    showErrorAlert: function(){
-      return this.error && this.error!=null
-    },
     show: {
       get() {
         return this.value
@@ -69,40 +58,27 @@ export default {
     }
   },
   methods: {
+    ...mapActions('auth', [
+      'signInBindSocialToEmail'
+    ]),
+
+    // Existing email/password or Google user signed in.
+    // Link Facebook OAuth credential to existing account.
     bind: function() {
-      firebase
-      .auth()
-      .signInWithEmailAndPassword(this.existingEmail, this.password)
-      .then((user) => {
-        // Existing email/password or Google user signed in.
-        // Link Facebook OAuth credential to existing account.
-        if (user) {
-          this.successMessage = "La password inserita è corretta. I due account verranno immediatamente collegati"
-          this.error = false
-          //TODO show dialog
-          firebase.auth().currentUser.linkWithCredential(this.pendingCred).then((userLinked)=>{
-            this.$store.dispatch('signIn').then((user)=>{
-              this.successMessage = "Collegamento completato con successo"
-              this.$router.replace("/dashboard")
-            }).catch(err=>{
-              //todo chack erros
-              console.log(err)
-              this.error = true
-              this.errorMessage = "Errore nel collegamento dei due account"
-            })
-          }).catch((err)=>{
-            console.log(err)
-          })
-          
-        }else {
-          this.error = true
-          this.errorMessage = "Attenzione, si è veirificato un errore nel login"
-        }
-      }).catch((err)=>{
-        if(err.code='auth/wrong-password'){
-            this.error = true
-            this.errorMessage = "ERRORE; la password inserita non è corretta; riprova inserendo una nuova password"
-        }
+      this.showAlert = false
+      this.pendingOperation = true
+      this.signInBindSocialToEmail({
+        email: this.existingEmail,
+        password: this.password,
+        socialCrendential: this.pendingCred
+      }).then(user => {
+        this.$refs.alert.showSuccess("Collegamento completato con successo")
+        this.$router.replace("/dashboard")
+      }).catch(error => {
+        this.$refs.alert.showError(error.description)
+      }).finally(() => {
+        this.showAlert = true
+        this.pendingOperation = false
       })
     }
   }

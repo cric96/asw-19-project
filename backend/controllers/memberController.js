@@ -1,7 +1,7 @@
 var mongoose = require('mongoose');
 var Exception = require("../utils/Exception")
-var errorHandler = require("./errorManagement")
-var httpCode = require("../httpCode")
+var errorHandler = require("../utils/errorManagement")
+var httpCode = require("../utils/httpCode")
 var User = mongoose.model("User")
 var utils = require('../utils/utils')
 

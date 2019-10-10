@@ -53,6 +53,7 @@ export default {
         },
         selectBuilding(building) {
             this.changeActiveBuilding(building._id)
+            //TODO inviare richiesta per joinarsi alla room del building
             this.expanded = false /* trick for collpase the dropdown after selection */
         }
     },

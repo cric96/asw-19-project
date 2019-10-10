@@ -26,7 +26,17 @@ var rewardSchema = new Schema({
     video: {
         type: String,
         match: regex.url
+    },
+    /**
+     * unlock data are a set of metadata used to tell
+     * when a rewards could be unlock by an user.
+     * The object must have type attribute
+     */
+    unlockData: {
+        type: Object,
+        required: 'You must specify the data to unlock the reward'
     }
 });
+
 
 module.exports = mongoose.model('Reward', rewardSchema);

@@ -9,6 +9,7 @@ import SignUp from '@/views/user/SignUp.vue'
 import HomeReport from './views/HomeReport.vue'
 import Intro from './views/Intro.vue'
 import UserInfo from '@/views/user/UserInfo.vue'
+import ChangePassword from '@/views/user/ChangePassword.vue'
 
 Vue.use(Router)
 
@@ -41,8 +42,8 @@ const router = new Router({
     },
     {
       path: '/dashboard',
-      name: 'Dashboard',
       component: Dashboard,
+      name: "Dashboard",
       meta: {
         requiresAuth: true,
         title: 'Dashboard'
@@ -62,6 +63,11 @@ const router = new Router({
           path: '/userProfile',
           name: 'UserInfo',
           component: UserInfo,
+        },
+        {
+          path: '/changePassword',
+          name: 'ChangePassword',
+          component: ChangePassword,
         }
       ]
     }
@@ -69,8 +75,8 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  if(store.getters.isUserLoading) {
-    const unwatch = store.watch((state, getters) => getters.userProfile, function() {
+  if(store.getters['auth/isUserLoading']) {
+    const unwatch = store.watch((state, getters) => getters['auth/userProfile'], function() {
       routeGuard(to, from, next)
       unwatch()
     })
@@ -81,7 +87,7 @@ router.beforeEach((to, from, next) => {
 
 function routeGuard(to, from, next) {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
-  let isAuth = store.getters.isAuthenticated
+  let isAuth = store.getters['auth/isAuthenticated']
 
   if (requiresAuth && !isAuth) next('intro')
   else if (!requiresAuth && isAuth) { next('dashboard') }
