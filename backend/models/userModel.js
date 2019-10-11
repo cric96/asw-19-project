@@ -7,7 +7,7 @@ var levels = require("./levels.json")
 function hasNewLevel(user) {
     var currentLevel = user.level
     var nextReachableLevel = levels.find(level => level.scoreRequested > user.score)
-    if(nextEligibleLevel == undefined) {
+    if(nextReachableLevel == undefined) {
         return false
     } else{
         var computedLevel = nextReachableLevel.level - 1

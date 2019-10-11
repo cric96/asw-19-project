@@ -4,8 +4,8 @@
         <v-dialog v-model="value" persistent transition="dialog-bottom-transition" max-width="300px">
             <v-card
                 v-if=waitingPrediction 
-                loading="secondary"
-                loader-height=7
+                loading= "secondary"
+                loader-height= 7
             >
               <v-card-title class="justify-center">
                   Ricerca in corso..
@@ -57,7 +57,7 @@
 <script>
 import prediction from '@/services/predictionApi'
 import { createNamespacedHelpers } from 'vuex'
-import trashesApi from '../services/trashesApi'
+import trashesApi from '@/services/trashesApi'
 const { mapActions } = createNamespacedHelpers('trashCategories')
 const { mapGetters } = createNamespacedHelpers('building')
 

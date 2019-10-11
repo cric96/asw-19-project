@@ -42,7 +42,7 @@ rewardSchema.methods.aboutLevel = function() {
     return this.unlockData.type == "level"
 }
 
-rewardSchema.methods.aboutTrashCategory = function() {
+rewardSchema.methods.aboutTrash = function() {
     return this.unlockData.type == "trash"
 }
 

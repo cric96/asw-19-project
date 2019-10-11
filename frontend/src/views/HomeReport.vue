@@ -63,8 +63,8 @@
 
 <script>
 import BinsBoard from '@/components/bin/BinsBoard.vue'
-import ManualInsertionForm from '@/components/ManualInsertionForm.vue'
-import TrashSearchingPopUp from '@/components/TrashSearchingPopUp.vue'
+import ManualInsertionForm from '@/components/trash/ManualInsertionForm.vue'
+import TrashSearchingPopUp from '@/components/trash/TrashSearchingPopUp.vue'
 import ApiBin from "@/services/binsApi";
 import { ScaleLoader } from '@saeris/vue-spinners'
 import { createNamespacedHelpers } from 'vuex'

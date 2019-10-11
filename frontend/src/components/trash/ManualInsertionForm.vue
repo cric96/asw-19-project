@@ -51,7 +51,7 @@
 <script>
   import { createNamespacedHelpers } from 'vuex'
   import { mapGetters } from 'vuex'
-  import trashesApi from '../services/trashesApi'
+  import trashesApi from '@/services/trashesApi'
   const { mapActions } = createNamespacedHelpers('trashCategories')
 
   export default {

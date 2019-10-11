@@ -55,13 +55,17 @@ class CacheReward extends BaseCache {
         super(Reward)
     }
 
-    getUnlockedByUser({_id,rewards,score,level}) {
-        let toUnlock = this.getRewardToUnlock(rewards)
-        let unlockByScore = this.getUnlockedByScore()
+    async getUnlockedByUser(user) {
+        var toUnlock = this.getRewardToUnlock(user.rewards)
+        var rewardsAboutTrash = await this.getUnlockedByTrash(user , toUnlock)
+        return rewardsAboutTrash.concat(
+            this.getUnlockedByLevel(user.level, toUnlock),
+            this.getUnlockedByScore(user.level, toUnlock),
+        )
     }
 
     getRewardToUnlock(userRewards) {
-        this.elements.filter(reward => {
+        return this.elements.filter(reward => {
             return ! userRewards.find(userReward => utils.sameMongoId(reward._id, userReward._id))
         })
     }
@@ -75,12 +79,32 @@ class CacheReward extends BaseCache {
         return rewards.filter(reward => reward.aboutLevel())
             .filter(reward => reward.unlockData.level < level)
     }
-
-    getUnlockedByTrash(user, rewards) {
-        trashQuery.searchUserTrashes(user)
-            .then(collectedTrashes => {
-
-            })
+    isTrashRewardEligible(reward, collectedTrashes) {
+        for(var category of reward.unlockData.categories) {
+            var collectedOfCategory = collectedTrashes.find(t => t.trashCategory.name === category)
+            var quantityOfCategory = collectedOfCategory.quantity
+            if(quantityOfCategory > reward.unlockData.quantity) {
+                return true
+            }
+        }
+        return false
+    }
+    async getUnlockedByTrash(user, rewards) {
+        var filteredReward = rewards.filter(r => r.aboutTotalTrash() || r.aboutTrash())
+        if(filteredReward.length == 0) { //if there isn't trash rewards to unlock, it is possible to avoid trash query
+            return []
+        }
+        var collectedTrashes = await trashQuery.searchUserTrashes(user)
+        var trashQuantity = collectedTrashes.reduce((acc,trash) => acc + trash.quantity, 0)
+        return rewards.filter(reward => {
+            if(reward.aboutTotalTrash()) {
+                return reward.unlockData.quantity < trashQuantity
+            } else if(reward.aboutTrash()){
+                return this.isTrashRewardEligible(reward, collectedTrashes) 
+            } else {
+                return false
+            }
+        })
     }
 }
 
@@ -99,6 +123,7 @@ module.exports.refresh = function() {
     ]).then(() => console.log("Cache reloaded"))
 }
 const dayInMilliseconds = 1000 * 60 * 60 * 24
+
 module.exports.daily = function() {
     setInterval(this.refresh, dayInMilliseconds)
 }

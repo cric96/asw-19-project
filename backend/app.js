@@ -6,34 +6,16 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var cors = require('cors');
 var admin = require('firebase-admin');
-<<<<<<< HEAD
-
-var userModel = require("./models/userModel");
-var usersRouter = require('./routes/usersRoutes');
-=======
->>>>>>> socket
 var app = express();
 var fallback = require('connect-history-api-fallback');
 
-<<<<<<< HEAD
-
-let serviceAccount = require('./scanbage-firebase-adminsdk-itzje-52ab1c019c.json')
-=======
 let tokenRetriver = require('./firebaseTokenRetriever')
->>>>>>> socket
 admin.initializeApp({
     credential: admin.credential.cert(tokenRetriver())
 });
-<<<<<<< HEAD
-
-const uri = "mongodb+srv://admin:codingASW2019@scanbage-fd95g.mongodb.net/test?retryWrites=true&w=majority";
-
-mongoose.connect(uri, { useNewUrlParser: true, useFindAndModify: false });
-=======
 //mongo connection
 require("./mongo").setupCloud()
 //express config
->>>>>>> socket
 app.use(logger('dev'));
 // allow to use the router of client, this prevent express to send 404 for unknown path
 app.use(express.json());

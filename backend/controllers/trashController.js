@@ -5,7 +5,7 @@ var utils = require('../utils/utils')
 var fetchQueries = require("./trashQueries")
 var errorHandler = require("../utils/errorManagement")
 var socket = require("../socket")
-var cache = require("../modeles/cache")
+var cache = require("../models/cache")
 exports.insertTrash = function(req, res) {
     let user = res.locals.userAuth
     let buildingFetched = res.locals.buildingFetched
@@ -27,14 +27,15 @@ exports.insertTrash = function(req, res) {
         user : user._id
     })
     //update user
-    user.score += category.score
-    Promise.all([user.save(), trash.save()]) //to fix: handle errors in the first promise    
+    user.updateScore(category.score)
+    cache.rewards.getUnlockedByUser(user)
+        .then(rewards => user.rewards = user.rewards.concat(rewards))
+        .then(() => Promise.all([user.save(), trash.save()])) //to fix: handle errors in the first promise)
         .then(el => {
             res.setNoContent()
             socket.io.webSocket.to("room/"+buildingFetched._id).emit('newTrash', category.name)
         }) //all ok, return no content means that the trash is added into the db
         .catch(err => errorHandler(err, res))
-    
 };
 /**
  * this function is used to create the response.
@@ -60,7 +61,7 @@ function createResponseArray(trashCategories, trashesCollected) {
 }
 exports.listUserTrashes = function(req, res) {
     let trashCategories = cache.trashCategories.elements
-    fetchQueries.searchUserTrashes(user, res.locals.filterBuilder)
+    fetchQueries.searchUserTrashes(res.locals.userAuth, res.locals.filterBuilder)
         .then(collectedTrashes => createResponseArray(trashCategories, collectedTrashes))
         .then(collectedTrashes => res.setOk(collectedTrashes))
         .catch(err => errorHandler(err, res))

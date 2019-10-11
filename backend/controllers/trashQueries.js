@@ -142,7 +142,7 @@ module.exports.searchUserTrashes = function(user, builder = new QueryBuilder) {
         .then(builder => putUserInQuery(user, builder))
         .then(builder => Trash.aggregate(createTrashPipeline(builder)))
 }
-
+//TODO comments
 module.exports.trashesThrownByUsers = function(builder, sort) {
     let pipeline = createPipelineWithSorting(builder, "user", "users", "value", sort)
     return Trash.aggregate(pipeline)
