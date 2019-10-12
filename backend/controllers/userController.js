@@ -13,7 +13,7 @@ exports.createUser = function(req, res) {
     user.save()
         .then(newUser => res.setCreated(newUser))
         .catch(err => errorHandler(err, res))
-};
+}
 
 exports.getUser = function(req, res) {
     let uid = res.locals.uid

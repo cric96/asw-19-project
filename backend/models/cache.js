@@ -60,7 +60,7 @@ class CacheReward extends BaseCache {
         var rewardsAboutTrash = await this.getUnlockedByTrash(user , toUnlock)
         return rewardsAboutTrash.concat(
             this.getUnlockedByLevel(user.level, toUnlock),
-            this.getUnlockedByScore(user.level, toUnlock),
+            this.getUnlockedByScore(user.score, toUnlock),
         )
     }
 
@@ -72,20 +72,25 @@ class CacheReward extends BaseCache {
 
     getUnlockedByScore(score, rewards) {
         return rewards.filter(reward => reward.aboutScore())
-                    .filter(reward => reward.unlockData.score < score)
+                    .filter(reward => reward.unlockData.score <= score)
     }
 
     getUnlockedByLevel(level, rewards) {
         return rewards.filter(reward => reward.aboutLevel())
-            .filter(reward => reward.unlockData.level < level)
+            .filter(reward => reward.unlockData.level <= level)
     }
     isTrashRewardEligible(reward, collectedTrashes) {
         for(var category of reward.unlockData.categories) {
+            //if the user don't throw some trash category, find function return an undefined object.
             var collectedOfCategory = collectedTrashes.find(t => t.trashCategory.name === category)
-            var quantityOfCategory = collectedOfCategory.quantity
-            if(quantityOfCategory > reward.unlockData.quantity) {
-                return true
+            //check the reward constraint only if the use has throw some trash of given category
+            if(collectedOfCategory !== undefined) {
+                var quantityOfCategory = collectedOfCategory.quantity
+                if(quantityOfCategory >= reward.unlockData.quantity) {
+                    return true
+                }
             }
+            
         }
         return false
     }
