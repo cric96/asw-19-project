@@ -14,7 +14,7 @@ firebase.initializeApp(config)
 const auth = firebase.auth()
 const currentUser = auth.currentUser
 
-export default{
+export default {
     auth,
     currentUser
 }

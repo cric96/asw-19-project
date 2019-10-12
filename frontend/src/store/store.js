@@ -4,6 +4,7 @@ import Vuex from 'vuex'
 import buildingModule from './module/building'
 import authModule from './module/auth'
 import trashCategoriesModule from './module/trashCategory'
+import rewardModule from './module/reward'
 import messagesPlugin from '../plugins/messages'
 
 Vue.use(Vuex)
@@ -13,7 +14,8 @@ const store = new Vuex.Store({
     modules: {
         building: buildingModule,
         trashCategories : trashCategoriesModule,
-        auth: authModule
+        auth: authModule,
+        reward : rewardModule
     }
 })
 
