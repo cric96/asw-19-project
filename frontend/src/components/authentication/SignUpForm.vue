@@ -64,13 +64,13 @@ export default {
               this.$store.dispatch('signUp', newuser)
               .then((user)=>{
                 this.showAlert = true
-                this.$refs.alert.changeConfig(SIGNUP_SUCCESS, "success")
+                this.$refs.alert.changeConfig(messages.SIGNUP_SUCCESS, "success")
                 setTimeout(() => { this.$router.replace("/dashboard"); }, 1500)
               }).catch((err)=>{
                 // TODO -- check server response (409...)
                 this.inRegistration = false
                 this.showAlert = true
-                this.$refs.alert.changeConfig(SIGNUP_ERR_NICKNAME_CONFLICT, "error")
+                this.$refs.alert.changeConfig(messages.SIGNUP_ERR_NICKNAME_CONFLICT, "error")
                 firebase.auth().currentUser.delete().then(function () {
                   console.log('delete successful in firebase because a specified nickname already exist')
                 }).catch(function (error) {
@@ -96,7 +96,7 @@ export default {
                     })
                 }else{
                   this.showAlert = true
-                  this.$refs.alert.changeConfig(SIGNUP_ERR_EMAIL_CONFLICT, "error")
+                  this.$refs.alert.changeConfig(messages.SIGNUP_ERR_EMAIL_CONFLICT, "error")
                 }
               })
               .then((user) =>{
