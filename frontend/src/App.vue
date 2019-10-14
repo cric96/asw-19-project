@@ -25,7 +25,7 @@ export default {
 
 <style>
   .container_background {
-    background: rgba(255,255,255,0.2) url('./assets/background.jpeg'); 
+    background: rgba(255,255,255,0.2) url('./assets/back_material.png'); 
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;

@@ -2,7 +2,6 @@
   <v-container v-if="finalUser" fluid>
     <v-form ref="form" v-model="valid">
       <v-row v-for="property in userProperties" :key="property.propertyName">
-        <v-col cols="12">
           <password-text-field
               v-if="property.propertyName==='password'"
               :prependIcon="property.prependedIcon"
@@ -29,7 +28,6 @@
             outlined
             clearable
           ></v-text-field>
-        </v-col>
       </v-row>
       <v-btn :disabled="!valid && !isEditing " color="success" class="mr-4" @click="validate">
         <slot></slot>
