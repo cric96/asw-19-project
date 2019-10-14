@@ -1,7 +1,7 @@
 var mongoose = require('mongoose')
 var Trash = mongoose.model('Trash')
 var User = mongoose.model('User')
-var httpCode = require("../httpCode")
+var httpCode = require("../utils/httpCode")
 var Exception = require("../utils/Exception")
 var utils = require("../utils/utils")
 
@@ -12,9 +12,7 @@ var utils = require("../utils/utils")
  * @param {*} building the building specify in the url path  
  */
 function putBuildingInQuery(building, filterBuilder) {
-    return filterBuilder.pushFilter({
-        building : building._id
-    })
+    return filterBuilder.pushFilter({ building : building._id })
 }
 /**
  * retrieve the user into the database
@@ -43,31 +41,32 @@ function filterUserInMember(user, building) {
  * if the user id match with the user id fatched
  */
 function putUserInQuery(user, filterBuilder) {
-    return filterBuilder.pushFilter(
-        {
-            user : user._id
-        }
-    )
-}
-/*
-used to group element by trash category and
-count the occurrencies
-*/
-const groupCatogoriesAndBin = {
-    _id: "$trashCategory",
-    quantity : {
-        $sum : 1 //count the trash
-    }
+    return filterBuilder.pushFilter({ user : user._id })
 }
 /**
- * this value is used to populate trash category,
- * i need the object, not only the id
+ * group element by attribute name passed, and count elements
+ * 
  */
-const lookupTrashCategory = {
-    from: "trashcategories",
-    localField: "_id",
-    foreignField: "_id",
-    as: "trashCategory"
+function groupAndCount(attributeName, attributeCountName = "value") {
+    let attributeMongoName = "$" + attributeName
+    return {
+        _id : attributeMongoName,
+        [attributeCountName] : { $sum : 1 }
+    }
+}
+
+/**
+ * this function is used to populate an entry
+ * with some id with the corresponding object 
+ * in another collection
+ */
+function lookupField(collectionsName, fieldName, localField = "_id", foreignField = "_id") {
+    return {
+        from : collectionsName,
+        localField: localField,
+        foreignField: foreignField,
+        as: fieldName
+    }
 }
 /**
  * project is what i want in the query result,
@@ -77,27 +76,37 @@ const projection = {
     trashCategory : 1, 
     quantity : 1
 }
-//create the pipeline (is like query in sql, but more powerfull)
-function createAggregationPipeline(builder) {
+function createGroupAndCountPipeline(filterBuilder, fieldName, collectionsName, countFieldName) {
     return [
         {
-            $match : builder.build() //use filter query create with user, date and building
+            $match : filterBuilder.build() //use filter query create with user, date and building
         },
         {
-            $group : groupCatogoriesAndBin //group by the trash category and count the occurences. put the bin
+            $group : groupAndCount(fieldName, countFieldName) //group by the trash category and count the occurences. put the bin
         },
         {
-            $lookup : lookupTrashCategory //populate trash category
+            $lookup : lookupField(collectionsName, fieldName) //populate trash category
         },
         //lookup return always an array, even if you have only one element, unwind convert an array to a single element
         {
-            $unwind : "$trashCategory"
+            $unwind : "$" + fieldName
         },
-        {
-            $project : projection
-        }
-        
     ]
+}
+
+function createTrashPipeline(builder) {
+    let baseBinPipeline = createGroupAndCountPipeline(builder, "trashCategory", "trashcategories", "quantity")
+    baseBinPipeline.push({
+        $project : projection
+    })
+    return baseBinPipeline
+}
+function createPipelineWithSorting(builder, fieldName, collectionsName, countFieldName, sort) {
+    let baseBinPipeline = createGroupAndCountPipeline(builder, fieldName, collectionsName, countFieldName)
+    baseBinPipeline.push({
+        $sort : { value : sort }
+    })
+    return baseBinPipeline
 }
 /**
  * return all trash thrown into a building.
@@ -119,7 +128,7 @@ module.exports.searchBuildingTrashes = function(req, res) {
                     .then(user => putUserInQuery(user, builder))
             }
         })
-        .then(builder => Trash.aggregate(createAggregationPipeline(builder))) //
+        .then(builder => Trash.aggregate(createTrashPipeline(builder))) //
 }
 /**
  * return all trash thrown by a user.
@@ -131,5 +140,21 @@ module.exports.searchBuildingTrashes = function(req, res) {
 module.exports.searchUserTrashes = function(req, res) {
     return Promise.resolve(res.locals.filterBuilder) //enable a thenable chain 
         .then(builder => putUserInQuery(res.locals.userAuth, builder))
-        .then(builder => Trash.aggregate(createAggregationPipeline(builder)))
+        .then(builder => Trash.aggregate(createTrashPipeline(builder)))
+}
+
+
+module.exports.trashesThrownByUsers = function(builder, sort) {
+    let pipeline = createPipelineWithSorting(builder, "user", "users", "value", sort)
+    return Trash.aggregate(pipeline)
+}
+
+module.exports.trashesThrownInCities = function(builder, sort) {
+    let pipeline = createPipelineWithSorting(builder, "city", "cities", "value", sort)
+    return Trash.aggregate(pipeline)
+}
+
+module.exports.trashesThrownInBuildings = function(builder, sort) {
+    let pipeline = createPipelineWithSorting(builder, "building", "buildings", "value", sort)
+    return Trash.aggregate(pipeline)
 }

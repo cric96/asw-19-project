@@ -1,8 +1,14 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
-
 var utils = require("../utils/utils");
 var regex = require("../utils/regex");
+//all level in user, put in DB?
+let levelsScoreThreshould = [10, 50, 100, 200, 500]
+function hasNewLevel(user) {
+    let currentLevel = user.level
+    let levelComputed = levelsScoreThreshould.findIndex(scoreRequired => scoreRequired > user.score)
+    return levelComputed !== undefined && currentLevel < (levelComputed + 1) 
+}
 /**
  * User schema: user are identify (client-side) with firebase uid
  */
@@ -66,7 +72,19 @@ userSchema.virtual.nameId = function(obj) {
 userSchema.statics.prepareUpdate = function(obj) {
     return utils.exclude(obj, 'email', 'level', 'score');
 }
-
+/**
+ * update score and verify if the user can level up
+ * return true if the user has change its level, false 
+ * otherwhise.
+ */
+userSchema.methods.updateScore = function(score) {
+    this.score += score
+    if(hasNewLevel(this)) {
+        this.level ++
+        return true
+    }
+    return false
+}
 userSchema.options.toJSON = {
     transform: function(doc, ret, options) {
         // can i do? delete ret._id;

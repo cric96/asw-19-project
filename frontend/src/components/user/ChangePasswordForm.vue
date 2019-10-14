@@ -1,7 +1,7 @@
   
 <template>
     <v-container>
-        <confirm-change-password-dialog v-model="dialog" @confirmChange="changePassword(password)"/>
+        <confirm-change-password-dialog v-model="dialog" @confirmChange="changePassword(newPassword)"/>
        <v-card
             class="mx-auto"
             max-width="500"
@@ -57,6 +57,7 @@
     import * as messages from '@/resource/messages';
     import store  from '@/store/store.js'
     import fb from '@/firebaseConfig.js'
+    import firebaseAuthService from '@/services/firebaseAuthService'
 
     export default {
         data() {
@@ -74,17 +75,17 @@
                 this.dialog = true
             },
             changePassword: function(password){
-                var user = fb.auth.currentUser;
-                var credentials = fb.authentication.EmailAuthProvider.credential(user.email, this.oldPassword);
-                user.reauthenticateWithCredential(credentials).then(()=>{
-                    user.updatePassword(this.newPassword).then(()=>{
+                console.log(password)
+                firebaseAuthService.changePassword(this.oldPassword, this.newPassword)
+                    .then(() => {
                         this.showAlert = true
                         this.$refs.alert.changeConfig(messages.CHANGE_PASSWORD_SUCCESS, "success")
-                    }).catch((error)=> {
+                    })
+                    .catch(error => {
+                        console.log(error)
                         this.showAlert = true
                         this.$refs.alert.changeConfig(messages.CHANGE_PASSWORD_ERROR, "error")
-                    });
-                });   
+                    })
             }
         },
         computed:{

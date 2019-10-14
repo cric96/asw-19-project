@@ -17,7 +17,7 @@ export default {
   },
   computed: {
     isAppLoading: function() {
-      return this.$store.getters.isUserLoading // && if needed add other conditions
+      return this.$store.getters['auth/isUserLoading'] // && if needed add other conditions
     }
   }
 }

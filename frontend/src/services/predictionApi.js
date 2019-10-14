@@ -11,5 +11,6 @@ export default {
     },
     barcodePredict: function(image){
         return post(image, "/barcode")
-    }
+    },
+    OK_STATUS : 0
 }

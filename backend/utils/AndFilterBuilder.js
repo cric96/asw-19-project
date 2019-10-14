@@ -14,8 +14,6 @@ module.exports = class AndFilterBuilder {
      * create the query with each filter in and
      */
     build() {
-        return {
-            $and : this.filters
-        }
+        return this.filters.length == 0 ? {} : { $and : this.filters }
     }
 }
