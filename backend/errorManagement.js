@@ -41,7 +41,6 @@ let mapErrorCodeToFunction = function(error, res) {
  *
  */
 module.exports = function(error, res) {
-    console.log(error) //to remove
     if(error.code) { //if there is error code defined, use function that map each code to result setting
         mapErrorCodeToFunction(error, res)
     } else {

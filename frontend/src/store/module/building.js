@@ -43,8 +43,11 @@ export default {
         }
     },
     actions: {
-        changeActiveBuilding({commit}, newBuilding) {
-            commit(types.SET_ACTIVE_BUILDING, newBuilding);
+        changeActiveBuilding({commit, getters}, newBuilding) {
+            if(getters.activeBuilding !== null) {
+                this._vm.$socket.emit("leaveBuilding", getters.activeBuilding._id)
+            }
+            commit(types.SET_ACTIVE_BUILDING, newBuilding)
         },
         fetchBuildings({commit}) {
             let currentUser = store.getters['auth/userProfile']
@@ -73,9 +76,16 @@ export default {
             if(getters.activeBuilding === null) {
                 return Promise.reject("No active building")
             } else {
+                //join the building room for socket updates
+                this._vm.$socket.emit("joinBuilding", getters.activeBuilding._id)
                 return ApiBin.getBins(getters.activeBuilding)
                     .then(bins => commit(types.SET_BINS_IN_ACTIVE_BUILDING, bins))
             }
+        },
+        SOCKET_newTrash({getters}, trashCategoryName) {
+            var bin = getters.binFromTrashCategoryName(trashCategoryName)
+            var collectedTrash = bin.collectedTrashes.find(trash => trash.trashCategory.name === trashCategoryName)
+            collectedTrash.quantity++
         }
     },
     mutations: {

@@ -1,6 +1,6 @@
 <template>
     <v-layout>
-      <!--TODO refactorize-->
+      <!--TODO refactor-->
       <!-- popups -->
       <manual-insertion-form ref="manualInsertionPopUp"/>
       <trash-searching-pop-up ref="trashSearchingPopUp"/>
@@ -108,9 +108,6 @@ export default {
           .finally(() => this.binsAreLoadings = false)
       }
     },
-    /**
-     * change current child screen to manual screen
-     */
     openManualForm() {
       this.$refs.manualInsertionPopUp.open()
     },

@@ -60,9 +60,7 @@ exports.listUsers = function(req, res) {
         .appendIfDefined("email", filter)
         .appendIfDefined("nickname", filter)
         .build()
-    console.log(filterQuery)
     let query = User.find(filterQuery)
-    console.log("LIMIT " + req.query.limit)
     if(req.query.limit !== undefined && utils.isNumeric(req.query.limit)) {
         query.limit(parseInt(req.query.limit))
     }

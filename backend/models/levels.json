@@ -1,0 +1,18 @@
+[
+    {
+        "level" : 1,
+        "scoreRequested" : 0
+    },
+    {
+        "level" : 2,
+        "scoreRequested" : 10
+    },
+    {
+        "level" : 3,
+        "scoreRequested" : 50
+    },
+    {
+        "level" : 4,
+        "scoreRequested" : 100
+    }
+]
