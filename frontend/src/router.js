@@ -20,7 +20,19 @@ const router = new Router({
     {
       path: '/intro',
       name: 'Intro',
-      component: Intro
+      component: Intro,
+      children: [
+        {
+          path: '/login',
+          name: 'Login',
+          component: Login
+        },
+        {
+          path: '/sign-up',
+          name: 'SignUp',
+          component: SignUp
+        }
+      ]
     },
     {
       path: '*',
@@ -28,17 +40,7 @@ const router = new Router({
     },
     {
       path: '/',
-      redirect: '/intro'
-    },
-    {
-      path: '/login',
-      name: 'Login',
-      component: Login
-    },
-    {
-      path: '/sign-up',
-      name: 'SignUp',
-      component: SignUp
+      redirect: '/intro',  
     },
     {
       path: '/dashboard',
