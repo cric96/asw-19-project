@@ -2,6 +2,7 @@
   <v-container>
     <v-card v-bind:style="{ backgroundColor: color}">
       <alert v-model="showAlert" ref="alert"/>
+      <v-card-title class="justify-center"> REGISTRATI </v-card-title>
       <v-card-text >
         <user-form 
             @validateForm="doSignUp"
