@@ -28,6 +28,6 @@ build_docker:
 deploy_digitalocean_docker:
   stage: deploy
   script:
-    - ssh root@$(echo $SERVER) "./run-server.sh"
+    - ssh root@$(echo $SERVER) "./scanbage-https/update-deploy.sh"
   only:
     - master
