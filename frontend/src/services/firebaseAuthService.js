@@ -10,9 +10,6 @@ const tokenProvider = {
                 console.log(token)
                 this.currentToken = token
             })
-            .catch(err => {
-                console.log(err)
-            })
     }
 }
 
@@ -99,6 +96,13 @@ function linkEmailToSocialCredential(email, password, socialCredential) {
         .catch(throwFirebaseError)
 }
 
+function changePassword(oldPassword, newPassword) {
+    return retrieveFirebaseCurrentUser().then(user => {
+        let credentials = firebase.auth.EmailAuthProvider.credential(user.email, oldPassword);
+        return user.reauthenticateWithCredential(credentials).then(() => user.updatePassword(newPassword))
+    }); 
+}
+
 function checkAvailableProvider(email, providerId) {
     return firebase.auth().fetchSignInMethodsForEmail(email)
         .then(providers => providers.find(provider => provider == providerId))
@@ -144,6 +148,7 @@ export default {
     signInWithProvider,
     silentSignIn,
     signUpFromEmailPassword,
+    changePassword,
     logout,
     linkEmailToSocialCredential,
     deleteCurrentUser

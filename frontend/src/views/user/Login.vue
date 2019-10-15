@@ -15,7 +15,7 @@
         <v-card v-bind:style="{ backgroundColor: color}" class="mx-auto ma-3 mp-5">
           <alert v-model="showAlert" ref="alert"/>
           <v-card-text>
-            <v-form ref="form" v-model="valid" lazy-validation>
+            <v-form ref="form" v-model="valid" lazy-validation @keyup.native.enter="validate">
               <v-text-field
                 v-model="email"
                 label="E-mail"

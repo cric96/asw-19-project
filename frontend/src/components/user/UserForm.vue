@@ -1,6 +1,6 @@
 <template>
   <v-container v-if="finalUser" fluid>
-    <v-form ref="form" v-model="valid" lazy-validation>
+    <v-form ref="form" v-model="valid" lazy-validation @keyup.native.enter="validate">
       <v-row v-for="property in userProperties" :key="property.propertyName">
         <v-col cols="12">
           <v-text-field
@@ -17,10 +17,10 @@
           ></v-text-field>
         </v-col>
       </v-row>
-      <v-btn :disabled="!valid && !isEditing " color="success" class="mr-4" @click="validate">
+      <v-btn :disabled="!valid && !isEditing && loading" color="success" class="mr-4" @click="validate" :loading="loading">
         <slot></slot>
       </v-btn>
-      <v-btn v-if="resettable" color="error" @click="reset">Reset Form</v-btn>
+      <v-btn v-if="resettable" color="error" @click="reset" :disabled="loading">Reset Form</v-btn>
     </v-form>
   </v-container>
 </template>
@@ -43,6 +43,10 @@ export default {
     beDisabled: {
       type: Boolean,
       default : false
+    },
+    loading: {
+      type: Boolean,
+      default: false
     },
     value: {
       type: Boolean,
