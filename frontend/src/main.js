@@ -7,8 +7,10 @@ import SocketIO from 'socket.io-client'
 import VueSocketIO from 'vue-socket.io'
 import filters from './filters'
 import './utils'
+import firebaseConfig from "./firebaseConfig"
 import ImageUploader from 'vue-image-upload-resize'
-
+//initialize firebase instance
+firebaseConfig.init()
 export const SocketInstance = SocketIO(process.env.VUE_APP_WEBSOCKET)
 Vue.config.productionTip = false
 

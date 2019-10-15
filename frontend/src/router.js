@@ -1,5 +1,4 @@
 import Vue from 'vue'
-import fb from './firebaseConfig'
 import store from './store/store'
 import Router from 'vue-router'
 import Dashboard from './views/Dashboard.vue'
