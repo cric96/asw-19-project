@@ -66,7 +66,7 @@ export default {
     ]
   }),
   computed: {
-    ...mapGetters('auth', [
+    ...mapGetters('user', [
       'userProfile'
     ]),
     needCompletation: function() {

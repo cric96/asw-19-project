@@ -21,12 +21,12 @@
       </v-flex>
     </v-layout>-->
     <v-layout row wrap>
-      <v-flex xs12 sm8 md6 >
+      <v-flex xs12 sm12 md6>
         <v-layout wrap justify-center align-center >     
           <v-img :src="require('@/assets/logo.png')"  height="250" width="250" contain style="background-color:rgba(255,255,255,0.2);" ></v-img> 
         </v-layout>       
       </v-flex>
-      <v-flex xs12 sm8 md6>
+      <v-flex xs12 sm12 md6>
         <router-view/>
       </v-flex>
     </v-layout>

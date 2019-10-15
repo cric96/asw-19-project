@@ -88,8 +88,8 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  if(store.getters['auth/isUserLoading']) {
-    const unwatch = store.watch((state, getters) => getters['auth/userProfile'], function() {
+  if(store.getters['user/isUserLoading']) {
+    const unwatch = store.watch((state, getters) => getters['user/userProfile'], function() {
       routeGuard(to, from, next)
       unwatch()
     })
@@ -100,7 +100,7 @@ router.beforeEach((to, from, next) => {
 
 function routeGuard(to, from, next) {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
-  let isAuth = store.getters['auth/isAuthenticated']
+  let isAuth = store.getters['user/isAuthenticated']
 
   if (requiresAuth && !isAuth) next('intro')
   else if (!requiresAuth && isAuth) { next('dashboard') }

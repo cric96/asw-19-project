@@ -44,13 +44,13 @@ export default {
             this.$router.replace("/userProfile")
         },
         logout : function(){
-            this.$store.dispatch('auth/logout').then(() => {
+            this.$store.dispatch('user/logout').then(() => {
                 this.$router.go("/intro") //go refresh the page, it is used to invalidate vuex store, avoiding session's problem
             })
         }
     },
     computed: {
-        ...mapGetters('auth', [
+        ...mapGetters('user', [
             'userProfile'
         ]),
         userObject: function() {

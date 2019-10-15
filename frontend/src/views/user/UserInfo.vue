@@ -21,7 +21,7 @@ export default {
     "user-info-details": DetailsUserProfile
   },
   computed: {
-    ...mapGetters('auth', [
+    ...mapGetters('user', [
       'userProfile'
     ])
   },

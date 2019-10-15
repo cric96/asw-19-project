@@ -1,27 +1,15 @@
-/* eslint-disable no-empty-pattern */
+
+import { signInError, signUpError } from '@/resource/authErrors'
 import firebaseAuthService from '@/services/firebaseAuthService'
 import usersApi from '../../services/usersApi'
-import { signInError, signUpError } from '@/resource/authErrors'
-import User from '@/model/user'
-import Notification from "@/model/notification"
 
 export default {
-    namespaced: true,
-    state: {
-        userProfile: undefined
-    },
-    getters: {
+    getters : {
         isAuthenticated(state, getters) {
             return !getters.isUserLoading && state.userProfile != null
-        },
-        userProfile(state) {
-            return state.userProfile
-        },
-        isUserLoading(state) {
-            return state.userProfile === undefined
-        } 
+        }
     },
-    actions: {
+    actions : {
         // do a sign in using email and password
         signInEmailPassword({ dispatch }, {email, password}) {
             return firebaseAuthService.signInFromEmailPassword(email, password)
@@ -95,47 +83,6 @@ export default {
             }
             commit('cleanUser')
             return firebaseAuthService.logout()
-        },
-        // retrieve a user profile from scanbage backend
-        fetchUserProfile({ commit }, firebaseUserUid) {
-            return usersApi.getUser(firebaseUserUid).then(user => {
-                this.emitOnSocket("newUser", user._id)
-                commit('setUserProfile', user)
-                return user
-            })
-        },
-        // TODO: move to right module
-        updateUserData({commit}, user) {
-            return usersApi.updateUser(user).then(updatedUser => {
-                commit('setUserProfile', updatedUser)
-                return updatedUser
-            })
-        },
-        SOCKET_newLevel({commit}, level) {
-            commit("updateLevel", level)
-        },
-        SOCKET_newRewards({commit}, rewards) {
-            var msg = new Notification("Nuovo premio sbloccato").setTo("/rewards")
-            this.dispatch('msg/addMessage', msg)
-            commit("addRewards", rewards)
-        }        
-    },
-    mutations: {
-        setUserProfile(state, user) {
-            this.emitOnSocket('joinUser',user._id)
-            state.userProfile = user
-        },
-        updateLevel(state, level) {
-            state.userProfile.level = level
-        },
-        addRewards(state, rewards) {
-            state.userProfile.rewards = state.userProfile.rewards.concat(rewards)
-        },
-        cleanUser(state) {
-            state.userProfile = null
-        },
-        updateScore(state, score) {
-            state.userProfile.score += score
         }
     }
 }

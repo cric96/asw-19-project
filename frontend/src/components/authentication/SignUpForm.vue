@@ -52,7 +52,7 @@ export default {
     reset: function() {
       this.$refs.form.reset()
     },
-    ...mapActions('auth', [
+    ...mapActions('user', [
       'signUp'
     ]),
     doSignUp: function(newUser) {

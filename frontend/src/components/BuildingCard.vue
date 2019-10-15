@@ -79,7 +79,7 @@ export default {
     ...mapGetters('building', [
       'activeBuilding'
     ]),
-    ...mapGetters('auth', [
+    ...mapGetters('user', [
       'userProfile'
     ]),
     canEdit: function() {

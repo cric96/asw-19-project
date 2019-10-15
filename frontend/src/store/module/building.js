@@ -50,7 +50,7 @@ export default {
             commit(types.SET_ACTIVE_BUILDING, newBuilding)
         },
         fetchBuildings({commit}) {
-            let currentUser = store.getters['auth/userProfile']
+            let currentUser = store.getters['user/userProfile']
             if(currentUser) {
                 ApiBuilding.getAllOfUser(currentUser.firebase_uid).then(buildings => {
                     commit(types.SET_AVAILABLE_BUILDING, buildings);

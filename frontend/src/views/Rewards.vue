@@ -1,5 +1,5 @@
 <template>
-    <v-container fluid grid-list-md>
+    <v-container fluid grid-list-md :fill-height="loadingReward ? true : false">
         <v-layout v-if="loadingReward" row wrap align-center justify-center>
             <content-loader :loading="loadingReward"></content-loader>
         </v-layout>
@@ -28,7 +28,7 @@ export default {
             'locked' : "reward/locked",
             'unlocked' : "reward/unlocked",
             'loaded' : "reward/loaded",
-            'user' : "auth/userProfile"
+            'user' : "user/userProfile"
         }),
         loadingReward : function() {
             return !this.loaded

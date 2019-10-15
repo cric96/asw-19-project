@@ -48,37 +48,32 @@
             <v-spacer/>
             
             <!-- video -->
-            <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
-                <template v-slot:activator="{ on }">
-                    <v-btn
-                            v-if="reward.video !== undefined" text :disabled="locked" 
-                            @click="showVideo = !showVideo" v-on="on"
-                    >
-                        Video
-                    </v-btn>
-                </template>
-                <div class="popup-style">
-                    <v-toolbar dark color="primary">
-                        <v-btn icon dark @click="dialog = false">
-                            <v-icon>mdi-close</v-icon>
-                        </v-btn>
-                        <v-toolbar-title>Video</v-toolbar-title>
-                    </v-toolbar>  
-                    <iframe v-if="dialog" class="full-width-video" :src="reward.video"></iframe> 
-                </div>
-            </v-dialog>
+            <template v-if="reward.video !== undefined">
+                <v-btn
+                    v-if="reward.video !== undefined" text :disabled="locked" 
+                    @click="openVideo"
+                >
+                Video
+                </v-btn>
+                <youtube-video ref="youtube" :video="reward.video"/>
+            </template>
         </v-card-actions>
     </v-card>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
+import YoutubeVideoPopup from '@/components/YoutubeVideoPopup'
+
 const endRewardString = "per sbloccare questo premio"
 function trashesToString(reward) {
     return reward.unlockData.categories.map(category => category.toLowerCase()).join(" o ")
 }
 export default {
     name: "RewardCard",
+    components: {
+        "youtube-video" : YoutubeVideoPopup
+    },
     props: {
        reward: {
         type: Object,
@@ -93,6 +88,7 @@ export default {
         showMoreInfo : false,
         showVideo : false,
         dialog : false,
+        videoLoading : false
     }),
     computed: {
         ...mapGetters({
@@ -102,10 +98,29 @@ export default {
             return this.rewardsNotification(this.reward._id)
         }  
     },
+    watch : {
+        /**
+         * when show video changes, i must attach a callback on video
+         * to verify when it is loaded
+         */
+        showVideo(newVal) {
+            if(newVal) {
+                //i use next tick because the video must be rendered the next frame
+                this.$nextTick(() => {
+                    this.$refs.youtubeVideo.onload = () => {
+                        this.$data.videoLoading = true
+                    }
+                })
+            }
+        }
+    },
     methods: {
         ...mapActions({
             "resetNotification" : "reward/resetNotification"
         }),
+        openVideo : function() {
+            this.$refs.youtube.open()
+        },
         onInfoClick : function() {
             this.showMoreInfo = !this.showMoreInfo
             if(this.newReward) {
@@ -132,21 +147,8 @@ export default {
 }
 </script>
 
-<style scoped>
-.full-width-video{
-  min-width: 100%;
-  height: 92%;
-}
-
-.popup-style {
-  position: fixed;
-  right: 0;
-  bottom: 0;
-  min-width: 100%;
-  height: 100%;
-}
-
-.pulsing {
+<style scoped lang="scss">
+pulsing {
     box-shadow: 0 0 0 rgba(204,169,44, 0.4);
     animation: pulse 1s infinite;
 }

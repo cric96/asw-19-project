@@ -32,7 +32,7 @@ new Vue({
   store,
   beforeCreate() {
     // .catch(() => {}) prevent uncaught promise
-    store.dispatch('auth/silentSignIn').catch(() => {})
+    store.dispatch('user/silentSignIn').catch(() => {})
   },
   render: h => h(App)
 }).$mount('#app')
