@@ -1,21 +1,11 @@
 <template>
-  <v-container fluid class="container_background" fill-height>
+  <v-container fluid fill-height>
     <v-layout row align-center justify-center>
-      <!--TODO. use src set for dimension-->
-      <v-flex xs12 sm8 md4>
-        <v-img
-          :src="require('@/assets/logo.png')"
-          class="my-3, centered_img"
-          height="300"
-          width="300"
-          style="background-color:rgba(255,255,255,0.8);border-radius: 50%"
-        ></v-img>
-      </v-flex>
-      <v-flex xs12 sm8 md4 wrap>
         <v-card v-bind:style="{ backgroundColor: color}" class="mx-auto ma-3 mp-5">
-          <alert v-model="showAlert" ref="alert"/>
+          <alert v-model="showAlert" ref="alert"></alert>
+          <v-card-title class="justify-center"> ACCEDI </v-card-title>
           <v-card-text>
-            <v-form ref="form" v-model="valid" lazy-validation @keyup.native.enter="validate">
+            <v-form ref="form" v-model="valid" @keyup.native.enter="validate">
               <v-text-field
                 v-model="email"
                 label="E-mail"
@@ -47,14 +37,14 @@
             <v-btn :disabled="!valid" color="success" :loading="loggingIn" @click="validate">Login</v-btn>
             <v-btn color="error" @click="reset">Reset Form</v-btn>
           </v-card-actions>
+          <social-login/>
           <v-card-text>
             <p class="pa-3">
-              You don't have an account?
-              <router-link to="/sign-up">Sign up</router-link>
+              Hai già un account?
+              <router-link to="/sign-up">Registrati</router-link>
             </p>
           </v-card-text>
         </v-card>
-      </v-flex>
     </v-layout>
   </v-container>
 </template>
@@ -63,12 +53,14 @@
 import firebase from "firebase";
 import AlertMessageComponent from '@/components/AlertMessageComponent';
 import * as messages from '@/resource/messages';
+import SocialLogin from "@/components/authentication/SocialLogin";
 
 import { mapActions } from 'vuex';
 
 export default {
   components: {
-    "alert": AlertMessageComponent 
+    "alert": AlertMessageComponent,
+    "social-login": SocialLogin
   },
   data: () => ({
     showAlert: false,
