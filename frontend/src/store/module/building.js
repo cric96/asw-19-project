@@ -86,6 +86,20 @@ export default {
             var bin = getters.binFromTrashCategoryName(trashCategoryName)
             var collectedTrash = bin.collectedTrashes.find(trash => trash.trashCategory.name === trashCategoryName)
             collectedTrash.quantity++
+        },
+        addMember({ commit }, { buildingId, users}) {
+            return ApiBuilding.addMember(buildingId, users).then(updateBuilding => {
+                commit(types.UPDATE_BUILDING, updateBuilding)
+            })
+        },
+        // TODO: manage error for each module, like auth
+        removeMember({ state, commit }, { buildingId, memberId }) {
+            return ApiBuilding.removeMember(buildingId, memberId).then(() => {
+                let index = state.availableBuildings.findIndex(building => building._id == buildingId)
+                let updatedBuilding = state.availableBuildings[index]
+                updatedBuilding.members.splice(index, 1)
+                commit(types.UPDATE_BUILDING, updatedBuilding)
+            })
         }
     },
     mutations: {
@@ -99,6 +113,10 @@ export default {
         [types.APPEND_AVAILABLE_BUILDING](state, newBuilding) {
             state.availableBuildings.push(newBuilding)
             activateBuilding(state, getDefaultActiveBuilding(state))
+        },
+        [types.UPDATE_BUILDING](state, updateBuilding) {
+            let index = state.availableBuildings.findIndex(building => building._id == updateBuilding._id)
+            state.availableBuildings[index] = updateBuilding
         },
         [types.SET_BINS_IN_ACTIVE_BUILDING](state, bins) {
             state.bins = bins
