@@ -13,7 +13,7 @@ exports.createUser = function(req, res) {
     user.save()
         .then(newUser => res.setCreated(newUser))
         .catch(err => errorHandler(err, res))
-};
+}
 
 exports.getUser = function(req, res) {
     let uid = res.locals.uid
@@ -60,9 +60,7 @@ exports.listUsers = function(req, res) {
         .appendIfDefined("email", filter)
         .appendIfDefined("nickname", filter)
         .build()
-    console.log(filterQuery)
     let query = User.find(filterQuery)
-    console.log("LIMIT " + req.query.limit)
     if(req.query.limit !== undefined && utils.isNumeric(req.query.limit)) {
         query.limit(parseInt(req.query.limit))
     }

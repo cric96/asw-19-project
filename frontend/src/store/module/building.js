@@ -43,8 +43,11 @@ export default {
         }
     },
     actions: {
-        changeActiveBuilding({commit}, newBuilding) {
-            commit(types.SET_ACTIVE_BUILDING, newBuilding);
+        changeActiveBuilding({commit, getters}, newBuilding) {
+            if(getters.activeBuilding !== null) {
+                this.emitOnSocket("leaveBuilding", getters.activeBuilding._id)
+            }
+            commit(types.SET_ACTIVE_BUILDING, newBuilding)
         },
         fetchBuildings({commit}) {
             let currentUser = store.getters['auth/userProfile']
@@ -73,9 +76,30 @@ export default {
             if(getters.activeBuilding === null) {
                 return Promise.reject("No active building")
             } else {
+                //join the building room for socket updates
+                this.emitOnSocket("joinBuilding", getters.activeBuilding._id)
                 return ApiBin.getBins(getters.activeBuilding)
                     .then(bins => commit(types.SET_BINS_IN_ACTIVE_BUILDING, bins))
             }
+        },
+        SOCKET_newTrash({getters}, trashCategoryName) {
+            var bin = getters.binFromTrashCategoryName(trashCategoryName)
+            var collectedTrash = bin.collectedTrashes.find(trash => trash.trashCategory.name === trashCategoryName)
+            collectedTrash.quantity++
+        },
+        addMember({ commit }, { buildingId, users}) {
+            return ApiBuilding.addMember(buildingId, users).then(updateBuilding => {
+                commit(types.UPDATE_BUILDING, updateBuilding)
+            })
+        },
+        // TODO: manage error for each module, like auth
+        removeMember({ state, commit }, { buildingId, memberId }) {
+            return ApiBuilding.removeMember(buildingId, memberId).then(() => {
+                let index = state.availableBuildings.findIndex(building => building._id == buildingId)
+                let updatedBuilding = state.availableBuildings[index]
+                updatedBuilding.members.splice(index, 1)
+                commit(types.UPDATE_BUILDING, updatedBuilding)
+            })
         }
     },
     mutations: {
@@ -89,6 +113,10 @@ export default {
         [types.APPEND_AVAILABLE_BUILDING](state, newBuilding) {
             state.availableBuildings.push(newBuilding)
             activateBuilding(state, getDefaultActiveBuilding(state))
+        },
+        [types.UPDATE_BUILDING](state, updateBuilding) {
+            let index = state.availableBuildings.findIndex(building => building._id == updateBuilding._id)
+            state.availableBuildings[index] = updateBuilding
         },
         [types.SET_BINS_IN_ACTIVE_BUILDING](state, bins) {
             state.bins = bins

@@ -9,7 +9,7 @@ var admin = require('firebase-admin');
 var app = express();
 var fallback = require('connect-history-api-fallback');
 
-let tokenRetriver = require('./firebaseTokenRetriver')
+let tokenRetriver = require('./firebaseTokenRetriever')
 admin.initializeApp({
     credential: admin.credential.cert(tokenRetriver())
 });

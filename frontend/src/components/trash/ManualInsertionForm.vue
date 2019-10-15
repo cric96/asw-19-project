@@ -16,7 +16,6 @@
                         hide-no-data
                         hide-details
                         label="Digita..."
-                        multiple
                         solo
                         item-text="categoryName"
                         item-value="categoryName"
@@ -50,71 +49,73 @@
     </div>
 </template>
 <script>
-  import { createNamespacedHelpers } from 'vuex'
-  import { mapGetters } from 'vuex'
-  import trashesApi from '../services/trashesApi'
-  const { mapActions } = createNamespacedHelpers('trashCategories')
+import { createNamespacedHelpers } from 'vuex'
+import { mapGetters } from 'vuex'
+import trashesApi from '@/services/trashesApi'
+const { mapActions } = createNamespacedHelpers('trashCategories')
+import Notification from "@/model/notification"
 
-  export default {
-    data: () => ({
-        value: false, //true the dialog is opened, false the dialog is closed
-        category: '', //the category found
-        confirmDisabled: true //confirm is disable as long as the user write a trash category 
+export default {
+  data: () => ({
+      value: false, //true the dialog is opened, false the dialog is closed
+      category: '', //the category found
+      confirmDisabled: true //confirm is disable as long as the user write a trash category 
+  }),
+  computed: {
+    ...mapGetters({
+      'categories' : 'trashCategories/categories',
+      'binFromTrashCategoryName' : 'building/binFromTrashCategoryName',
+      'bins' : 'building/bins'
     }),
-    computed: {
-      ...mapGetters({
-        'categories' : 'trashCategories/categories',
-        'binFromTrashCategoryName' : 'building/binFromTrashCategoryName',
-        'bins' : 'building/bins'
-      }),
-      categoriesAndBins : function(){
-        if(this.bins.length == 0) { //used to prevent console error if the system fetches this component before bins
-          return []
-        }
-        return this.categories.map(category => {
-          return {
-            categoryName : category.name, 
-            binName : this.binFromTrashCategoryName(category.name).binCategory.name, 
-            trashAvatar: category.image
-          }
-        })
+    categoriesAndBins : function(){
+      if(this.bins.length == 0) { //used to prevent console error if the system fetches this component before bins
+        return []
       }
-    },
-    watch: {
-      category: function(val) { //watch category value, when there is some value, user can confirm the category
-        if(!val) {
-          this.confirmDisabled = true
-        } else {
-          this.confirmDisabled = false
+      return this.categories.map(category => {
+        return {
+          categoryName : category.name, 
+          binName : this.binFromTrashCategoryName(category.name).binCategory.name, 
+          trashAvatar: category.image
         }
-      }
-    },
-    methods: {
-      ...mapActions([
-        'categoryByName'
-      ]),
-      onAccept() {
-        //fetch the category from the name
-        this.categoryByName(this.category).then(category => {
-          let buildingId = this.$store.state.building.activeBuilding
-          //put the trash into backend
-          return trashesApi.insertTrash(buildingId, { "name" : category.name })
-            .then(() => {
-              this.$store.dispatch('msg/addMessage', 'Hai guadagnato '+ category.score + ' punti')
-              this.$store.commit('auth/updateScore', category.score)
-            })
-        })
-        .catch(err => console.log(err)) //find a way to show erros
-        .finally(() => this.close())
-      },
-      open() {
-        this.value = true
-      },
-      close() {
-        this.category = ""
-        this.value = false
+      })
+    }
+  },
+  watch: {
+    category: function(val) { //watch category value, when there is some value, user can confirm the category
+      if(!val) {
+        this.confirmDisabled = true
+      } else {
+        this.confirmDisabled = false
       }
     }
-  
+  },
+  methods: {
+    ...mapActions([
+      'categoryByName'
+    ]),
+    onAccept() {
+      //fetch the category from the name
+      this.categoryByName(this.category).then(category => {
+        let buildingId = this.$store.state.building.activeBuilding
+        //put the trash into backend
+        return trashesApi.insertTrash(buildingId, { "name" : category.name })
+          .then(() => {
+            let msg = new Notification('Hai guadagnato '+ category.score + ' punti')
+            this.$store.dispatch('msg/addMessage', msg)
+            this.$store.commit('auth/updateScore', category.score)
+          })
+      })
+      .catch(err => console.log(err)) //find a way to show erros
+      .finally(() => this.close())
+    },
+    open() {
+      this.value = true
+    },
+    close() {
+      this.category = ""
+      this.value = false
+    }
   }
+
+}
 </script>

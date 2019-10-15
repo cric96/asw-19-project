@@ -4,8 +4,8 @@
       <v-row v-for="property in userProperties" :key="property.propertyName">
           <password-text-field
               v-if="property.propertyName==='password'"
+              v-model="user.password"
               :prependIcon="property.prependedIcon"
-              :passwordModel="user.password"
               :toCheck="undefined"
               :labelDescription="property.propertyLabel"
               :passwordRules="passwordRuleComp"
@@ -13,7 +13,6 @@
           <password-text-field
               v-else-if="property.propertyName==='passwordConfirm'"
               :prependIcon="property.prependedIcon"
-              :passwordModel="newPasswordConfirmation"
               :toCheck="user.password"
               :labelDescription="property.propertyLabel"
               :passwordRules="passwordRuleComp"
@@ -70,6 +69,7 @@ export default {
   data: () => ({
     finalUser: null,
     valid: true,
+    newPasswordConfirmation: null
   }),
   computed: {
     isEditing: {

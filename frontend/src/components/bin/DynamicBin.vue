@@ -76,7 +76,7 @@ export default {
     },
     mounted() {
         this.draw(this.bin.binCategory.colour)
-        console.log("here")
+         
     },
     computed: {
         collectedTotal() {

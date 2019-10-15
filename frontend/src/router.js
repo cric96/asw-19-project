@@ -1,13 +1,14 @@
 import Vue from 'vue'
-import fb from './firebaseConfig'
 import store from './store/store'
 import Router from 'vue-router'
 import Dashboard from './views/Dashboard.vue'
 import Login from '@/views/user/Login.vue'
-import Building from './views/building/Building.vue'
+import Building from '@/views/building/Building.vue'
 import SignUp from '@/views/user/SignUp.vue'
-import HomeReport from './views/HomeReport.vue'
-import Intro from './views/Intro.vue'
+import HomeReport from '@/views/HomeReport.vue'
+import Rewards from '@/views/Rewards.vue'
+import Leaderboard from '@/views/Leaderboard.vue'
+import Intro from '@/views/Intro.vue'
 import UserInfo from '@/views/user/UserInfo.vue'
 import ChangePassword from '@/views/user/ChangePassword.vue'
 
@@ -70,6 +71,16 @@ const router = new Router({
           path: '/changePassword',
           name: 'ChangePassword',
           component: ChangePassword,
+        },
+        {
+          path: '/rewards',
+          name: 'Rewards',
+          component: Rewards
+        },
+        {
+          path: '/leaderboard',
+          name: 'Leaderboard',
+          component: Leaderboard
         }
       ]
     }

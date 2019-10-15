@@ -1,6 +1,7 @@
 <template>
     <v-text-field
-    :v-model="passwordModel"
+    :v-model="value"
+    @input="$emit('input', $event)"
     :label="labelDescription"
     :rules="computedRules"
     :prepend-icon="prependIcon"
@@ -17,14 +18,13 @@
 import { passwordRule } from '../user/userProperties';
 export default {
     props: {
+        value: {
+            type: String
+        },
         toCheck:{
             type: String,
             default: undefined,
             required:false
-        },
-        passwordModel: {
-            type: String,
-            required: true
         },
         labelDescription: {
             type: String,

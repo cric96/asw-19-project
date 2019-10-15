@@ -45,7 +45,7 @@ export default {
         },
         logout : function(){
             this.$store.dispatch('auth/logout').then(() => {
-                this.$router.replace("/intro")
+                this.$router.go("/intro") //go refresh the page, it is used to invalidate vuex store, avoiding session's problem
             })
         }
     },

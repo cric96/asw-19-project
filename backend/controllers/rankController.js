@@ -52,7 +52,7 @@ function putCityIfDefinedInFilter(cap, builder) {
         .then(city => utils.filterNullElement(city, "City not found"))
         .then(city => {
             builder.pushFilter({city : mongoose.Types.ObjectId(city._id)})
-            console.log(builder)
+             
             return builder
         })
 }

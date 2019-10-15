@@ -42,8 +42,6 @@ export default {
   name: 'Dashboard',
   data: () => ({
     drawer: null,
-    newTrash: false,
-    score: 0,
     navItems: [
       {
         path: '/dashboard',
@@ -51,10 +49,20 @@ export default {
         title: 'Dashboard'
       },
       {
-        path: '/buildings',
-        title: 'Manage Buildings',
-        icon: 'settings'
+        path: '/leaderboard',
+        title: 'Classifica',
+        icon: 'emoji_events'
+      },
+      {
+        path: '/rewards',
+        title: 'Premi',
+        icon: 'star'
       }
+      ,{
+        path: '/buildings',
+        title: 'Edifici',
+        icon: 'settings'
+      },
     ]
   }),
   computed: {

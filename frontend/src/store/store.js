@@ -4,9 +4,7 @@ import Vuex from 'vuex'
 import buildingModule from './module/building'
 import authModule from './module/auth'
 import trashCategoriesModule from './module/trashCategory'
-import fb from '@/firebaseConfig.js'
-import usersApi from '../services/usersApi'
-import User from '@/model/user'
+import rewardModule from './module/reward'
 import messagesPlugin from '../plugins/messages'
 
 Vue.use(Vuex)
@@ -16,8 +14,11 @@ const store = new Vuex.Store({
     modules: {
         building: buildingModule,
         trashCategories : trashCategoriesModule,
-        auth: authModule
+        auth: authModule,
+        reward : rewardModule
     }
 })
-
+store.emitOnSocket = function(type, payload) {
+    this._vm.$socket.emit(type, payload)
+}
 export default store
