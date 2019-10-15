@@ -18,5 +18,7 @@ const store = new Vuex.Store({
         reward : rewardModule
     }
 })
-
+store.emitOnSocket = function(type, payload) {
+    this._vm.$socket.emit(type, payload)
+}
 export default store

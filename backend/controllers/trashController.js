@@ -6,6 +6,7 @@ var fetchQueries = require("./trashQueries")
 var errorHandler = require("../utils/errorManagement")
 var socket = require("../socket")
 var cache = require("../models/cache")
+
 exports.insertTrash = function(req, res) {
     let user = res.locals.userAuth
     let buildingFetched = res.locals.buildingFetched
@@ -27,13 +28,24 @@ exports.insertTrash = function(req, res) {
         user : user._id
     })
     //update user
-    user.updateScore(category.score)
+    var newLevel = user.updateScore(category.score)
+    var rewardsUnlocked = []
     cache.rewards.getUnlockedByUser(user)
-        .then(rewards => user.rewards = user.rewards.concat(rewards))
+        .then(rewards => {
+            rewardsUnlocked = rewards.map(reward => reward._id)
+            user.rewards = user.rewards.concat(rewards)
+        })
         .then(() => Promise.all([user.save(), trash.save()])) //to fix: handle errors in the first promise)
         .then(el => {
             res.setNoContent()
-            socket.io.webSocket.to("room/"+buildingFetched._id).emit('newTrash', category.name)
+            socket.sendInBuilding(buildingFetched._id, new socket.Message("newTrash", category.name))
+            if(newLevel) {
+               socket.sendToUser(user._id, new socket.Message("newLevel", user.level)) 
+            }
+            if(rewardsUnlocked.length != 0) {
+                socket.sendToUser(user._id, new socket.Message("newRewards", rewardsUnlocked))
+            }
+            //socket.io.webSocket.to("room/"+buildingFetched._id).emit('newTrash', category.name)
         }) //all ok, return no content means that the trash is added into the db
         .catch(err => errorHandler(err, res))
 };

@@ -41,7 +41,7 @@
 import User from '@/model/user'
 import UserChip from '@/components/UserChip'
 import hereApi from '@/services/hereApi'
-
+import Notification from "@/model/notification"
 import { mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -66,7 +66,7 @@ export default {
             positiveButtonText: 'ciaoooo'
           })*/
           this.deactivateBuilding(this.building._id).then(() => {
-            this.$store.dispatch('msg/addMessage', 'Abitazione eliminata')
+            this.$store.dispatch('msg/addMessage', new Notification('Abitazione eliminata'))
           }).catch(err => {
             // TODO: show error
           })

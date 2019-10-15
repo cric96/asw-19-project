@@ -3,6 +3,7 @@ import firebaseAuthService from '@/services/firebaseAuthService'
 import usersApi from '../../services/usersApi'
 import { signInError, signUpError } from '@/resource/authErrors'
 import User from '@/model/user'
+import Notification from "@/model/notification"
 
 export default {
     namespaced: true,
@@ -88,28 +89,50 @@ export default {
                     throwSignUpError(error)
                 })
         },
-        logout({ commit }) {
-            commit('setUserProfile', null)
+        logout({ commit, getters }) {
+            if(getters.isAuthenticated) {
+                this.emitOnSocket('leaveUser', getters.userProfile._id)
+            }
+            commit('cleanUser')
             return firebaseAuthService.logout()
         },
         // retrieve a user profile from scanbage backend
         fetchUserProfile({ commit }, firebaseUserUid) {
             return usersApi.getUser(firebaseUserUid).then(user => {
+                this.emitOnSocket("newUser", user._id)
                 commit('setUserProfile', user)
                 return user
             })
         },
+        // TODO: move to right module
         updateUserData({commit}, user) {
             return usersApi.updateUser(user).then(updatedUser => {
                 commit('setUserProfile', updatedUser)
                 return updatedUser
             })
-             // TODO: move to right module
-        }
+        },
+        SOCKET_newLevel({commit}, level) {
+            commit("updateLevel", level)
+        },
+        SOCKET_newRewards({commit}, rewards) {
+            var msg = new Notification("Nuovo premio sbloccato").setTo("/rewards")
+            this.dispatch('msg/addMessage', msg)
+            commit("addRewards", rewards)
+        }        
     },
     mutations: {
-        setUserProfile(state, val) {
-            state.userProfile = val
+        setUserProfile(state, user) {
+            this.emitOnSocket('joinUser',user._id)
+            state.userProfile = user
+        },
+        updateLevel(state, level) {
+            state.userProfile.level = level
+        },
+        addRewards(state, rewards) {
+            state.userProfile.rewards = state.userProfile.rewards.concat(rewards)
+        },
+        cleanUser(state) {
+            state.userProfile = null
         },
         updateScore(state, score) {
             state.userProfile.score += score

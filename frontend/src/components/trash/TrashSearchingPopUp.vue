@@ -60,6 +60,7 @@ import { createNamespacedHelpers } from 'vuex'
 import trashesApi from '@/services/trashesApi'
 const { mapActions } = createNamespacedHelpers('trashCategories')
 const { mapGetters } = createNamespacedHelpers('building')
+import Notification from "@/model/notification"
 
 export default {
     data: () => ({
@@ -88,7 +89,8 @@ export default {
             let buildingId = this.$store.state.building.activeBuilding
             trashesApi.insertTrash(buildingId, { "name" : this.category.name })
                 .then(() => {
-                    this.$store.dispatch('msg/addMessage', 'Hai guadagnato ' + this.category.score + ' punti')
+                    var msg = new Notification('Hai guadagnato '+ category.score + ' punti')
+                    this.$store.dispatch('msg/addMessage', msg)
                     this.$store.commit('auth/updateScore', this.category.score)
                 })
             .finally(() => {

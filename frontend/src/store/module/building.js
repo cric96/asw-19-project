@@ -45,7 +45,7 @@ export default {
     actions: {
         changeActiveBuilding({commit, getters}, newBuilding) {
             if(getters.activeBuilding !== null) {
-                this._vm.$socket.emit("leaveBuilding", getters.activeBuilding._id)
+                this.emitOnSocket("leaveBuilding", getters.activeBuilding._id)
             }
             commit(types.SET_ACTIVE_BUILDING, newBuilding)
         },
@@ -77,7 +77,7 @@ export default {
                 return Promise.reject("No active building")
             } else {
                 //join the building room for socket updates
-                this._vm.$socket.emit("joinBuilding", getters.activeBuilding._id)
+                this.emitOnSocket("joinBuilding", getters.activeBuilding._id)
                 return ApiBin.getBins(getters.activeBuilding)
                     .then(bins => commit(types.SET_BINS_IN_ACTIVE_BUILDING, bins))
             }
