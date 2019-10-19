@@ -49,7 +49,7 @@
 
 <script>
 import userApi from "@/services/usersApi";
-import UserChip from "@/components/UserChip";
+import UserChip from "@/components/user/UserChip";
 
 export default {
   components: {

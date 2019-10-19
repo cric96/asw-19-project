@@ -16,7 +16,6 @@
     </template>
 <script>
 import Loader from './Loader'
-import { ScaleLoader } from '@saeris/vue-spinners'
 export default {
     name : "YoutubeVideoPopup",
     props : {
@@ -25,7 +24,6 @@ export default {
         }
     },
     components: {
-        'content-loader': ScaleLoader,
         "loader" : Loader
     },
     data : () => ({

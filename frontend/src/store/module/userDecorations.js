@@ -2,7 +2,7 @@ import Notification from "@/model/notification"
 import trashApi from "@/services/trashesApi"
 export default {
     state : {
-        trashThrowed : []
+        trashThrowed : [],
     },
     getters : {
         isTrashThrowed : state => state.trashThrowed.length > 0,
@@ -20,7 +20,7 @@ export default {
             var msg = new Notification("Nuovo premio sbloccato").setTo("/rewards")
             this.dispatch('msg/addMessage', msg)
             commit("addRewards", rewards)
-        }  
+        }
     },
     mutations: {
         updateLevel(state, level) {
@@ -31,7 +31,10 @@ export default {
         },
         updateScore(state, {score, name}) {
             var updatedTrash = state.trashThrowed.find(trash => trash.trashCategory.name == name)
-            updatedTrash.quantity ++
+            if(updatedTrash) {
+                //TODO think how manage the trash thrown by user
+                updatedTrash.quantity ++
+            }
             state.userProfile.score += score
         },
         setTrashesThrown(state, trashes) {

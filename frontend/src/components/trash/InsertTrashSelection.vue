@@ -49,7 +49,6 @@
 <script>
 import ManualInsertionForm from '@/components/trash/ManualInsertionForm.vue'
 import TrashSearchingPopUp from '@/components/trash/TrashSearchingPopUp.vue'
-import { ScaleLoader } from '@saeris/vue-spinners'
 import { createNamespacedHelpers } from 'vuex'
 import { mapGetters } from 'vuex'
 

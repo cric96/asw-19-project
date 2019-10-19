@@ -1,4 +1,5 @@
 <template>
+
     <v-card outlined>
         <v-card-title primary-title two-line>{{bin.binCategory.name}}</v-card-title>
         <v-divider></v-divider>

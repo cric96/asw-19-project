@@ -44,7 +44,7 @@
 <script>
 import { createNamespacedHelpers } from 'vuex'
 import BuildingDialogFrom from '@/components/building/BuildingDialogForm'
-import BuildingCard from '@/components/BuildingCard'
+import BuildingCard from '@/components/building/BuildingCard'
 
 const { mapGetters, mapActions } = createNamespacedHelpers('building');
 

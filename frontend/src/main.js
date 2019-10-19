@@ -5,6 +5,7 @@ import store  from './store/store.js'
 import vuetify from './plugins/vuetify'
 import SocketIO from 'socket.io-client'
 import VueSocketIO from 'vue-socket.io'
+
 import filters from './filters'
 import './utils'
 import firebaseConfig from "./firebaseConfig"

@@ -1,6 +1,6 @@
 <template>
     <v-flex>
-        <div class="loader" >
+          <div class="loader">
             <span class="trash">
                 <span class="shake-top"></span>
                 <i></i>
@@ -10,11 +10,14 @@
 </template>
 <script>
 export default {
-    name : "Loader"
+    name : "Loader",
+    data: () => ({
+      color: "red"
+    })
 }
 </script>
 <style scoped>
-    .loader {
+.loader {
     position: relative;
     display: flex;
     align-items: center;
@@ -22,72 +25,72 @@ export default {
 }
 
 .trash {
-	background:#ff6873;
-	width: 66px;
-	height: 80px;
+	background:#4caf50;
+	width: 33px;
+	height: 40px;
 	position: relative;
-	-webkit-border-bottom-right-radius: 6px;
-	-webkit-border-bottom-left-radius: 6px;
-	-moz-border-radius-bottomright: 6px;
-	-moz-border-radius-bottomleft: 6px;
-	border-bottom-right-radius: 6px;
-	border-bottom-left-radius: 6px;
+	-webkit-border-bottom-right-radius: 3px;
+	-webkit-border-bottom-left-radius: 3px;
+	-moz-border-radius-bottomright: 3px;
+	-moz-border-radius-bottomleft: 3px;
+	border-bottom-right-radius: 3px;
+	border-bottom-left-radius: 3px;
 }
 .trash {
-  margin-top : 35px;
-  margin-left : 20px;
+  margin-top : 18px;
+  margin-left : 10px;
 }
 .trash span {
 	position: absolute;
-	height: 12px;
-	background: #ff6873;
-	top: -19px;
-	left: -10px;
-	right: -10px;
+	height: 6px;
+	background: #4caf50;
+	top: -9px;
+	left: -5px;
+	right: -5px;
 	
-	border-top-left-radius: 10px;
-	border-top-right-radius: 10px;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
 }
 .trash span:after {
 	content: '';
 	position: absolute;
-	width: 27px;
-	height: 7px;
-	background: #ff6873;
-	top: -10px;
+	width: 13px;
+	height: 3px;
+	background: #4caf50;
+	top: -5px;
 	
-	border-top-left-radius: 10px;
-	border-top-right-radius: 10px;
-	left: 27px;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	left: 13px;
 }
 
 
 .trash i {
 	position:relative;
-	width: 5px;
-	height:50px;
+	width: 4px;
+	height:25px;
 	background:#fff;
 	display:block;
-	margin:14px auto;
-	border-radius: 5px;
+	margin:7px auto;
+	border-radius: 2px;
 }
 .trash i:after {
 	content: '';
-	width: 5px;
-	height: 50px;
+	width: 4px;
+	height: 25px;
 	background: #fff;
 	position: absolute;
-	left: -18px;
-	border-radius: 5px;
+	left: -9px;
+	border-radius: 2px;
 }
 .trash i:before {
 	content: '';
-	width: 5px;
-	height: 50px;
+	width: 4px;
+	height: 25px;
 	background: #fff;
 	position: absolute;
-	right: -18px;
-	border-radius: 5px;
+	right: -9px;
+	border-radius: 2px;
 }
 
 .shake-top {

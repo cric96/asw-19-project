@@ -119,6 +119,9 @@ export default {
             "resetNotification" : "reward/resetNotification"
         }),
         openVideo : function() {
+            if(this.newReward) {
+                this.resetNotification(this.reward._id)
+            }
             this.$refs.youtube.open()
         },
         onInfoClick : function() {
@@ -148,7 +151,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
-pulsing {
+.pulsing {
     box-shadow: 0 0 0 rgba(204,169,44, 0.4);
     animation: pulse 1s infinite;
 }
