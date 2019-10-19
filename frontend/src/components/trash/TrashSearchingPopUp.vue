@@ -89,7 +89,7 @@ export default {
             let buildingId = this.$store.state.building.activeBuilding
             trashesApi.insertTrash(buildingId, { "name" : this.category.name })
                 .then(() => {
-                    var msg = new Notification('Hai guadagnato '+ category.score + ' punti')
+                    var msg = new Notification('Hai guadagnato '+ this.category.score + ' punti')
                     this.$store.dispatch('msg/addMessage', msg)
                     this.$store.commit('user/updateScore', this.category)
                 })
