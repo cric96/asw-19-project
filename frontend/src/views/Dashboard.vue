@@ -1,5 +1,6 @@
 <template>
     <v-app light>
+      
       <new-level/>
       <snackbar-notification></snackbar-notification>
 

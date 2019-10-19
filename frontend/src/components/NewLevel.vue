@@ -1,197 +1,236 @@
 <template>
-<v-dialog:value="true">
- <div class="firework-rounded">
-    <div class="firework-rounded-light"></div>
-    <div class="firework-rounded-light"></div>
-    <div class="firework-rounded-light"></div>
-    <div class="firework-rounded-light"></div>
-    <div class="firework-rounded-light"></div>
-    <div class="firework-rounded-light"></div>
-    <div class="firework-down"></div>
-    </div>
+<div v-if="dialog">
+  <div class="pyro">
+    <div class="before"></div>
+    <div class="after"></div>
+  </div>
+  <v-dialog :value="dialog" persistent max-width="300" >
+  
+  <v-card class="mx-auto" max-width="300" flat>
+    <v-card-title primary-title class=" mx-auto text-xs-center">
+        Nuovo livello!
+    </v-card-title>
+    <v-layout justify-center> 
+      <v-avatar color="primary" size="62" class="puff-in-center">
+        <span class="white--text headline">{{userProfile.level}}</span>
+      </v-avatar>
+    </v-layout>
+    <v-layout justify-center>  
+      <v-card-text class="text-xs-center">
+        Continua così! La natura ti ringrazia
+      </v-card-text>
+    </v-layout > 
+    
+    <v-divider/>
+        
+    <v-card-actions>
+      <v-spacer></v-spacer>
+      <v-btn
+        color="primary"
+        icon
+        @click="dialog = false"
+      >
+        <v-icon>done</v-icon>
+      </v-btn>
+      
+      <v-spacer></v-spacer>
+    </v-card-actions>
+  </v-card>
 </v-dialog>
+</div>
+
 </template>
 <script>
+import { mapGetters } from 'vuex'
 export default {
-    name : "NewLevel"
+    name : "NewLevel",
+    data : () => ({
+      dialog : false
+    }),
+    sockets: {
+        connect: function () {
+            console.log('socket connected')
+        },
+        newLevel: function (data) {
+          this.dialog=true
+        }
+    },
+    computed: {
+      ...mapGetters('user',['userProfile'])
+    }
 }
 </script>
-<style scoped>
+<style scoped lang="scss">
+$particles: 50;
+$width: 500;
+$height: 500;
 
-.firework-rounded{
-  position: fixed;
-    width: 150px;
-    height: 150px;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(2);
+$box-shadow: ();
+$box-shadow2: ();
+@for $i from 0 through $particles {
+  $box-shadow: $box-shadow,
+               random($width)-$width / 2 + px
+               random($height)-$height / 1.2 + px
+               hsl(random(360), 100, 50);
+  $box-shadow2: $box-shadow2, 0 0 #fff
 }
-.firework-rounded.big{
-  transform: scale(2) translateX(-25%) !important;
+@mixin keyframes ($animationName) {
+    @-webkit-keyframes #{$animationName} {
+        @content;
+    }
+
+    @-moz-keyframes #{$animationName} {
+        @content;
+    }
+
+    @-o-keyframes #{$animationName} {
+        @content;
+    }
+
+    @-ms-keyframes #{$animationName} {
+        @content;
+    }
+
+    @keyframes #{$animationName} {
+        @content;
+    }
 }
-.firework-rounded-light{
-  margin: 0;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  -ms-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-  border-radius:50%;
-  border-color: #ffd700 !important;
-  animation: fireworksAnimation 1.2s  1.5s ease-out  alternate;
-  opacity: 0;
+
+@mixin animation-delay ($settings) {
+    -moz-animation-delay: $settings;
+    -webkit-animation-delay: $settings;
+    -o-animation-delay: $settings;
+    -ms-animation-delay: $settings;
+    animation-delay: $settings;
 }
-.firework-rounded-light:nth-child(1){
-  width:30px;
-  height: 30px;
-  border:1px dotted ;
-  animation-delay:1.5s;
-  
+
+@mixin animation-duration ($settings) {
+    -moz-animation-duration: $settings;
+    -webkit-animation-duration: $settings;
+    -o-animation-duration: $settings;
+    -ms-animation-duration: $settings;
+    animation-duration: $settings;
 }
-.firework-rounded-light:nth-child(2){
-  width:50px;
-  height: 50px;
-  border:2px dotted;
-  animation-delay:1.6s;
+
+@mixin animation ($settings) {
+    -moz-animation: $settings;
+    -webkit-animation: $settings;
+    -o-animation: $settings;
+    -ms-animation: $settings;
+    animation: $settings;
 }
-.firework-rounded-light:nth-child(3){
-  width:70px;
-  height: 70px;
-  border:4px dotted;
-   animation-delay:1.7s;
+
+@mixin transform ($settings) {
+    transform: $settings;
+    -moz-transform: $settings;
+    -webkit-transform: $settings;
+    -o-transform: $settings;
+    -ms-transform: $settings;
 }
-.firework-rounded-light:nth-child(4){
-  width:100px;
-  height: 100px;
-  border:6px dotted;
-  animation-delay:1.8s;
-  transform: translate(-50%, -50%) rotate(45deg);
-}
-.firework-rounded-light:nth-child(5){
-  width:130px;
-  height: 130px;
-  border:8px dotted;
-   animation-delay:2s;
-   transform: translate(-50%, -50%) rotate(45deg);
-}
-.firework-rounded-light:nth-child(6){
-  width:160px;
-  height: 160px;
-  border:10px dotted;
-   animation-delay:2.2s;
-   transform: translate(-50%, -50%) rotate(90deg);
-}
-.firework-down {
-    position: absolute;
-    height: 100%;
-    width: 0;
-    bottom: -110%;
-    border: 1px dotted #fff;
-    left: 48.44%;
-    animation: fireworksDown 2s cubic-bezier(0, 0, 0.2, 1) alternate;
-    opacity: 0;
-    top: 200%;
-}
-  .firework-rounded:after {
-    content: '*';
-    position: absolute;
-    width: 25px;
-    height: 25px;
-    font-size: 20px;
-    left: 55%;
-    top: 53%;
-    transform: translate(-50%, -50%);
-    color: #ffd700;
-    animation: fireworksStar 1.2s 1.5s cubic-bezier(0, 0, 0.2, 1) alternate-reverse;
-    opacity: 0;
-}
-/*Animation */
-@keyframes fireworksAnimation {
-	0%,100%{
-    opacity: 0;
-		border-color: #ee1284;
-	}
-  50%{
-    opacity: 0.5;
-		border-color: #ee1284;
-  }
-  75%{
-    opacity: 1;
-		border-color: #ee1284;
-  }
-}
-@keyframes fireworksStar {
-  0%,100%{
-    opacity:0;
-	}
-  50%{
-    opacity: 0.5;
-  }
-  75%{
-    opacity: 1;
-  }
-}
-@keyframes fireworksLight {
-  0%,100%{
-    height:0;
-    opacity:0;
-	}
-  50%{
-   height: 100%;
-   opacity:1;
-  }
-}
-@keyframes fireworksDown {
-  0%,100%{
-    opacity:0;
-    top: 200%
-	}
-  50%{
-    top: 50%;
-    opacity:1;
-  }
-  60%{
-    top: 50%;
-    opacity:0.8;
-  }
-  70%{
-    top: 50%;
-    opacity:0.6;
-  }
-  80%{
-    top: 50%;
-    opacity:0.4;
-  }
-  90%{
-    top: 50%;
-    opacity:0.2;
-  }
-  91%{
-    top:50%;
-    opacity: 0;
-  }
-}
-*, :after, :before {
-    box-sizing: border-box;
-    position: relative;
-}
-footer{
-  position:fixed;
-  bottom:20px;
-  right:20px;
-}
-footer > p{
+
+body {
   margin:0;
-  text-transform:uppercase;
-      font-size: 0.7em;
-     color: #e3a701;
-    
-    font-family: "Lato", sans-serif;
-    letter-spacing: 3px;
+  padding:0;
+  background: #000;
+  overflow: hidden;
 }
-footer > p > a{
-  text-decoration:none;
-  color:#fff;
-  text-transform: uppercase;
+
+.pyro > .before, .pyro > .after {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  z-index: 10;
+  box-shadow: $box-shadow2;
+  @include animation((1s bang ease-out infinite backwards, 1s gravity ease-in infinite backwards, 5s position linear infinite backwards));
+}
+    
+.pyro > .after {
+  @include animation-delay((1.25s, 1.25s, 1.25s));
+  @include animation-duration((1.25s, 1.25s, 6.25s));
+}
+        
+@include keyframes(bang) {
+  to {
+    box-shadow:$box-shadow;
+  }
+}
+    
+@include keyframes(gravity)  {
+  to {
+    @include transform(translateY(200px));
+    opacity: 0;
+  }
+}
+    
+@include keyframes(position) {
+  0%, 19.9% {
+    margin-top: 10%;
+    margin-left: 40%;
+  }
+  20%, 39.9% {
+    margin-top: 40%;
+    margin-left: 30%;
+  }
+  40%, 59.9% {  
+    margin-top: 20%;
+    margin-left: 70%
+  }
+  60%, 79.9% {  
+    margin-top: 30%;
+    margin-left: 20%;
+  }
+  80%, 99.9% {  
+    margin-top: 30%;
+    margin-left: 80%;
+  }
+}
+.puff-in-center {
+	-webkit-animation: puff-in-center 0.7s cubic-bezier(0.470, 0.000, 0.745, 0.715) both;
+	        animation: puff-in-center 0.7s cubic-bezier(0.470, 0.000, 0.745, 0.715) both;
+}
+/* ----------------------------------------------
+ * Generated by Animista on 2019-10-19 14:50:27
+ * Licensed under FreeBSD License.
+ * See http://animista.net/license for more info. 
+ * w: http://animista.net, t: @cssanimista
+ * ---------------------------------------------- */
+
+/**
+ * ----------------------------------------
+ * animation puff-in-center
+ * ----------------------------------------
+ */
+@-webkit-keyframes puff-in-center {
+  0% {
+    -webkit-transform: scale(2);
+            transform: scale(2);
+    -webkit-filter: blur(2px);
+            filter: blur(2px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+    -webkit-filter: blur(0px);
+            filter: blur(0px);
+    opacity: 1;
+  }
+}
+@keyframes puff-in-center {
+  0% {
+    -webkit-transform: scale(2);
+            transform: scale(2);
+    -webkit-filter: blur(2px);
+            filter: blur(2px);
+    opacity: 0;
+  }
+  100% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+    -webkit-filter: blur(0px);
+            filter: blur(0px);
+    opacity: 1;
+  }
 }
 </style>

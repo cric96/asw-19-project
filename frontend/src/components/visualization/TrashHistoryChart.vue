@@ -101,6 +101,11 @@ export default {
             return this.options.xaxis.categories.length != 0
         }
     },
+    sockets: {
+        newTrash(trash) {
+            this.fetchData()
+        }
+    },
     mounted() {
         this.fetchData()
     },
@@ -110,8 +115,10 @@ export default {
                 .then(trashes => {
                     this.options.xaxis.categories = trashes.map(trash => trash.binCategory.name)
                     this.options.colors = trashes.map(trash => trash.binCategory.colour)
-                    this.series[0].data = trashes.map(trash => trash.collectedTrashes
-                                                .reduce((acc,trash) => acc + trash.quantity, 0))                    
+                    this.series = [{
+                        data : trashes.map(trash => trash.totalQuantity),     
+                        name: 'rifiuti'
+                    }]            
                 })
         }
     }

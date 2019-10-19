@@ -44,9 +44,6 @@ export default {
             type : Number
         }
     },
-    
-          /*name: 'PRODUCT A',
-          data: [44, 55, 41, 67, 22, 43]*/
     data: () => ({
         series: [] ,
         options: {
@@ -105,6 +102,12 @@ export default {
             return this.series.length != 0
         }
     },
+    //improve performance here
+    sockets: {
+            newTrash(trash) {
+                this.fetchData()
+            }
+    },
     mounted() {
         this.fetchData()
     },
@@ -120,14 +123,12 @@ export default {
                             data : []
                         }
                     })
-                    console.log(userAndTrashes[0][1])
                     this.options.colors = userAndTrashes[FIRST][TRASH].map(trash => {
                         return trash.binCategory.colour
                     })
-                    console.log(this.options.color)
                     userAndTrashes.map(element => {
                         element[TRASH].map(trash => {
-                            var total = trash.collectedTrashes.reduce((acc,trash) => acc + trash.quantity, 0)
+                            var total = trash.totalQuantity
                             seriesComputed.find(serie => serie.name == trash.binCategory.name).data.push(total)
                         })
                     })
