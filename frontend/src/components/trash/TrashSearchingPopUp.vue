@@ -91,7 +91,7 @@ export default {
                 .then(() => {
                     var msg = new Notification('Hai guadagnato '+ category.score + ' punti')
                     this.$store.dispatch('msg/addMessage', msg)
-                    this.$store.commit('auth/updateScore', this.category.score)
+                    this.$store.commit('user/updateScore', this.category)
                 })
             .finally(() => {
                 this.waitingTrashInsertion = false

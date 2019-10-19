@@ -85,7 +85,7 @@ export default {
     reset: function() {
       this.$refs.form.reset();
     },
-    ...mapActions('auth', [
+    ...mapActions('user', [
       'signInEmailPassword'
     ]),
     login: function() {

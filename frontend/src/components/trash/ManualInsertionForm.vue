@@ -102,7 +102,7 @@ export default {
           .then(() => {
             let msg = new Notification('Hai guadagnato '+ category.score + ' punti')
             this.$store.dispatch('msg/addMessage', msg)
-            this.$store.commit('auth/updateScore', category.score)
+            this.$store.commit('user/updateScore', category)
           })
       })
       .catch(err => console.log(err)) //find a way to show erros

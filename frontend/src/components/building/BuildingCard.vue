@@ -39,7 +39,7 @@
 
 <script>
 import User from '@/model/user'
-import UserChip from '@/components/UserChip'
+import UserChip from '@/components/user/UserChip'
 import hereApi from '@/services/hereApi'
 import Notification from "@/model/notification"
 import { mapGetters, mapActions } from 'vuex'
@@ -79,7 +79,7 @@ export default {
     ...mapGetters('building', [
       'activeBuilding'
     ]),
-    ...mapGetters('auth', [
+    ...mapGetters('user', [
       'userProfile'
     ]),
     canEdit: function() {

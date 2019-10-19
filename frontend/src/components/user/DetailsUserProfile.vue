@@ -57,7 +57,7 @@ export default {
     }),
     methods:{
         updateUser(user){
-          this.$store.dispatch("auth/updateUserData", user)
+          this.$store.dispatch("user/updateUserData", user)
           .then(response => {
               this.showAlert = true
               this.$refs.alert.changeConfig(UPDATED_INFO, "success")

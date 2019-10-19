@@ -5,6 +5,7 @@ import store  from './store/store.js'
 import vuetify from './plugins/vuetify'
 import SocketIO from 'socket.io-client'
 import VueSocketIO from 'vue-socket.io'
+
 import filters from './filters'
 import './utils'
 import firebaseConfig from "./firebaseConfig"
@@ -32,7 +33,7 @@ new Vue({
   store,
   beforeCreate() {
     // .catch(() => {}) prevent uncaught promise
-    store.dispatch('auth/silentSignIn').catch(() => {})
+    store.dispatch('user/silentSignIn').catch(() => {})
   },
   render: h => h(App)
 }).$mount('#app')

@@ -1,4 +1,5 @@
 <template>
+
     <v-card outlined>
         <v-card-title primary-title two-line>{{bin.binCategory.name}}</v-card-title>
         <v-divider></v-divider>
@@ -80,8 +81,7 @@ export default {
     },
     computed: {
         collectedTotal() {
-            return this.bin.collectedTrashes.reduce((a, b) => a + b.quantity, 0)
-            //TODO catchare qui l'evento di update del trash collezionato dal server ?
+            return this.bin.totalQuantity
         }
     },
     methods: {

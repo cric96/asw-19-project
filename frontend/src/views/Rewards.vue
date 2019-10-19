@@ -1,7 +1,7 @@
 <template>
-    <v-container fluid grid-list-md>
+    <v-container fluid grid-list-md :fill-height="loadingReward ? true : false">
         <v-layout v-if="loadingReward" row wrap align-center justify-center>
-            <content-loader :loading="loadingReward"></content-loader>
+            <content-loader></content-loader>
         </v-layout>
         <v-layout v-else row wrap >
             <v-flex xs12 sm6 lg3 v-for="reward in unlocked(user)" v-bind:key="reward._id">
@@ -16,11 +16,11 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-import { ScaleLoader } from '@saeris/vue-spinners'
+import Loader from '@/components/Loader'
 import RewardCard from '@/components/RewardCard'
 export default {
     components: {
-        'content-loader': ScaleLoader,
+        'content-loader': Loader,
         'reward-card' : RewardCard
     },
     computed: {
@@ -28,7 +28,7 @@ export default {
             'locked' : "reward/locked",
             'unlocked' : "reward/unlocked",
             'loaded' : "reward/loaded",
-            'user' : "auth/userProfile"
+            'user' : "user/userProfile"
         }),
         loadingReward : function() {
             return !this.loaded
