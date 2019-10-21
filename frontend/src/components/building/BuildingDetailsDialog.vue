@@ -116,6 +116,7 @@
 
 <script>
 import AutocompleteMembers from '@/components/AutocompleteMembers'
+import Notification from "@/model/notification"
 import { mapActions } from 'vuex'
 
 export default {
@@ -181,7 +182,7 @@ export default {
                     // close the dialog
                     this.$emit('input', false)
                     // show snackbar success
-                    this.$store.dispatch('msg/addMessage', "Abitazione aggiornata")
+                    this.$store.dispatch('msg/addMessage', new Notification("Abitazione aggiornata"))
                 })
                 .catch(err => {
                     // TODO: handle different error message error

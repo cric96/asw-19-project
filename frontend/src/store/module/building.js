@@ -29,13 +29,15 @@ export default {
         // retrieve selection from localStorage
         activeBuilding: localStorage.getItem(ACTIVE_BUILDING_KEY) || null,
         bins : [],
-        availableBuildings: []
+        availableBuildings: [],
+        fetchingBuilding: false
     },
     getters: {
         activeBuilding: state => {
             return state.availableBuildings.find(building => building._id == state.activeBuilding);
         },
         buildings: state => state.availableBuildings,
+        buildingsIsLoading: state => state.fetchingBuilding,
         bins: state => state.bins,
         binFromTrashCategoryName: (state) => (trashCategory) => {
             var sameCategory = collectedTrash => collectedTrash.trashCategory.name === trashCategory
@@ -49,12 +51,13 @@ export default {
             }
             commit(types.SET_ACTIVE_BUILDING, newBuilding)
         },
-        fetchBuildings({commit}) {
+        fetchBuildings({ commit, state }) {
             let currentUser = store.getters['user/userProfile']
             if(currentUser) {
+                state.fetchingBuilding = true
                 ApiBuilding.getAllOfUser(currentUser.firebase_uid).then(buildings => {
-                    commit(types.SET_AVAILABLE_BUILDING, buildings);
-                })
+                    commit(types.SET_AVAILABLE_BUILDING, buildings)
+                }).finally(() => state.fetchingBuilding = false)
             }
         },
         createBuilding({ commit }, building) {
