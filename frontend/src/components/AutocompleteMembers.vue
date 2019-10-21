@@ -3,6 +3,7 @@
     :items="autocompleteItems"
     :search-input.sync="searchText"
     :loading="loading"
+    :disabled="disabled"
     label="Membri dell'abitazione"
     item-text="email"
     clearable
@@ -62,7 +63,8 @@ export default {
         return []
       }
     },
-    filter: Function
+    filter: Function,
+    disabled: Boolean
   },
   data: () => ({
     availableUsers: [],

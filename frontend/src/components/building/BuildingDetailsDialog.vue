@@ -6,14 +6,17 @@
                     <v-btn icon dark @click="$emit('input', false)" :disabled="pendingOperation">
                         <v-icon>mdi-close</v-icon>
                     </v-btn>
-                    <v-toolbar-title>Modifica abitazione</v-toolbar-title>
+                    <v-toolbar-title>Gestisci abitazione</v-toolbar-title>
                     <v-spacer></v-spacer>
-                    <v-toolbar-items>
-                        <v-btn dark text @click="save" :loading="pendingOperation">Salva</v-btn>
+                    <v-toolbar-items v-if="editable">
+                        <v-btn dark text @click="save" :loading="pendingOperation">
+                            <v-icon left small>fas fa-save</v-icon>Salva
+                        </v-btn>
                     </v-toolbar-items>
                 </v-toolbar>
 
                 <v-container>
+                    <!-- Building fields section -->
                     <v-card elevation="0">
                         <v-card-title>
                             <div class="overline font-weight-medium">Info abitazione</div>
@@ -22,11 +25,12 @@
                             <v-form ref="form" lazy-validation>
                                 <v-row>
                                     <v-col cols="6">
-                                            <!-- :rules="baseRule" -->
                                         <v-text-field name="name" 
                                             label="Nome abitazione" 
                                             v-model="updatedBuilding.name"
                                             :rules="buildingNameRule"
+                                            :disabled="pendingOperation"
+                                            :readonly="!editable"
                                             required/>
                                     </v-col>
                                     <v-col cols="6">
@@ -64,20 +68,24 @@
                             </v-form>
                         </v-card-text>
                     </v-card>
+                    
+                    <!-- Members section -->
                     <v-card elevation="0">
                         <v-card-title><div class="overline font-weight-medium">Membri</div></v-card-title>
                         <v-card-text>
-                            <v-row> 
+                            <v-row v-if="editable"> 
                                 <v-col cols="11">
-                                    <autocomplete-members v-model="membersAutoComplete" :filter="excludeBuildingMembers"></autocomplete-members>
+                                    <autocomplete-members v-model="membersAutoComplete"
+                                        :filter="excludeBuildingMembers" :disabled="pendingOperation"></autocomplete-members>
                                 </v-col>
                                 <v-col cols="1">
-                                    <v-btn fab elevation="1" small justify-center @click="addMembers(membersAutoComplete)">
+                                    <v-btn fab elevation="1" small justify-center 
+                                        @click="addMembers(membersAutoComplete)" :disabled="pendingOperation">
                                         <v-icon small>fas fa-user-plus</v-icon>
                                     </v-btn>
                                 </v-col>
                             </v-row>
-                            <v-list two-line>
+                            <v-list two-line :disabled="pendingOperation">
                                 <template v-for="(member, index) in currentMembersList"> 
                                     <v-list-item :key="member._id">
                                         <v-list-item-avatar color="secondary" class="font-weight-light white--text">
@@ -88,10 +96,11 @@
                                             <v-list-item-subtitle>{{ member.email }}</v-list-item-subtitle>
                                         </v-list-item-content>
                                         <v-list-item-action>
-                                            <v-btn v-if="member._id != updatedBuilding.owner._id" @click="removeMember(member)" x-small icon>
+                                            <v-btn v-if="member._id != updatedBuilding.owner._id && editable" 
+                                                @click="removeMember(member)" x-small icon>
                                                 <v-icon>mdi-close-circle</v-icon>
                                             </v-btn>
-                                            <v-chip v-else>Proprietario</v-chip>
+                                            <v-chip v-if="member._id == updatedBuilding.owner._id">Proprietario</v-chip>
                                         </v-list-item-action>
                                     </v-list-item>
                                     <v-divider v-if="index + 1 < currentMembersList.length" :key="index"></v-divider>
@@ -128,6 +137,10 @@ export default {
             type: Object,
             required: true,
             default: function() { return undefined }
+        },
+        editable: {
+            type: Boolean,
+            default: false
         }
     },
     watch: {

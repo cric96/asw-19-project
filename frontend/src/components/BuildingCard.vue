@@ -19,12 +19,12 @@
       </v-card-text>
       <v-card-text>
         <div class="overline">Membri</div>
-        <div class="body-2">{{building.members.length}}</div>
+        <div class="body-2">{{ building.members.length }}</div>
       </v-card-text>
   
       <v-divider class="mx-4"></v-divider>
       <v-card-actions>
-        <v-btn color="info accent-4" text @click="showDetails=true">Dettaglio</v-btn>       
+        <v-btn color="info accent-4" text @click="showManager=true">Gestisci</v-btn>       
         <v-btn v-if="canEdit" color="error accent-4" text @click="onClickDelete">Elimina</v-btn>
         <div class="flex-grow-1"></div>
         <v-btn icon small @click="markAsActive" alt-labels="Imposta come abitazione attiva">
@@ -33,7 +33,7 @@
           </v-icon>
         </v-btn>
       </v-card-actions>
-      <dialog-details v-model="showDetails" :building="building"></dialog-details>
+      <dialog-details v-model="showManager" :building="building" :editable="canEdit"></dialog-details>
     </v-card>
 </template>
 
@@ -48,7 +48,7 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
     name: 'building-card',
     data: () => ({
-      showDetails: false
+      showManager: false
     }),
     props: {
       building: {
