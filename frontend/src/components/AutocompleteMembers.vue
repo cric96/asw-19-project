@@ -1,5 +1,5 @@
 <template>
-  <v-autocomplete :input="value" @input="$emit('input', $event)"
+  <v-autocomplete :value="value" @input="$emit('input', $event)"
     :items="autocompleteItems"
     :search-input.sync="searchText"
     :loading="loading"
@@ -61,7 +61,8 @@ export default {
       default: function() {
         return []
       }
-    }
+    },
+    filter: Function
   },
   data: () => ({
     availableUsers: [],
@@ -70,7 +71,8 @@ export default {
   }),
   computed: {
     autocompleteItems: function() {
-      return this.availableUsers.concat(this.value)
+      let notFilteredUsers = this.availableUsers.concat(this.value)
+      return this.filter ? notFilteredUsers.filter(this.filter) : notFilteredUsers
     }
   },
   methods: {
