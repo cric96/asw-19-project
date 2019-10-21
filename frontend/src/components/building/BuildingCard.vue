@@ -1,7 +1,7 @@
 <template>
     <v-card v-if="building">
-      <v-img height="250" :src="mapImage"></v-img>
-      <v-card-title class="display-1">{{ building.name }}</v-card-title>
+      <v-img height="200" :src="mapImage" class="align-end"></v-img>
+      <v-card-title class="display-1 gradient-text">{{ building.name }}</v-card-title>
       <v-card-text class="subtitle-1">
         <div class="subtitle-1">
           {{building.city | formatCityInfo}}
@@ -14,18 +14,17 @@
       <v-divider class="mx-4"></v-divider>
   
       <v-card-text>
-        <div class="title text--primary">Membri</div>
+        <div class="overline">Proprietario</div>
         <user-chip :user="building.owner" expandable></user-chip>
-        <v-chip-group v-if="buildingMembers.length > 0">
-            <template v-for="member in buildingMembers">
-                <user-chip :key="member.email" :user="member" expandable></user-chip>
-            </template>
-        </v-chip-group>
+      </v-card-text>
+      <v-card-text>
+        <div class="overline">Membri</div>
+        <div class="body-2">{{ building.members.length }}</div>
       </v-card-text>
   
       <v-divider class="mx-4"></v-divider>
       <v-card-actions>
-        <v-btn color="info accent-4" text>Dettaglio</v-btn>       
+        <v-btn color="info accent-4" text @click="showManager=true">Gestisci</v-btn>       
         <v-btn v-if="canEdit" color="error accent-4" text @click="onClickDelete">Elimina</v-btn>
         <div class="flex-grow-1"></div>
         <v-btn icon small @click="markAsActive" alt-labels="Imposta come abitazione attiva">
@@ -34,11 +33,13 @@
           </v-icon>
         </v-btn>
       </v-card-actions>
+      <dialog-details v-model="showManager" :building="building" :editable="canEdit"></dialog-details>
     </v-card>
 </template>
 
 <script>
 import User from '@/model/user'
+import BuildingDetails from '@/components/building/BuildingDetailsDialog'
 import UserChip from '@/components/user/UserChip'
 import hereApi from '@/services/hereApi'
 import Notification from "@/model/notification"
@@ -46,6 +47,9 @@ import { mapGetters, mapActions } from 'vuex'
 
 export default {
     name: 'building-card',
+    data: () => ({
+      showManager: false
+    }),
     props: {
       building: {
         type: Object,
@@ -53,7 +57,8 @@ export default {
       }
     },
     components: {
-        'user-chip': UserChip
+        'user-chip': UserChip,
+        'dialog-details': BuildingDetails
     },
     methods: {
         ...mapActions('building', [

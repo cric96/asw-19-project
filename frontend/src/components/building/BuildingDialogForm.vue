@@ -154,7 +154,7 @@ export default {
         pressSaveBuilding() {
             if (this.$refs.form.validate()) {
                 let newBuilding = Object.assign({}, this.building)
-                newBuilding.members = this.building.members.map(member => member.firebase_uid)
+                newBuilding.members = (this.building.members) ? this.building.members.map(member => member.firebase_uid) : []
                 let promise = this.createBuilding(newBuilding).then(() => {
                     this.$refs.form.reset()
                     this.closeDialog()
