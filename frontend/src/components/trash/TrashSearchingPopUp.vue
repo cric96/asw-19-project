@@ -4,8 +4,8 @@
         <v-dialog v-model="value" persistent transition="dialog-bottom-transition" max-width="300px">
             <v-card
                 v-if=waitingPrediction 
-                loading="secondary"
-                loader-height=7
+                loading= "secondary"
+                loader-height= 7
             >
               <v-card-title class="justify-center">
                   Ricerca in corso..
@@ -57,9 +57,10 @@
 <script>
 import prediction from '@/services/predictionApi'
 import { createNamespacedHelpers } from 'vuex'
-import trashesApi from '../services/trashesApi'
+import trashesApi from '@/services/trashesApi'
 const { mapActions } = createNamespacedHelpers('trashCategories')
 const { mapGetters } = createNamespacedHelpers('building')
+import Notification from "@/model/notification"
 
 export default {
     data: () => ({
@@ -88,8 +89,9 @@ export default {
             let buildingId = this.$store.state.building.activeBuilding
             trashesApi.insertTrash(buildingId, { "name" : this.category.name })
                 .then(() => {
-                    this.$store.dispatch('msg/addMessage', 'Hai guadagnato ' + this.category.score + ' punti')
-                    this.$store.commit('auth/updateScore', this.category.score)
+                    var msg = new Notification('Hai guadagnato '+ this.category.score + ' punti')
+                    this.$store.dispatch('msg/addMessage', msg)
+                    this.$store.commit('user/updateScore', this.category)
                 })
             .finally(() => {
                 this.waitingTrashInsertion = false

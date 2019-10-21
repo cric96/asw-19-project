@@ -1,6 +1,7 @@
 <template>
     <v-app light>
       
+      <new-level/>
       <snackbar-notification></snackbar-notification>
 
       <complete-user-info v-if="userProfile" :value="needCompletation" :user="userObject"/>
@@ -14,16 +15,20 @@
       <navigation-drawer v-model="drawer" :navItems="navItems"></navigation-drawer>
 
       <v-content>
+        
           <v-container fluid fill-height>
+            
             <!--<v-layout row wrap>
               <v-breadcrumbs divider="/" ></v-breadcrumbs>
             </v-layout>-->
             <!-- TODO: insert v-breadcrumbs?? -->
             <!-- Replaced with the childrend view -->
             <v-layout row wrap>
+              
              <router-view/>
             </v-layout>
           </v-container>
+          <footer-app/>
       </v-content>
   </v-app>
 </template>
@@ -32,6 +37,8 @@
 import NavigationDrawer from '@/components/navigation/NavigationDrawer'
 import CompleteUserInfoForm from '@/components/authentication/CompleteUserInfoForm'
 import SnackbarNotification from '@/components/SnackbarNotification'
+import NewLevel from '@/components/NewLevel'
+import Footer from '@/components/Footer'
 import { mapGetters } from 'vuex'
 import { createNamespacedHelpers } from 'vuex'
 const { mapActions } = createNamespacedHelpers('trashCategories');
@@ -42,8 +49,6 @@ export default {
   name: 'Dashboard',
   data: () => ({
     drawer: null,
-    newTrash: false,
-    score: 0,
     navItems: [
       {
         path: '/dashboard',
@@ -51,14 +56,24 @@ export default {
         title: 'Dashboard'
       },
       {
-        path: '/buildings',
-        title: 'Manage Buildings',
-        icon: 'settings'
+        path: '/leaderboard',
+        title: 'Classifica',
+        icon: 'emoji_events'
+      },
+      {
+        path: '/rewards',
+        title: 'Premi',
+        icon: 'star'
       }
+      ,{
+        path: '/buildings',
+        title: 'Edifici',
+        icon: 'settings'
+      },
     ]
   }),
   computed: {
-    ...mapGetters('auth', [
+    ...mapGetters('user', [
       'userProfile'
     ]),
     needCompletation: function() {
@@ -71,7 +86,9 @@ export default {
   components: {
     'navigation-drawer': NavigationDrawer,
     'complete-user-info': CompleteUserInfoForm,
-    'snackbar-notification': SnackbarNotification
+    'snackbar-notification': SnackbarNotification,
+    'footer-app' : Footer,
+    'new-level' : NewLevel
   },
   methods: {
     ...mapActions([

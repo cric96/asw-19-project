@@ -1,5 +1,5 @@
 <template>
-    <v-navigation-drawer v-bind:value.sync="value" @input="val => $emit('input', val)" app clipped>
+    <v-navigation-drawer v-bind:value.sync="value" @input="val => $emit('input', val)" app clipped >
         <!-- Header navigation drawer -->
         <template v-slot:prepend>
             <nav-user-header v-if="userProfile" :user="userObject" @clickEditUser="clickUser"/>
@@ -44,13 +44,13 @@ export default {
             this.$router.replace("/userProfile")
         },
         logout : function(){
-            this.$store.dispatch('auth/logout').then(() => {
-                this.$router.replace("/intro")
+            this.$store.dispatch('user/logout').then(() => {
+                this.$router.go("/intro") //go refresh the page, it is used to invalidate vuex store, avoiding session's problem
             })
         }
     },
     computed: {
-        ...mapGetters('auth', [
+        ...mapGetters('user', [
             'userProfile'
         ]),
         userObject: function() {

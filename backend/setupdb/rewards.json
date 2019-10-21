@@ -1,8 +1,7 @@
 [{
         "name": "Riciclone",
-        "picture": "",
+        "picture": "https://www.google.com/search?q=reward&sxsrf=ACYBGNQUAOOnCok-iRZWbc5JqGy9_-IlZQ:1570750916973&source=lnms&tbm=isch&sa=X&ved=0ahUKEwjX976T75LlAhUOC-wKHQooAsgQ_AUIEigB&biw=1396&bih=657#imgrc=uRc-SCOAMA6V0M:",
         "description": "Hai riciclato più di 20 rifiuti!",
-        "availableAtLevel": 1,
         "unlockData": {
             "type": "genericTrash",
             "quantity": 20
@@ -10,9 +9,8 @@
     },
     {
         "name": "Greta",
-        "picture": "",
+        "picture": "https://www.google.com/search?q=reward&sxsrf=ACYBGNQUAOOnCok-iRZWbc5JqGy9_-IlZQ:1570750916973&source=lnms&tbm=isch&sa=X&ved=0ahUKEwjX976T75LlAhUOC-wKHQooAsgQ_AUIEigB&biw=1396&bih=657#imgrc=uRc-SCOAMA6V0M:",
         "description": "Wow! Hai riciclato più di 50 rifiuti!",
-        "availableAtLevel": 1,
         "unlockData": {
             "type": "genericTrash",
             "quantity": 50
@@ -20,9 +18,8 @@
     },
     {
         "name": "Per sempre",
-        "picture": "",
+        "picture": "https://www.google.com/search?q=reward&sxsrf=ACYBGNQUAOOnCok-iRZWbc5JqGy9_-IlZQ:1570750916973&source=lnms&tbm=isch&sa=X&ved=0ahUKEwjX976T75LlAhUOC-wKHQooAsgQ_AUIEigB&biw=1396&bih=657#imgrc=uRc-SCOAMA6V0M:",
         "description": "Quanto vetro! Hai riciclato 10 rifiuti di vetro",
-        "availableAtLevel": 1,
         "unlockData": {
             "type": "trash",
             "categories": ["Vetro"],
@@ -31,13 +28,31 @@
     },
     {
         "name": "Salvatore di alberi",
-        "picture": "",
+        "picture": "https://www.google.com/search?q=reward&sxsrf=ACYBGNQUAOOnCok-iRZWbc5JqGy9_-IlZQ:1570750916973&source=lnms&tbm=isch&sa=X&ved=0ahUKEwjX976T75LlAhUOC-wKHQooAsgQ_AUIEigB&biw=1396&bih=657#imgrc=uRc-SCOAMA6V0M:",
         "description": "La natura ti ringrazia! Hai gettato 50 rifiuti di carta",
-        "availableAtLevel": 2,
         "unlockData": {
             "type": "trash",
             "categories": ["Carta"],
             "quantity": 50
         }
+    },
+    {
+        "name": "Piccola marmotta",
+        "picture": "https://www.google.com/search?q=reward&sxsrf=ACYBGNQUAOOnCok-iRZWbc5JqGy9_-IlZQ:1570750916973&source=lnms&tbm=isch&sa=X&ved=0ahUKEwjX976T75LlAhUOC-wKHQooAsgQ_AUIEigB&biw=1396&bih=657#imgrc=uRc-SCOAMA6V0M:",
+        "description": "Hai iniziato da poco ma già stai facendo tanto!",
+        "unlockData": {
+            "type": "score",
+            "score": 20
+        }
+    },
+    {
+        "name": "Primo livello",
+        "picture": "https://www.google.com/search?q=reward&sxsrf=ACYBGNQUAOOnCok-iRZWbc5JqGy9_-IlZQ:1570750916973&source=lnms&tbm=isch&sa=X&ved=0ahUKEwjX976T75LlAhUOC-wKHQooAsgQ_AUIEigB&biw=1396&bih=657#imgrc=uRc-SCOAMA6V0M:",
+        "description": "Hai iniziato da poco ma già stai facendo tanto!",
+        "unlockData": {
+            "type": "level",
+            "level": 20
+        }
     }
+
 ]

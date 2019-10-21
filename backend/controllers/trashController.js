@@ -1,17 +1,17 @@
-var mongoose = require('mongoose');
-var Trash = mongoose.model('Trash');
+var mongoose = require('mongoose')
+var Trash = mongoose.model('Trash')
 var trashCategories = require("../models/cache").trashCategories
 var utils = require('../utils/utils')
 var fetchQueries = require("./trashQueries")
 var errorHandler = require("../utils/errorManagement")
-//var io = require('socket.io')(http)
+var socket = require("../socket")
+var cache = require("../models/cache")
+
 exports.insertTrash = function(req, res) {
-    let query = {
-        name : req.body.name //filter by trash category passed into the body
-    }
     let user = res.locals.userAuth
+    let buildingFetched = res.locals.buildingFetched
     //i can trown trash only if I am a member of the building 
-    if(!res.locals.buildingFetched.isMember(user)) {
+    if(!buildingFetched.isMember(user)) {
         res.setForbidden("Forbidden, you must be a building's member")
         return
     }
@@ -23,16 +23,31 @@ exports.insertTrash = function(req, res) {
     }
     var trash = new Trash({
         trashCategory : category._id,
-        building : res.locals.buildingFetched._id,
-        city : res.locals.buildingFetched.city,
+        building : buildingFetched._id,
+        city : buildingFetched.city,
         user : user._id
     })
     //update user
-    user.score += category.score
-    Promise.all([user.save(), trash.save()]) //to fix: handle errors in the first promise    
-        .then(el => res.setNoContent()) //all ok, return no content means that the trash is added into the db
+    var newLevel = user.updateScore(category.score)
+    var rewardsUnlocked = []
+    cache.rewards.getUnlockedByUser(user)
+        .then(rewards => {
+            rewardsUnlocked = rewards.map(reward => reward._id)
+            user.rewards = user.rewards.concat(rewards)
+        })
+        .then(() => Promise.all([user.save(), trash.save()])) //to fix: handle errors in the first promise)
+        .then(el => {
+            res.setNoContent()
+            socket.sendInBuilding(buildingFetched._id, new socket.Message("newTrash", category.name))
+            if(newLevel) {
+               socket.sendToUser(user._id, new socket.Message("newLevel", user.level)) 
+            }
+            if(rewardsUnlocked.length != 0) {
+                socket.sendToUser(user._id, new socket.Message("newRewards", rewardsUnlocked))
+            }
+            //socket.io.webSocket.to("room/"+buildingFetched._id).emit('newTrash', category.name)
+        }) //all ok, return no content means that the trash is added into the db
         .catch(err => errorHandler(err, res))
-    
 };
 /**
  * this function is used to create the response.
@@ -57,11 +72,9 @@ function createResponseArray(trashCategories, trashesCollected) {
     })
 }
 exports.listUserTrashes = function(req, res) {
-    TrashCategory.find()
-        .then(trashCategories => {
-            return fetchQueries.searchUserTrashes(req, res)
-                .then(collectedTrashes => createResponseArray(trashCategories, collectedTrashes))
-        })
+    let trashCategories = cache.trashCategories.elements
+    fetchQueries.searchUserTrashes(res.locals.userAuth, res.locals.filterBuilder)
+        .then(collectedTrashes => createResponseArray(trashCategories, collectedTrashes))
         .then(collectedTrashes => res.setOk(collectedTrashes))
         .catch(err => errorHandler(err, res))
 }

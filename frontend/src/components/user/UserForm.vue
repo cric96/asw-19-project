@@ -1,21 +1,32 @@
 <template>
   <v-container v-if="finalUser" fluid>
-    <v-form ref="form" v-model="valid" lazy-validation @keyup.native.enter="validate">
+    <v-form ref="form" v-model="valid" @keyup.native.enter="validate">
       <v-row v-for="property in userProperties" :key="property.propertyName">
-        <v-col cols="12">
+          <password-text-field
+              v-if="property.propertyName==='password'"
+              v-model="user.password"
+              :prependIcon="property.prependedIcon"
+              :toCheck="undefined"
+              :labelDescription="property.propertyLabel"
+              :passwordRules="passwordRuleComp"
+          ></password-text-field>
+          <password-text-field
+              v-else-if="property.propertyName==='passwordConfirm'"
+              :prependIcon="property.prependedIcon"
+              :toCheck="user.password"
+              :labelDescription="property.propertyLabel"
+              :passwordRules="passwordRuleComp"
+          ></password-text-field>
           <v-text-field
+            v-else
             :disabled="beDisabled && (!property.editable || !isEditing)"
             v-model="finalUser[property.propertyName]"
             :label="property.propertyLabel"
             :rules="property.propertyRule"
-            
+            :prependIcon="property.prependedIcon"
             outlined
             clearable
-            :append-icon="appendIcon(property)"
-            :type="textType(property)"
-            @click:append="passwordShow = !passwordShow"
           ></v-text-field>
-        </v-col>
       </v-row>
       <v-btn :disabled="!valid && !isEditing && loading" color="success" class="mr-4" @click="validate" :loading="loading">
         <slot></slot>
@@ -27,6 +38,8 @@
 
 <script>
 import User from "@/model/user";
+import { passwordRule } from "@/components/user/userProperties";
+import PasswordTextField from "@/components/authentication/PasswordTextField";
 
 export default {
   props: {
@@ -55,15 +68,20 @@ export default {
   },
   data: () => ({
     finalUser: null,
-    valid: false,
-    passwordShow: false,
+    valid: true,
+    newPasswordConfirmation: null
   }),
   computed: {
     isEditing: {
       get() {
         return this.value;
       }
-    }
+    },
+            passwordRuleComp: function(){
+                console.log("passRuleComp",passwordRule)
+                return passwordRule;
+            }
+    
   },
   watch: {
     user: {
@@ -82,23 +100,10 @@ export default {
     },
     reset: function() {
       this.$refs.form.reset();
-    },
-    appendIcon(property){
-      if(property.propertyName=='password' || property.propertyName=='confirmPassword') {
-        return (this.passwordShow) ? 'visibility' : 'visibility_off'
-      }else{
-        return undefined
-      }
-    },
-    textType(property){
-      if(property.propertyName=='password' && this.passwordShow) {
-        return 'text'
-      }else if(property.propertyName=='password' && !this.passwordShow){
-        return 'password'
-      }else{
-        return 'text'
-      }
     }
+  },
+  components: {
+    "password-text-field": PasswordTextField
   }
 };
 </script>

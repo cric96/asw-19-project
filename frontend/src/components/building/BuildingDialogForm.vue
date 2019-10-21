@@ -97,7 +97,7 @@
 import { createNamespacedHelpers } from 'vuex'
 import citiesApi from '@/services/citiesApi'
 import AutocompletMembers from '@/components/AutocompleteMembers'
-
+import Notification from "@/model/notification"
 const { mapGetters, mapActions } = createNamespacedHelpers('building')
 
 
@@ -158,7 +158,7 @@ export default {
                 let promise = this.createBuilding(newBuilding).then(() => {
                     this.$refs.form.reset()
                     this.closeDialog()
-                    this.$store.dispatch('msg/addMessage', 'Nuova abitazione creata')
+                    this.$store.dispatch('msg/addMessage', new Notification('Nuova abitazione creata'))
                 }).catch(err => {
                     this.alert = { type: 'error', message: err }
                 })

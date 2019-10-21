@@ -1,13 +1,14 @@
 import Vue from 'vue'
-import fb from './firebaseConfig'
 import store from './store/store'
 import Router from 'vue-router'
 import Dashboard from './views/Dashboard.vue'
 import Login from '@/views/user/Login.vue'
-import Building from './views/building/Building.vue'
+import Building from '@/views/building/Building.vue'
 import SignUp from '@/views/user/SignUp.vue'
-import HomeReport from './views/HomeReport.vue'
-import Intro from './views/Intro.vue'
+import HomeReport from '@/views/HomeReport.vue'
+import Rewards from '@/views/Rewards.vue'
+import Leaderboard from '@/views/Leaderboard.vue'
+import Intro from '@/views/Intro.vue'
 import UserInfo from '@/views/user/UserInfo.vue'
 import ChangePassword from '@/views/user/ChangePassword.vue'
 
@@ -20,7 +21,19 @@ const router = new Router({
     {
       path: '/intro',
       name: 'Intro',
-      component: Intro
+      component: Intro,
+      children: [
+        {
+          path: '/login',
+          name: 'Login',
+          component: Login
+        },
+        {
+          path: '/sign-up',
+          name: 'SignUp',
+          component: SignUp
+        }
+      ]
     },
     {
       path: '*',
@@ -28,17 +41,7 @@ const router = new Router({
     },
     {
       path: '/',
-      redirect: '/intro'
-    },
-    {
-      path: '/login',
-      name: 'Login',
-      component: Login
-    },
-    {
-      path: '/sign-up',
-      name: 'SignUp',
-      component: SignUp
+      redirect: '/intro',  
     },
     {
       path: '/dashboard',
@@ -68,6 +71,16 @@ const router = new Router({
           path: '/changePassword',
           name: 'ChangePassword',
           component: ChangePassword,
+        },
+        {
+          path: '/rewards',
+          name: 'Rewards',
+          component: Rewards
+        },
+        {
+          path: '/leaderboard',
+          name: 'Leaderboard',
+          component: Leaderboard
         }
       ]
     }
@@ -75,8 +88,8 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  if(store.getters['auth/isUserLoading']) {
-    const unwatch = store.watch((state, getters) => getters['auth/userProfile'], function() {
+  if(store.getters['user/isUserLoading']) {
+    const unwatch = store.watch((state, getters) => getters['user/userProfile'], function() {
       routeGuard(to, from, next)
       unwatch()
     })
@@ -87,7 +100,7 @@ router.beforeEach((to, from, next) => {
 
 function routeGuard(to, from, next) {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
-  let isAuth = store.getters['auth/isAuthenticated']
+  let isAuth = store.getters['user/isAuthenticated']
 
   if (requiresAuth && !isAuth) next('intro')
   else if (!requiresAuth && isAuth) { next('dashboard') }

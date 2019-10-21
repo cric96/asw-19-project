@@ -1,26 +1,15 @@
-/* eslint-disable no-empty-pattern */
+
+import { signInError, signUpError } from '@/resource/authErrors'
 import firebaseAuthService from '@/services/firebaseAuthService'
 import usersApi from '../../services/usersApi'
-import { signInError, signUpError } from '@/resource/authErrors'
-import User from '@/model/user'
 
 export default {
-    namespaced: true,
-    state: {
-        userProfile: undefined
-    },
-    getters: {
+    getters : {
         isAuthenticated(state, getters) {
             return !getters.isUserLoading && state.userProfile != null
-        },
-        userProfile(state) {
-            return state.userProfile
-        },
-        isUserLoading(state) {
-            return state.userProfile === undefined
-        } 
+        }
     },
-    actions: {
+    actions : {
         // do a sign in using email and password
         signInEmailPassword({ dispatch }, {email, password}) {
             return firebaseAuthService.signInFromEmailPassword(email, password)
@@ -88,31 +77,12 @@ export default {
                     throwSignUpError(error)
                 })
         },
-        logout({ commit }) {
-            commit('setUserProfile', null)
+        logout({ commit, getters }) {
+            if(getters.isAuthenticated) {
+                this.emitOnSocket('leaveUser', getters.userProfile._id)
+            }
+            commit('cleanUser')
             return firebaseAuthService.logout()
-        },
-        // retrieve a user profile from scanbage backend
-        fetchUserProfile({ commit }, firebaseUserUid) {
-            return usersApi.getUser(firebaseUserUid).then(user => {
-                commit('setUserProfile', user)
-                return user
-            })
-        },
-        updateUserData({commit}, user) {
-            return usersApi.updateUser(user).then(updatedUser => {
-                commit('setUserProfile', updatedUser)
-                return updatedUser
-            })
-             // TODO: move to right module
-        }
-    },
-    mutations: {
-        setUserProfile(state, val) {
-            state.userProfile = val
-        },
-        updateScore(state, score) {
-            state.userProfile.score += score
         }
     }
 }

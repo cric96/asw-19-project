@@ -19,10 +19,6 @@ var rewardSchema = new Schema({
         trim: true,
         required: 'We need a description for the reward'
     },
-    availableAtLevel: {
-        type: Number,
-        required: 'You must specify the level to unlock it'
-    },
     video: {
         type: String,
         match: regex.url
@@ -38,5 +34,20 @@ var rewardSchema = new Schema({
     }
 });
 
+rewardSchema.methods.aboutScore = function() {
+    return this.unlockData.type == "score"
+}
+
+rewardSchema.methods.aboutLevel = function() {
+    return this.unlockData.type == "level"
+}
+
+rewardSchema.methods.aboutTrash = function() {
+    return this.unlockData.type == "trash"
+}
+
+rewardSchema.methods.aboutTotalTrash = function() {
+    return this.unlockData.type == "genericTrash"
+}
 
 module.exports = mongoose.model('Reward', rewardSchema);

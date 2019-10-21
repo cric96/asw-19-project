@@ -45,7 +45,7 @@ export default {
     pendingBinding: null
   }),
   methods: {
-    ...mapActions('auth', [
+    ...mapActions('user', [
       'signInSocial'
     ]),
     loginWithFb() {

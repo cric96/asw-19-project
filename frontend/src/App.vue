@@ -4,6 +4,7 @@
     <transition name="slide-fade" mode="out-in">
       <router-view />
     </transition>
+     
   </v-app>
 </template>
 
@@ -17,7 +18,7 @@ export default {
   },
   computed: {
     isAppLoading: function() {
-      return this.$store.getters['auth/isUserLoading'] // && if needed add other conditions
+      return this.$store.getters['user/isUserLoading'] // && if needed add other conditions
     }
   }
 }
@@ -25,10 +26,10 @@ export default {
 
 <style>
   .container_background {
-    background: rgba(255,255,255,0.2) url('./assets/background.jpeg'); 
-    background-position: center;
+    background: rgba(255,255,255,0.2) url('./assets/back_material.png'); 
+    background-position: center bottom;
     background-repeat: no-repeat;
     background-size: cover;
-    position: relative;
+    height: 100%;
   }
 </style>

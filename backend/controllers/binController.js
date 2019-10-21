@@ -24,7 +24,8 @@ class BuildingBin {
         binCategory.trashCategories = undefined
         return {
             binCategory : this.binCategory,
-            collectedTrashes : this.collectedTrashes
+            collectedTrashes : this.collectedTrashes,
+            totalQuantity : this.collectedTrashes.reduce((acc, trash) => acc + trash.quantity, 0)
         }
     }
 }
