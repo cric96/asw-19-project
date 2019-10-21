@@ -3,6 +3,7 @@ var Exception = require("../utils/Exception")
 var errorHandler = require("../utils/errorManagement")
 var httpCode = require("../utils/httpCode")
 var User = mongoose.model("User")
+var Building = mongoose.model("Building")
 var utils = require('../utils/utils')
 
 let areUserAlreadyInBuiding = function(candidates, building) {
@@ -38,8 +39,11 @@ exports.addBuildingMember = function(req, res) {
                 throw new Exception(httpCode.CONFLICT, "some members are already in building")
             } else {
                 membersFetched = memberCandindates //store the member that could be insert into the building
-                memberCandindates.forEach(member => building.members.push(member._id))
-                return building.save() //update the building
+                return Building.findOneAndUpdate({_id: building._id}, {
+                    $push: {
+                        members: { $each: memberCandindates }
+                    },
+                }, { returnNewDocument: true} )
             }
         })
         .then(building => res.setOk(membersFetched))
@@ -95,12 +99,10 @@ exports.deleteBuildingMember = function(req, res) {
             if(building.isOwner(member)) {
                 throw new Exception(httpCode.FORBIDDEN, "Owner can't delete itself (for now)")
             } else if(canUserAuthDeleteMember(member._id, building, user)) {
-                //store new member without the member deleted
-                let removeMember = function(item, index) {
-                    return ! utils.sameMongoId(item, member._id)
-                }
-                building.members = building.members.filter(removeMember)
-                return building.save()
+                // update the building removing the member using $pull
+                return Building.updateOne({_id: building._id}, {
+                    $pull: { members: member._id }
+                })
             } else {
                 throw new Exception(httpCode.FORBIDDEN)
             }
