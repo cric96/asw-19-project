@@ -1,6 +1,6 @@
 <template class="generalFont">
-    <v-template v-if="$vuetify.breakpoint.lgAndDown">                                                                
-    <v-list-group append-icon="keyboard_arrow_down" v-model="expanded" flat>
+    <div v-if="$vuetify.breakpoint.lgAndDown">                                                                
+    <v-list-group append-icon="keyboard_arrow_down" flat>
       <template slot="activator">
         <v-list-item-content>
           <v-list-item-title class="overline" ><h2>Filtri</h2></v-list-item-title>                   
@@ -9,29 +9,24 @@
       <v-list-item-group >
       <v-list-item >
           <v-list-item-content>
-            <v-menu bottom :offset-y="true" :close-on-content-click="false">
+            <v-menu bottom :offset-y="true" :close-on-content-click="false" v-model="closeMenuOnCategorySelection">
               <template v-slot:activator="{ on }">
-                <v-btn v-on="on" block :ripple="false" class="formButtons text-left" text height="60">
+                <v-btn v-on="on"  block :ripple="false" class="formButtons text-left" text height="60">
                   <v-icon>delete</v-icon>
                   {{category}}     
                 </v-btn>
               </template>
-              <v-card class="overline" >
-                <v-autocomplete
-                :items="trashCategories"
-                flat
-                menu-props="auto"            
-                label="Digita.."
-                solo
-              ></v-autocomplete>
+              <v-card>
+                 <v-card-text>
+                   <v-autocomplete
+                    v-model="category"
+                    :items="trashCategories"
+                    :menu-props="{closeOnClick: true, closeOnContentClick: true}"
+                    hide-details hide-selected          
+                    label="Clicca e digita per cambiare.."
+                  ></v-autocomplete>
+                 </v-card-text>
               </v-card>
-                
-              <!--<v-list>
-                <v-list-item v-for="category in trashCategories" :key="category.name" @click="changeCategory(category.name)">
-                  <v-list-item-title class="overline"> <h3>{{category.name}}</h3> </v-list-item-title>
-                </v-list-item>
-              </v-list>
-              -->
             </v-menu>          
           </v-list-item-content>
           </v-list-item>
@@ -57,15 +52,34 @@
            </v-list-item>
         <v-list-item v-if="!isSubjectCity()">
           <v-list-item-content>
-            <v-menu bottom :offset-y="true">
+           <v-menu bottom :offset-y="true" :close-on-content-click="false" v-model="closeMenuOnCitySelection">
               <template v-slot:activator="{ on }">
-                <v-btn v-on="on" block :ripple="false" class="formButtons text-left" text height="60">
+                <v-btn v-on="on" block  :ripple="false" class="formButtons text-left" text height="60">
                   <v-icon>location_city</v-icon>
-                  Città       
+                  {{city ===  undefined ? "Città" : city.name}}  
                 </v-btn>
               </template>
-              
-            </v-menu>           
+              <v-card>
+                 <v-card-text>
+                   <v-autocomplete v-model="city"
+                      :items="cities.data"
+                      :loading="cities.loading"
+                      :search-input.sync="citySearchText"
+                      label="Cerca la città anche tramite CAP" 
+                      hide-details hide-selected
+                      no-filter clearable
+                      hide-no-data>
+                      
+                      <template v-slot:selection="data">
+                        <span>{{data.item.name}}, {{data.item.cap}}</span>
+                      </template>
+                      <template v-slot:item="{ item }">
+                        {{item.name}}, {{item.cap}}
+                      </template>
+                  </v-autocomplete>
+                 </v-card-text>
+              </v-card>
+            </v-menu>       
           </v-list-item-content>
           </v-list-item>
         <v-list-item>
@@ -110,9 +124,9 @@
         </v-list-item> 
         </v-list-item-group>
       </v-list-group>
-    </v-template>       
-    <v-template v-else>
-      <v-list-group append-icon="keyboard_arrow_down" v-model="expanded" flat>
+    </div>       
+    <div v-else>
+      <v-list-group append-icon="keyboard_arrow_down" flat>
       <template slot="activator">
         <v-list-item-content>
           <v-list-item-title class="overline" ><h2>Filtri</h2></v-list-item-title>                   
@@ -120,10 +134,25 @@
       </template>
       <v-list-item>
           <v-list-item-content>
-            <v-btn block class="text-left" text height="60">
-              <v-icon>delete</v-icon>                              
-              Categoria
-            </v-btn>
+            <v-menu bottom :offset-y="true" :close-on-content-click="false" v-model="closeMenuOnCategorySelection">
+              <template v-slot:activator="{ on }">
+                <v-btn v-on="on" block class="text-left" text height="60">
+                  <v-icon>delete</v-icon>
+                  {{category}}     
+                </v-btn>
+              </template>
+              <v-card>
+                 <v-card-text>
+                   <v-autocomplete
+                    v-model="category"
+                    :items="trashCategories"
+                    :menu-props="{closeOnClick: true, closeOnContentClick: true}"
+                    hide-details hide-selected          
+                    label="Clicca e digita per cambiare.."
+                  ></v-autocomplete>
+                 </v-card-text>
+              </v-card>
+            </v-menu>          
           </v-list-item-content>
           <v-list-item-content>   
             <v-menu bottom :offset-y="true">
@@ -144,11 +173,35 @@
             </v-menu>                
                   
           </v-list-item-content>
-          <v-list-item-content v-if="!isSubjectCity()">    
-            <v-btn block class="text-left" text height="60">                                   
-              <v-icon>location_city</v-icon>
-              Città                                   
-            </v-btn>
+         <v-list-item-content v-if="!isSubjectCity()">  
+           <v-menu bottom :offset-y="true" :close-on-content-click="false" v-model="closeMenuOnCitySelection">
+              <template v-slot:activator="{ on }">
+                <v-btn v-on="on" block class="text-left" text height="60">
+                  <v-icon>location_city</v-icon>
+                  {{city ===  undefined ? "Città" : city.name}}  
+                </v-btn>
+              </template>
+              <v-card>
+                 <v-card-text>
+                   <v-autocomplete v-model="city"
+                      :items="cities.data"
+                      :loading="cities.loading"
+                      :search-input.sync="citySearchText"
+                      label="Cerca la città anche tramite CAP" 
+                      hide-details hide-selected
+                      no-filter clearable
+                      hide-no-data>
+                      
+                      <template v-slot:selection="data">
+                        <span>{{data.item.name}}, {{data.item.cap}}</span>
+                      </template>
+                      <template v-slot:item="{ item }">
+                        {{item.name}}, {{item.cap}}
+                      </template>
+                  </v-autocomplete>
+                 </v-card-text>
+              </v-card>
+            </v-menu>       
           </v-list-item-content>
           <v-list-item-content>
             <v-menu bottom :offset-y="true">
@@ -192,11 +245,13 @@
           </v-list-item-content>        
         </v-list-item>  
       </v-list-group>
-    </v-template>
+    </div>
     </template>
     <script>
 import ranksApi from '@/services/ranksApi'
 import trashCategories from '@/services/trashCategoriesApi'
+import citiesApi from '@/services/citiesApi'
+
 export default {
     name: "TrashRank",
     data: () => ({
@@ -205,7 +260,15 @@ export default {
         order : "ascendente",
         subject : "utente",
         subjectIcon : "face",
-        category : ""
+        category : "",
+        closeMenuOnCategorySelection: false,
+        citySearchText: '',
+        cities: {
+            loading: false,
+            data: []
+        },
+        city: undefined, 
+        closeMenuOnCitySelection: false
 
     }),
     mounted() {
@@ -223,6 +286,13 @@ export default {
       changeOrder(changeIn){
         this.order = changeIn
       },
+      fetchCities(query) {
+            this.cities.loading = true
+            citiesApi.getAllFilter(query).then(data => {
+                this.cities.data = data
+            })
+            .finally(() => this.cities.loading = false)
+        },
       changeSubject(changeIn, changeInIcon) {
         this.subject = changeIn
         this.subjectIcon = changeInIcon
@@ -233,6 +303,17 @@ export default {
       changeCategory(changeIn) {
         this.category = changeIn
       }
+    },
+    watch: {
+      category: function (){
+        this.closeMenuOnCategorySelection = false
+      },
+      city: function() {
+        this.closeMenuOnCitySelection = false
+      },
+      citySearchText(query) {
+            query !== "" && query && !this.city && this.fetchCities(query)
+        }
     }
 }
 </script>
@@ -245,7 +326,8 @@ export default {
   /*pointer-events: none !important*/
   background-color: rgba(1,1,1,0 )
 }
-.formButtons:focus:before, .formButtons:hover:before, .formButtons:active  {
+.formButtons::before {
+  transition: none;
    background-color :rgba(1,1,1,0)
 }
 .lastButtons {

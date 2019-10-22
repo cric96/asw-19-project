@@ -1,6 +1,6 @@
 <template>
- <v-template v-if="$vuetify.breakpoint.smAndDown">                                                                
-    <v-list-group append-icon="keyboard_arrow_down" v-model="expanded" flat>
+ <div v-if="$vuetify.breakpoint.smAndDown">                                                                
+    <v-list-group append-icon="keyboard_arrow_down" flat>
       <template slot="activator">
         <v-list-item-content>
           <v-list-item-title class="overline" ><h2>Filtri</h2></v-list-item-title>                   
@@ -36,9 +36,9 @@
         </v-list-item> 
         </v-list-item-group>
       </v-list-group>
-    </v-template>       
-    <v-template v-else>
-      <v-list-group append-icon="keyboard_arrow_down" v-model="expanded" flat>
+    </div>       
+    <div v-else>
+      <v-list-group append-icon="keyboard_arrow_down" flat>
       <template slot="activator">
         <v-list-item-content>
           <v-list-item-title class="overline" ><h2>Filtri</h2></v-list-item-title>                   
@@ -46,10 +46,22 @@
       </template>
       <v-list-item>
           <v-list-item-content>          
-            <v-btn block class="text-left" text height="60">
-              <v-icon>compare_arrows</v-icon>
-              Ordinamento
-            </v-btn>
+            <v-menu bottom :offset-y="true">
+              <template v-slot:activator="{ on }">
+                <v-btn v-on="on" block class="text-left" text height="60">
+                  <v-icon>compare_arrows</v-icon>
+                  {{order}}        
+                </v-btn>
+              </template>
+              <v-list>
+                <v-list-item @click="changeOrder('ascendente')">
+                  <v-list-item-title class="overline"> <h3>ascendente</h3> </v-list-item-title>
+                </v-list-item>
+                 <v-list-item @click="changeOrder('discendente')">
+                  <v-list-item-title class="overline"><h3>discendente</h3></v-list-item-title>
+                </v-list-item>
+              </v-list>
+            </v-menu>    
           </v-list-item-content>
           <v-spacer></v-spacer>
            <v-spacer></v-spacer>
@@ -64,7 +76,7 @@
           </v-list-item-content>        
         </v-list-item>  
       </v-list-group>
-    </v-template>
+    </div>
 </template>
 <script>
 import ranksApi from '@/services/ranksApi'
@@ -95,7 +107,8 @@ export default {
 .myButton {
   pointer-events: none !important;
 }
-.formButtons:focus:before, .formButtons:hover:before, .formButtons:active  {
+.formButtons::before {
+  transition : none;
    background-color :rgba(1,1,1,0)
 }
 
