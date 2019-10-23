@@ -2,7 +2,9 @@
 import { signInError, signUpError } from '@/resource/authErrors'
 import firebaseAuthService from '@/services/firebaseAuthService'
 import usersApi from '../../services/usersApi'
-
+/**
+ * manage used authentications
+ */
 export default {
     getters : {
         isAuthenticated(state, getters) {

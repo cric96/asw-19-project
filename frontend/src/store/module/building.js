@@ -3,7 +3,10 @@ import ApiBuilding from '@/services/buildingsApi'
 import ApiBin from "@/services/binsApi";
 import * as types from '../mutationTypes'
 import store from '../store'
-
+//TODO refactor, rimuovi la logica dei bin da qua, usa un'altro file
+/**
+ * manage building selection and user buildings state.
+ */
 const ACTIVE_BUILDING_KEY = 'activeBuilding' 
 
 function getDefaultActiveBuilding(state) {
@@ -82,10 +85,10 @@ export default {
                     .then(bins => commit(types.SET_BINS_IN_ACTIVE_BUILDING, bins))
             }
         },
-        SOCKET_newTrash({getters}, trashCategoryName) {
-            var bin = getters.binFromTrashCategoryName(trashCategoryName)
-            var collectedTrash = bin.collectedTrashes.find(trash => trash.trashCategory.name === trashCategoryName)
-            collectedTrash.quantity++
+        SOCKET_newTrash({getters}, {categoryName}) {
+            var bin = getters.binFromTrashCategoryName(categoryName)
+            var collectedTrash = bin.collectedTrashes.find(trash => trash.trashCategory.name === categoryName)
+            collectedTrash.quantity ++
         },
         addMember({ commit }, { buildingId, users}) {
             return ApiBuilding.addMember(buildingId, users).then(updateBuilding => {

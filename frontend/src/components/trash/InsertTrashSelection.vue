@@ -25,7 +25,7 @@
       <v-speed-dial v-model="fabExpanded"
                     bottom right fixed direction="left" 
                     transition="scale-transition" 
-                    :loading="areLoaded">
+                    :loading="loaded">
         
         <template v-slot:activator>
           <v-btn fab light v-model="fabExpanded">
@@ -64,7 +64,7 @@ export default {
   computed: {
     ...mapGetters({
       activeBuilding: "building/activeBuilding",
-      areLoaded : "trashCategories/areLoaded", //used to see if the trash category are loaded
+      loaded : "trashCategories/loaded", //used to see if the trash category are loaded
     })
   },
   methods: {
