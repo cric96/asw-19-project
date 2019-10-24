@@ -157,6 +157,13 @@ export default {
             handler: function(buildingChanged) {
                 this.updatedBuilding = Object.assign({}, buildingChanged)
             }
+        },
+        // need to watch when dialog become visible for create a local copy
+        // of the building for prevent props editing.
+        value(isDialogVisible) {
+            if(isDialogVisible) {
+                this.updatedBuilding = Object.assign({}, this.building)
+            }
         }
     },
     computed: {

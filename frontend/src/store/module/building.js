@@ -84,7 +84,6 @@ export default {
             })
             .then(updatedBuilding => {
                 // remove members from local copy
-                console.log("Updated building: ", updatedBuilding)
                 updatedBuilding.members = updatedBuilding.members.removeIf(m => toRemove.includes(m.firebase_uid))
                 commit(types.UPDATE_BUILDING, updatedBuilding)
                 return updatedBuilding
