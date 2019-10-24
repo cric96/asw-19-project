@@ -16,6 +16,9 @@ export default {
     createBuilding: function(building) {
         return apiService.post(ENDPOINT_BUILDINGS, building, null, true)
     },
+    updateBuilding: function(building) {
+        return apiService.put(ENDPOINT_BUILDINGS_ID.format(building._id), building, null, true)
+    },
     addMembers(buildingId, members) {
         return apiService.post(ENDPOINT_BUILDINGS_MEMBERS.format(buildingId), members, null, true)
     },

@@ -15,6 +15,6 @@ export default {
     },
     initial: function(value) {
         if(!value) return ''
-        return value.charAt(0)
+        return value.charAt(0).toUpperCase()
     }
 }
