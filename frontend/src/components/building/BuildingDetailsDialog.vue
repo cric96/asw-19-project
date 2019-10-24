@@ -6,7 +6,7 @@
                     <v-btn icon dark @click="$emit('input', false)" :disabled="pendingOperation">
                         <v-icon>mdi-close</v-icon>
                     </v-btn>
-                    <v-toolbar-title>Gestisci abitazione</v-toolbar-title>
+                    <v-toolbar-title>{{ editable ? "Gestisci abitazione" : "Info abitazione"}}</v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-toolbar-items v-if="editable">
                         <v-btn dark text @click="save" :loading="pendingOperation">
