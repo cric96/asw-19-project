@@ -17,6 +17,12 @@ const store = new Vuex.Store({
         reward : rewardModule
     }
 })
+/*
+    add functionality to store object,
+    send message to server, it corresponds to 
+    write:
+        socket.emit(type, payload)
+*/
 store.emitOnSocket = function(type, payload) {
     this._vm.$socket.emit(type, payload)
 }

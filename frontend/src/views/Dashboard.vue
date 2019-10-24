@@ -1,8 +1,10 @@
 <template>
+    <!-- single page application structure -->
     <v-app light>
-      
+      <!-- compontent to show popup to show new level -->
       <new-level/>
-      <snackbar-notification></snackbar-notification>
+      <!-- component used to show snackbar notifications -->
+      <snackbar-notification/>
 
       <complete-user-info v-if="userProfile" :value="needCompletation" :user="userObject"/>
 
@@ -24,8 +26,7 @@
             <!-- TODO: insert v-breadcrumbs?? -->
             <!-- Replaced with the childrend view -->
             <v-layout row wrap>
-              
-             <router-view/>
+              <router-view/>
             </v-layout>
           </v-container>
           <footer-app/>

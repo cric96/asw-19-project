@@ -31,9 +31,46 @@ import VueApexCharts from 'vue-apexcharts'
 import binsApi from '@/services/binsApi'
 import { createNamespacedHelpers } from 'vuex'
 const { mapGetters } = createNamespacedHelpers('building')
-const MEMBER = 0
-const TRASH = 1
-const FIRST = 0
+const MEMBER = 0 //index in the trashAndUser data to select user informations
+const TRASH = 1 //index in the trashAndUser data to select the trash thrown by the user
+const FIRST = 0 //retrive first elements in the array
+
+function createOptions(labels, colors) {
+    return {
+        chart: { //define here the chart style 
+            stacked: true,
+            toolbar: {
+                show: false
+            },
+            zoom : false
+        },
+        plotOptions: {
+            bar: {
+                horizontal: false
+            }
+        },
+        xaxis: {
+            type: 'string',
+            categories: labels, //put trash label passed
+        },
+        legend: {
+            show: false
+        },
+        yaxis : {
+            labels : {
+                show : false
+            }
+        },
+        colors : colors, //put the color passed
+        fill: {
+            opacity: 1,
+            type: 'gradient',
+            gradient: {
+                shade: 'light'
+            }
+        }
+    }
+}
 export default {
     name : "TrashComparisonChart",
     components : {
@@ -45,67 +82,60 @@ export default {
         }
     },
     data: () => ({
-        series: [] ,
-        options: {
-          chart: {
-            stacked: true,
-            toolbar: {
-              show: false
-            },
-            zoom : false
-          },
-          
-          responsive: [{
-            breakpoint: 480,
-            options: {
-              legend: {
-                position: 'bottom',
-                offsetX: -10,
-                offsetY: 0
-              }
-            }
-          }],
-          plotOptions: {
-            bar: {
-              horizontal: false
-            },
-            colors : {
-                backgroundBarColors: ["#F00FFF"]
-            }
-          },
+        userAndTrashData: [],
+    }),
 
-          xaxis: {
-            type: 'string',
-            categories: [],
-          },
-          legend: {
-              show: false
-          },
-          yaxis : {
-                labels : {
-                    show : false
-                }
-          },
-          fill: {
-            opacity: 1,
-            type: 'gradient',
-            gradient: {
-                shade: 'light'
-            }
-          }
-        }
-      }),
     computed: {
         ...mapGetters(['activeBuilding']),
         
         loaded : function() {
-            return this.series.length != 0
+            return this.userAndTrashData.length != 0
+        },
+
+        series : function() {
+            if(!this.loaded) {
+                return []
+            }
+            var seriesComputed = this.userAndTrashData[FIRST][TRASH].map(trash => {
+                return {
+                    name : trash.binCategory.name,
+                    color : '#FFFFFF',
+                    data : []
+                }
+            })
+            this.userAndTrashData.forEach(element => {
+                element[TRASH].forEach(trash => {
+                    var total = trash.totalQuantity
+                    seriesComputed.find(serie => serie.name == trash.binCategory.name).data.push(total)
+                })
+            })
+            return seriesComputed
+        },
+        options : function() {
+            if(!this.loaded) {
+                return []
+            }
+            var labels = this.userAndTrashData.map(element => element[MEMBER].nickname)
+            var colors = this.userAndTrashData[FIRST][TRASH].map(trash => {
+                return trash.binCategory.colour
+            })
+            return createOptions(labels, colors)
         }
     },
     //improve performance here
     sockets: {
             newTrash(trash) {
-                this.fetchData()
+                this.userAndTrashData
+                    .filter(trashData => trashData[MEMBER]._id == trash.user)
+                    .flatMap(trashData => trashData[TRASH])
+                    .forEach(bin => {
+                        bin.collectedTrashes.forEach(collectedTrash => {
+                            if(trash.categoryName == collectedTrash.trashCategory.name) {
+                                collectedTrash.quantity ++
+                                bin.totalQuantity ++
+                            }
+                        })
+                    })
             }
     },
     mounted() {
@@ -114,26 +144,7 @@ export default {
     methods: {
         fetchData : function() {
             binsApi.getBinsGroupByMember(this.activeBuilding)
-                .then(userAndTrashes => {
-                    this.options.xaxis.categories = userAndTrashes.map(element => element[MEMBER].nickname)              
-                    var seriesComputed = userAndTrashes[FIRST][TRASH].map(trash => {
-                        return {
-                            name : trash.binCategory.name,
-                            color : '#FFFFFF',
-                            data : []
-                        }
-                    })
-                    this.options.colors = userAndTrashes[FIRST][TRASH].map(trash => {
-                        return trash.binCategory.colour
-                    })
-                    userAndTrashes.map(element => {
-                        element[TRASH].map(trash => {
-                            var total = trash.totalQuantity
-                            seriesComputed.find(serie => serie.name == trash.binCategory.name).data.push(total)
-                        })
-                    })
-                    this.series = seriesComputed
-                })
+                .then(userAndTrashes => this.userAndTrashData = userAndTrashes)
         }
     }
 }

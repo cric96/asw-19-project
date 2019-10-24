@@ -1,11 +1,12 @@
 import rewardsApi from '@/services/rewardsApi'
-//TODO riguarda qua, verifica che effettivamente sia reattivo ai cambiamenti, 
-//altrimenti devi cambiare struttura
+/**
+ * manage reward information retrived by user and from web socker messages
+ */
 export default {
     namespaced: true,
     state: {
-        rewards: [],
-        rewardsNotification : []
+        rewards: [], //all rewards store into the database
+        rewardsNotification : [] //new rewards unlocked by used
     },
     getters: {
         locked : state => user => {
@@ -23,9 +24,16 @@ export default {
                 .then(rewards => commit('setRewards', rewards))
                 .catch(error => console.log(error)) //todo find a way to manage error
         },
+        /**
+         * remove a reward notification after seeing it
+         * @param {*} id the reward id
+         */
         resetNotification({commit}, id) {
             commit("removeNotification", id)
         },
+        /**
+         * reaction after a new reward unlock by an user
+         */
         SOCKET_newRewards({commit}, rewards) {
             commit("addNotications", rewards)
         }        
