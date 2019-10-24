@@ -4,19 +4,22 @@
     <transition name="slide-fade" mode="out-in">
       <router-view />
     </transition>
-     
   </v-app>
 </template>
 
 <script>
+/**
+ * root section, init the application if there is an used logged,
+ * otherwhise show the loading splash screen..
+ */
 import SplashScreen from '@/components/SplashScreen'
-
 export default {
   name: 'App',
   components: {
     'splash-screen': SplashScreen
   },
   computed: {
+    //define when the application is not ready to show its content
     isAppLoading: function() {
       return this.$store.getters['user/isUserLoading'] // && if needed add other conditions
     }

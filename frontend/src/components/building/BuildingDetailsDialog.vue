@@ -6,7 +6,7 @@
                     <v-btn icon dark @click="$emit('input', false)" :disabled="pendingOperation">
                         <v-icon>mdi-close</v-icon>
                     </v-btn>
-                    <v-toolbar-title>Gestisci abitazione</v-toolbar-title>
+                    <v-toolbar-title>{{ editable ? "Gestisci abitazione" : "Info abitazione"}}</v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-toolbar-items v-if="editable">
                         <v-btn dark text @click="save" :loading="pendingOperation">
@@ -16,6 +16,9 @@
                 </v-toolbar>
 
                 <v-container>
+                    <!-- Alert error -->
+                    <alert ref="alert" v-model="showAlert"></alert>
+
                     <!-- Building fields section -->
                     <v-card elevation="0">
                         <v-card-title>
@@ -115,18 +118,22 @@
 </template>
 
 <script>
+import AlertMessageComponent from '@/components/AlertMessageComponent'
 import AutocompleteMembers from '@/components/AutocompleteMembers'
 import Notification from "@/model/notification"
+import { building as buildingError } from '@/resource/errors.js'
 import { mapActions } from 'vuex'
 
 export default {
     components: {
+        'alert': AlertMessageComponent,
         'autocomplete-members': AutocompleteMembers
     },
     data: () => ({
         membersAutoComplete: [],
         updatedBuilding: {},
         pendingOperation: false,
+        showAlert: false,
         buildingNameRule: [v => !!v && v.trim() != "" || "Nome non valido"]
     }),
     props: {
@@ -149,6 +156,13 @@ export default {
             immediate: true,
             handler: function(buildingChanged) {
                 this.updatedBuilding = Object.assign({}, buildingChanged)
+            }
+        },
+        // need to watch when dialog become visible for create a local copy
+        // of the building for prevent props editing.
+        value(isDialogVisible) {
+            if(isDialogVisible) {
+                this.updatedBuilding = Object.assign({}, this.building)
             }
         }
     },
@@ -175,7 +189,7 @@ export default {
             return !this.currentMembersList.find(current => current._id == member._id) 
         },
         save() {
-            // clone building
+            this.showAlert = false
             if(this.$refs.form.validate()) {
                 this.pendingOperation = true
                 this.updateBuilding(this.updatedBuilding).then(updatedBuilding => {
@@ -185,7 +199,8 @@ export default {
                     this.$store.dispatch('msg/addMessage', new Notification("Abitazione aggiornata"))
                 })
                 .catch(err => {
-                    // TODO: handle different error message error
+                    this.showAlert = true
+                    this.$refs.alert.showError(buildingError.editError(err.code))
                 })
                 .finally(() => {
                     this.pendingOperation = false

@@ -1,7 +1,8 @@
 
-import { signInError, signUpError } from '@/resource/authErrors'
+import { auth as authError } from '@/resource/errors'
 import firebaseAuthService from '@/services/firebaseAuthService'
-import usersApi from '../../services/usersApi'
+import usersApi from '@/services/usersApi'
+import User from '@/model/user'
 
 export default {
     getters : {
@@ -96,11 +97,11 @@ function createUserProfile(commit, user) {
 }
 
 function throwSignInError(error) {
-    throwAuthError(error, signInError)
+    throwAuthError(error, authError.signInError)
 }
 
 function throwSignUpError(error) {
-    throwAuthError(error, signUpError)
+    throwAuthError(error, authError.signUpError)
 }
 
 // handle and forward a firebase error or REST error, providing a description.

@@ -9,7 +9,7 @@ export default {
         categories(state) {
             return state.trashCategories;
         },
-        areLoaded(state) {
+        loaded(state) {
             return state.trashCategories.length != 0
         }
     },

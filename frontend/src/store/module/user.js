@@ -2,6 +2,12 @@
 import usersApi from '../../services/usersApi'
 import authSubmodule from './auth.js'
 import userSubmodule from './userDecorations.js'
+/**
+ * this store module wrap user funcionality, 
+ * it is decored using userDecoration (to add some
+ * utility to manage used state) and auth (used to 
+ * manage user authorization).
+ */
 export default {
     namespaced: true,
     state: {
@@ -42,6 +48,7 @@ export default {
             this.emitOnSocket('joinUser',user._id)
             state.userProfile = user
         },
+        //reset user state
         cleanUser(state) {
             state.userProfile = null
         }

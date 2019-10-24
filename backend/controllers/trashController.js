@@ -38,7 +38,10 @@ exports.insertTrash = function(req, res) {
         .then(() => Promise.all([user.save(), trash.save()])) //to fix: handle errors in the first promise)
         .then(el => {
             res.setNoContent()
-            socket.sendInBuilding(buildingFetched._id, new socket.Message("newTrash", category.name))
+            socket.sendInBuilding(buildingFetched._id, new socket.Message("newTrash", {
+                categoryName : category.name,
+                user : user._id
+            }))
             if(newLevel) {
                socket.sendToUser(user._id, new socket.Message("newLevel", user.level)) 
             }

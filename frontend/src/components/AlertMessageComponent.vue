@@ -29,12 +29,10 @@ export default {
           this.message = newmessage
         },
         showError: function(newmessage) {
-            this.type = "error"
-            this.message = newmessage
+            this.changeConfig(newmessage, "error")
         },
         showSuccess: function(newmessage) {
-            this.type = "success"
-            this.message = newmessage
+            this.changeConfig(newmessage, "success")
         }
     }
 }

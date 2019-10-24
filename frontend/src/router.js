@@ -13,7 +13,9 @@ import UserInfo from '@/views/user/UserInfo.vue'
 import ChangePassword from '@/views/user/ChangePassword.vue'
 
 Vue.use(Router)
-
+/**
+ * in this files are defined all paths to each view's vue.
+ */
 const router = new Router({
   mode: 'history',
   base: process.env.BASE_URL,
@@ -86,7 +88,6 @@ const router = new Router({
     }
   ]
 })
-
 router.beforeEach((to, from, next) => {
   if(store.getters['user/isUserLoading']) {
     const unwatch = store.watch((state, getters) => getters['user/userProfile'], function() {
@@ -101,7 +102,6 @@ router.beforeEach((to, from, next) => {
 function routeGuard(to, from, next) {
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
   let isAuth = store.getters['user/isAuthenticated']
-
   if (requiresAuth && !isAuth) next('intro')
   else if (!requiresAuth && isAuth) { next('dashboard') }
   else next()
