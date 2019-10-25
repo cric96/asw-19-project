@@ -1,4 +1,5 @@
 <template class="generalFont">
+  <v-container>
     <div v-if="$vuetify.breakpoint.lgAndDown">                                                                
     <v-list-group append-icon="keyboard_arrow_down" flat>
       <template slot="activator">
@@ -107,20 +108,15 @@
           </v-list-item>
         <v-list-item :ripple="false" class="formButtons">
           <v-list-item-content>        
-            <v-btn color="success" block class="lastButtons text-left" text height="60">                                    
+            <v-btn color="success" block class="lastButtons text-left" text height="60" @click="computeRank">                                    
               Applica                                    
             </v-btn>           
           </v-list-item-content>
           <v-list-item-content>
-            <v-btn color="warning" block class="lastButtons text-left" text height="60">
+            <v-btn color="error" block class="lastButtons text-left" text height="60" @click="resetFilters">
               Reset
             </v-btn>                         
           </v-list-item-content> 
-          <v-list-item-content>
-            <v-btn color="error" block class="lastButtons text-left" text height="60">
-              Annulla
-            </v-btn>                       
-          </v-list-item-content>
         </v-list-item> 
         </v-list-item-group>
       </v-list-group>
@@ -227,37 +223,38 @@
           <v-list-item-content> 
             <v-list-item>
                <v-list-item-content>
-            <v-btn color="success" block class="text-left" text height="60">                                    
+            <v-btn color="success" block class="text-left" text height="60" @click="computeRank">                                    
               Applica                                    
             </v-btn>                  
           </v-list-item-content>
               <v-list-item-content>
-            <v-btn color="warning" block class="text-left" text height="60">
+            <v-btn color="error" block class="text-left" text height="60" @click="resetFilters">
               Reset
             </v-btn>                         
-          </v-list-item-content>
-               <v-list-item-content>
-            <v-btn color="error" block class="text-left" text height="60">
-              Annulla
-            </v-btn>                       
           </v-list-item-content>
               </v-list-item>         
           </v-list-item-content>        
         </v-list-item>  
       </v-list-group>
     </div>
-    </template>
-    <script>
+    <leaderboard-table
+      :rankHeaders="getRankHeader"
+      :rankRows="elements"
+    ></leaderboard-table>
+  </v-container>
+</template>
+
+<script>
 import ranksApi from '@/services/ranksApi'
 import trashCategories from '@/services/trashCategoriesApi'
 import citiesApi from '@/services/citiesApi'
-
+import LeaderboardTable from './LeaderboardTable'
 export default {
     name: "TrashRank",
     data: () => ({
         elements : [],
         trashCategories : [],
-        order : "ascendente",
+        order : "discendente",
         subject : "utente",
         subjectIcon : "face",
         category : "",
@@ -268,19 +265,45 @@ export default {
             data: []
         },
         city: undefined, 
-        closeMenuOnCitySelection: false
+        closeMenuOnCitySelection: false,
+        headerSubject : "utente",
+        headerCategory : ""
 
     }),
+    components : {
+      "leaderboard-table" : LeaderboardTable
+    },
     mounted() {
-        ranksApi.getRank().then(rank => this.$data.elements = rank)
       trashCategories.getCategories()
       .then(categories => categories.map(category => category.name))
       .then(categoriesName => this.$data.trashCategories = categoriesName)
-      .then(() => this.$data.category = this.$data.trashCategories[0])
+      .then(() => {
+        this.$data.category = this.$data.trashCategories[0]
+        this.$data.headerCategory = this.$data.trashCategories[0]
+      })
+      .then(() => this.computeRank())
 
     },
-    props: {
-
+    computed: {
+      getRankHeader : function() {
+        switch (this.headerSubject) {
+          case "utente" :
+            return [
+              {text : 'Utente', value : 'user.nickname'}, 
+              {text : this.headerCategory, value : 'value'}
+            ]
+          case "città" :
+            return [
+              {text : 'Città', value : 'city.name'}, 
+              {text : this.headerCategory, value : 'value'}
+            ]
+          case "edificio" :
+            return [
+              {text : 'Edificio', value : 'building.name'}, 
+              {text : this.headerCategory, value : 'value'}
+            ]
+        }
+      }
     },
     methods: {
       changeOrder(changeIn){
@@ -302,6 +325,40 @@ export default {
       },
       changeCategory(changeIn) {
         this.category = changeIn
+      },
+      resetFilters() {
+        this.order = "ascendente"
+        this.subject = "utente"
+        this.subjectIcon = "face"
+        this.category = this.trashCategories[0]
+        this.city = undefined
+      },
+      computeRank() {
+        var cap = this.city == undefined ? null : this.city.cap
+        var categoryApplied = this.category
+        switch(this.subject) {
+          case "utente" :
+            return ranksApi.getTrashRankByUser(this.order === "ascendente", this.category, cap)
+            .then(rank => this.elements = rank)
+            .then(() => {
+              this.headerSubject = "utente"
+              this.headerCategory = categoryApplied
+            })
+          case "città" :
+            return ranksApi.getTrashRankByCity(this.order === "ascendente", this.category)
+            .then(rank => this.elements = rank)
+            .then(() => {
+              this.headerSubject = "città"
+              this.headerCategory = categoryApplied
+            })
+          case "edificio" :
+            return ranksApi.getTrashRankByBuilding(this.order === "ascendente", this.category, cap)
+            .then(rank => this.elements = rank)
+            .then(() => {
+              this.headerSubject = "edificio"
+              this.headerCategory = categoryApplied
+            })
+        }
       }
     },
     watch: {
@@ -313,7 +370,7 @@ export default {
       },
       citySearchText(query) {
             query !== "" && query && !this.city && this.fetchCities(query)
-        }
+      }
     }
 }
 </script>

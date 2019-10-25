@@ -1,5 +1,6 @@
 <template>
- <div v-if="$vuetify.breakpoint.smAndDown">                                                                
+  <v-container>
+    <div v-if="$vuetify.breakpoint.smAndDown">                                                                
     <v-list-group append-icon="keyboard_arrow_down" flat>
       <template slot="activator">
         <v-list-item-content>
@@ -27,9 +28,9 @@
             </v-menu>                
           </v-list-item-content>
            </v-list-item>
-        <v-list-item> 
-          <v-list-item-content>        
-            <v-btn color="success" block class="myButton text-left"  text height="60">                                    
+        <v-list-item @click="computeRank()"> 
+          <v-list-item-content >        
+            <v-btn color="success" block class="myButton text-left"  text height="60" >                                    
               Applica                                    
             </v-btn>           
           </v-list-item-content>
@@ -68,7 +69,7 @@
           <v-list-item-content> 
             <v-list-item>
                <v-list-item-content>
-            <v-btn color="success" block class="text-left" text height="60">                                    
+            <v-btn color="success" block class="text-left" text height="60" @click="computeRank()">                                     
               Applica                                    
             </v-btn>                  
           </v-list-item-content>
@@ -77,24 +78,49 @@
         </v-list-item>  
       </v-list-group>
     </div>
+    <leaderboard-table
+      :rankHeaders="getRankHeader"
+      :rankRows="elements"
+    ></leaderboard-table>
+  </v-container>
 </template>
 <script>
 import ranksApi from '@/services/ranksApi'
+import LeaderboardTable from './LeaderboardTable'
 export default {
     name: "LevelAndScoreRank",
     data: () => ({
         elements : [],
-        order : 'ascendente'
+        order : 'discendente'
     }),
+    components : {
+      "leaderboard-table" : LeaderboardTable
+    },
+    computed : {
+      getRankHeader : function() {
+        var orderBy = this.isLevelRank ? "Livello" : "Punteggio"
+        return [
+          {text : 'Utente', value : 'user.nickname'}, 
+          {text : orderBy, value : 'value'}
+        ]
+      }
+    },
     mounted() {
-        ranksApi.getRank().then(rank => this.$data.elements = rank)
+        this.computeRank()
     },
     props: {
-
+      isLevelRank : {type : Boolean}
     },
     methods: {
       changeOrder(changeIn){
         this.order = changeIn
+      },
+      computeRank() {
+         if(this.isLevelRank) {
+          ranksApi.getLevelRank(this.order === "ascendente").then(rank => this.elements = rank)
+        } else {
+          ranksApi.getScoreRank(this.order === "ascendente").then(rank => this.elements = rank)
+        }
       }
     }
 }

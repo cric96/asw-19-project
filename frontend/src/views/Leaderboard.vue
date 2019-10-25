@@ -10,10 +10,10 @@
                 <v-tab>Per Rifiuto</v-tab>
                
                 <v-tab-item>
-                    <level-and-score/>
+                    <level-and-score :isLevelRank="true"/>
                 </v-tab-item>
                 <v-tab-item>
-                    <level-and-score/>
+                    <level-and-score :isLevelRank="false"/>
                 </v-tab-item>
                <v-tab-item>
                     <trash/>
@@ -35,7 +35,7 @@ export default {
         'trash' : TrashRank
     },
     mounted() {
-        ranksApi.getRank().then(rank => this.$data.elements = rank)
+        //ranksApi.getRank().then(rank => this.$data.elements = rank)
     }
 }
 </script>
