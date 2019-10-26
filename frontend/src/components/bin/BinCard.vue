@@ -1,5 +1,5 @@
 <template>
-    <flip-card v-model="flip" fill-height mouseover>
+    <flip-card v-model="flip" fill-height>
         <template slot="front">
             <!-- Definition of FRONT card -->
             <v-card fill-height>
@@ -79,23 +79,33 @@ export default {
         },
         options() {
             let labels = this.bin.collectedTrashes.map(collectedTrash => collectedTrash.trashCategory.name)
-            return createChartOptions(labels)
+            return createChartOptions(this.bin.collectedTrashes)
         }
     }
 }
 
-function createChartOptions(labels) {
+function createChartOptions(trashes) {
+    console.log(trashes.map(collectedTrash => collectedTrash.trashCategory))
     return {
         chart: {
             width: '100%',
-            type: 'donut'
+            type: 'pie'
         },
         legend: {
             show: false,
             showForSingleSeries: false,
             position: 'bottom'
         },
-        labels: labels
+        labels: trashes.map(collectedTrash => collectedTrash.trashCategory.name),
+        fill: {
+            type: 'image',
+            opacity: 0.85,
+            image: {
+              src: trashes.map(collectedTrash => collectedTrash.trashCategory.image)
+            },
+            width: 50,
+            imagedHeight: 50
+        },
     }
 }
 
