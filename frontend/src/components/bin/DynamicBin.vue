@@ -1,46 +1,11 @@
-<template>
 
-    <v-card outlined>
-        <v-card-title primary-title two-line>{{bin.binCategory.name}}</v-card-title>
-        <v-divider></v-divider>
-        <v-container fluid>
-            <v-layout row wrap justify-center>
-                <canvas ref="canvasRect" id="canvas_rect"></canvas>
-                <canvas ref="hiddenMask" id="hidden_mask" ></canvas>
-            </v-layout>
-        </v-container>
-        <v-card-actions>
-            <h6 class="ml-2 headline font-weight-light">Collected: {{collectedTotal}}</h6> <!-- or font-weight-thin? -->
-            <v-spacer></v-spacer>
-            <v-btn icon @click="show = !show">
-                <v-icon>{{ show ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</v-icon>
-            </v-btn>
-        </v-card-actions>
-        <v-expand-transition>
-            <div v-show="show">
-                <v-container fluid>
-                    <template v-for="collectedTrash in bin.collectedTrashes">
-                        <v-layout row wrap justify-center :key="collectedTrash._id" class="ma-2" >
-                            <v-col cols="auto">
-                                {{collectedTrash.trashCategory.name}}
-                                <v-img :src="collectedTrash.trashCategory.image" width="24"></v-img>
-                            </v-col>
-                            <v-col >
-                                <v-progress-linear height="25" reactive :value="(collectedTrash.quantity / collectedTotal) * 100">
-                                    <template v-slot="{ value }">
-                                        <strong>{{ collectedTrash.quantity }}</strong>
-                                    </template>
-                                </v-progress-linear>
-                            </v-col>
-                        </v-layout>
-                    </template>
-                </v-container>
-            </div>
-            
-        </v-expand-transition>
-    </v-card>
-    
+<template>
+    <div>
+        <canvas ref="canvasRect" id="canvas_rect"></canvas>
+        <canvas ref="hiddenMask" id="hidden_mask" ></canvas>
+    </div>
 </template>
+
 
 <style scoped>
 #hidden_mask {
@@ -56,7 +21,6 @@
 const maskUrl = 'https://i.ibb.co/bRmhY52/trash-clip.png'
 const binUrl = 'https://i.ibb.co/fDXhsy7/trash.png'
 
-import Bin from '@/model/bin'
 export default {
     name: 'DynamicBin',
     props: {
@@ -67,8 +31,7 @@ export default {
     },
     data:() => ({
         maskImage: null,
-        binImage: null,
-        show: false
+        binImage: null
     }),
     watch: {
         bin: function(newBin) {
@@ -77,12 +40,6 @@ export default {
     },
     mounted() {
         this.draw(this.bin.binCategory.colour)
-         
-    },
-    computed: {
-        collectedTotal() {
-            return this.bin.totalQuantity
-        }
     },
     methods: {
         async draw(color) {
