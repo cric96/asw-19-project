@@ -113,6 +113,7 @@ export default {
             var bin = getters.binFromTrashCategoryName(categoryName)
             var collectedTrash = bin.collectedTrashes.find(trash => trash.trashCategory.name === categoryName)
             collectedTrash.quantity ++
+            bin.totalQuantity ++
         },
         addMember({ commit }, { buildingId, users}) {
             return ApiBuilding.addMember(buildingId, users).then(updateBuilding => {
