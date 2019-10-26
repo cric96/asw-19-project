@@ -48,9 +48,6 @@ export default {
       dialog : false
     }),
     sockets: {
-        connect: function () {
-            console.log('socket connected')
-        },
         newLevel: function (data) {
           this.dialog=true
         }

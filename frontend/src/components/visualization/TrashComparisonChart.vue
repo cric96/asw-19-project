@@ -62,13 +62,6 @@ function createOptions(labels, colors) {
             }
         },
         colors : colors, //put the color passed
-        fill: {
-            opacity: 1,
-            type: 'gradient',
-            gradient: {
-                shade: 'light'
-            }
-        }
     }
 }
 export default {

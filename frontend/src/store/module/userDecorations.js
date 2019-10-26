@@ -9,7 +9,8 @@ export default {
         trashThrown : [],
     },
     getters : {
-        trashThrown : state => state.trashThrown
+        trashThrown : state => state.trashThrown,
+        isTrashCached : state => state.trashThrown.length != 0
     },
     actions : {
         //retrive trash throweb by logged user

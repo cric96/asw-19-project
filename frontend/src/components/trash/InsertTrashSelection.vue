@@ -25,7 +25,8 @@
       <v-speed-dial v-model="fabExpanded"
                     bottom right fixed direction="left" 
                     transition="scale-transition" 
-                    :loading="loaded">
+                    :loading="loaded"
+      >
         
         <template v-slot:activator>
           <v-btn fab light v-model="fabExpanded">
@@ -34,7 +35,7 @@
           </v-btn>
         </template>
         <v-btn fab light @click='openCamera("ia-insertion")'>
-            <v-icon>camera</v-icon>
+            <v-icon>camera_alt</v-icon>
         </v-btn>
         <v-btn fab light @click="openManualForm">
             <v-icon>edit</v-icon>

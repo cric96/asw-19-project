@@ -118,7 +118,6 @@ export default {
         },
         manageResult(promise) {
             promise.then(predictionResult => {
-                console.log(predictionResult)
                 if(predictionResult.data.status != prediction.OK_STATUS) { //if the category is not found
                     this.resNotFound = true
                 } else {
