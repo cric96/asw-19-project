@@ -41,8 +41,7 @@ export default {
     'trash-history' : TrashHistoryVisualization
   },
   data: () => ({
-    binsAreLoadings: true,
-    quality: 0.5
+    binsAreLoadings: true
   }),
   computed: {
     ...mapGetters({
@@ -73,10 +72,5 @@ export default {
       }
     }
   }
-};
-</script>
-<style>
-#fileInput {
-  display: none;
 }
-</style>
+</script>

@@ -66,7 +66,7 @@ function createResponseArray(trashCategories, trashesCollected) {
         let trashCollected = trashesCollected.find(trash => utils.sameMongoId(trash.trashCategory._id, trashCategory._id))
         if(trashCollected === undefined) { //if it is undefined, it means that no trash with this category has thrown by user
             return {
-                category : trashCategory,
+                trashCategory : trashCategory,
                 quantity : 0
             }
         } else { //otherwise, return the trash collected loaded from db

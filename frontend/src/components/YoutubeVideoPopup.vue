@@ -2,7 +2,7 @@
         <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
             <div class="popup-style">
                 <v-toolbar height="60px" dark color="primary">
-                    <v-btn icon dark @click="dialog = false">
+                    <v-btn icon dark @click="close">
                         <v-icon>mdi-close</v-icon>
                     </v-btn>
                     <v-toolbar-title>Video</v-toolbar-title>
@@ -27,8 +27,8 @@ export default {
         "loader" : Loader
     },
     data : () => ({
-        dialog : false,
-        videoLoading : false
+        videoLoading : false,
+        dialog : false
     }),
     methods : {
         open() {
@@ -42,6 +42,7 @@ export default {
         },
         close() {
             this.dialog = false
+            this.value = false
         }
     }
 }

@@ -60,13 +60,7 @@ function createOptions(labels, colors) {
             }
         },
         colors : colors,
-        fill: {
-            opacity: 1,
-            type: 'gradient',
-            gradient: {
-                shade: 'light'
-            }
-        }
+        
     }
 }
 export default {

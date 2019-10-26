@@ -30,12 +30,6 @@ export default {
         loaded: false,
         initialize: [false, false, false, false],
         filterTrashesBy : ["DAY", "WEEK", "MONTH"],
-    }),
-    watch: {
-        initialize(value) {
-          console.log("changed")
-          console.log(this.$data.initialize)
-        }
-    }
+    })
 }
 </script>
