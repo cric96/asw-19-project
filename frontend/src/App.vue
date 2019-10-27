@@ -35,4 +35,7 @@ export default {
     background-size: cover;
     height: 100%;
   }
+  .full-vh {
+    height: 100vh;
+  }
 </style>
