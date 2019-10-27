@@ -100,7 +100,7 @@ export default {
             })
         },
         fetchBinsOfActiveBuilding({ commit, getters }) {
-            if(getters.activeBuilding === null) {
+            if(!getters.activeBuilding) {
                 return Promise.reject("No active building")
             } else {
                 //join the building room for socket updates
