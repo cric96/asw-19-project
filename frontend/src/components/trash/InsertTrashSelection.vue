@@ -29,7 +29,7 @@
       >
         
         <template v-slot:activator>
-          <v-btn fab light v-model="fabExpanded">
+          <v-btn fab light v-model="fabExpanded" class="ping">
             <v-icon v-if="fabExpanded">close</v-icon>
             <img style="width: 35%" v-else src="@/assets/addTrash.png"/>
           </v-btn>

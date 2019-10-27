@@ -1,8 +1,9 @@
 // import { ApiBuilding } from '@/services/mockApiBuilding'
 import ApiBuilding from '@/services/buildingsApi'
-import ApiBin from "@/services/binsApi";
+import ApiBin from "@/services/binsApi"
 import * as types from '../mutationTypes'
 import store from '../store'
+import Notification from "@/model/notification"
 //TODO refactor, rimuovi la logica dei bin da qua, usa un'altro file
 /**
  * manage building selection and user buildings state.
@@ -114,6 +115,11 @@ export default {
             var collectedTrash = bin.collectedTrashes.find(trash => trash.trashCategory.name === categoryName)
             collectedTrash.quantity ++
             bin.totalQuantity ++
+        },
+        SOCKET_newBuilding({dispatch}) {
+            var msg = new Notification("Nuovo edificio!").setTo("/buildings")
+            this.dispatch('msg/addMessage', msg) //show notification
+            dispatch("fetchBuildings")
         },
         addMember({ commit }, { buildingId, users}) {
             return ApiBuilding.addMember(buildingId, users).then(updateBuilding => {
