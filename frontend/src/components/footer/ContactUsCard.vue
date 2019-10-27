@@ -19,7 +19,11 @@
             <v-list-item two-line>
                 <v-list-item-content>
                     <v-list-item-title>Oppure potete utilizzare i nostri canali social:</v-list-item-title>
-                    <v-list-item-subtitle>
+                </v-list-item-content>
+            </v-list-item>
+            <v-row class="align-center justify-center">
+                <v-flex xs6>
+                    <div class="text-xs-center">
                         <v-btn
                             v-for="icon in socialIcons"
                             :key="icon.name"
@@ -29,9 +33,10 @@
                         >
                             <v-icon size="24px">{{icon.name}}</v-icon>
                         </v-btn>
-                    </v-list-item-subtitle>
-                </v-list-item-content>
-            </v-list-item>
+                    </div>
+                </v-flex>
+            </v-row>
+                
         </v-card-text>
     </v-card>
 </template>

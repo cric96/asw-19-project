@@ -39,17 +39,18 @@
 
 <script>
 
-import PrivacyCard from '@/components/footer/PrivacyCard'
+import IdeologyCard from '@/components/footer/IdeologyCard'
 import ContactUsCard from '@/components/footer/ContactUsCard'
+import TeamCard from '@/components/footer/TeamCard'
 export default {
     name : "Footer",
     components: {
-      'privacy-card' : PrivacyCard,
-      'contact-us-card' : ContactUsCard
+      'ideology-card' : IdeologyCard,
+      'contact-us-card' : ContactUsCard,
+      'team-card' : TeamCard
     },
     data: () => ({
       links: [
-        'Privacy',
         'Team',
         'Ideologia',
         'Contattaci',
@@ -58,12 +59,14 @@ export default {
     methods : {
       getComponentFromName(name) {
         switch(name) {
-          case "Privacy":
-            return 'privacy-card'
+          case "Ideologia":
+            return 'ideology-card'
           case "Contattaci":
             return 'contact-us-card'
+          case 'Team':
+            return 'team-card'
           default:
-            return 'privacy-card'
+            return 'ideology-card'
         }
       }
     }
