@@ -4,7 +4,7 @@ var objectIdValidation = require("./middleware/objectIdMiddleware")
 var buildingFetching = require("./middleware/fetchBuildingMiddleware")
 var auth = require("./middleware/authMiddleware")
 router.route('/buildings/:id/members')
-    .post(auth, objectIdValidation, buildingFetching, membersController.addBuildingMember)
+    .post(auth, objectIdValidation, buildingFetching, membersController.addBuildingMembers)
     .get(auth, objectIdValidation, buildingFetching, membersController.listBuildingMembers);
 /**
  * route to manage single member in the building, the member id is its firebase uid

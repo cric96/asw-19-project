@@ -5,6 +5,7 @@ var httpCode = require("../utils/httpCode")
 var User = mongoose.model("User")
 var Building = mongoose.model("Building")
 var utils = require('../utils/utils')
+var socket = require("../socket")
 
 let areUserAlreadyInBuiding = function(candidates, building) {
     return candidates.filter(candidate => building.isMember(candidate)).length != 0
@@ -14,7 +15,7 @@ let areUserAlreadyInBuiding = function(candidates, building) {
  * if one of these element aren't in the database or is already in building,
  * no one of members are inserted in the database
  */
-exports.addBuildingMember = function(req, res) {
+exports.addBuildingMembers = function(req, res) {
     let building = res.locals.buildingFetched
     if(!building.isOwner(res.locals.userAuth)) {
         res.setForbidden("Only owner can add members")
@@ -46,7 +47,12 @@ exports.addBuildingMember = function(req, res) {
                 }, { returnNewDocument: true} )
             }
         })
-        .then(building => res.setOk(membersFetched))
+        .then(building => {
+            membersFetched.forEach(user => {
+                socket.sendToUser(user._id, new socket.Message("newBuilding", building._id)) 
+            })
+            res.setOk(membersFetched)
+        })
         .catch(err => errorHandler(err, res))
 }
 /**
