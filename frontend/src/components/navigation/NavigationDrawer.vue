@@ -1,5 +1,6 @@
 <template>
-    <v-navigation-drawer v-bind:value.sync="value" @input="val => $emit('input', val)" app clipped >
+    <v-navigation-drawer 
+        v-bind:value.sync="value" @input="val => $emit('input', val)" app clipped>
         <!-- Header navigation drawer -->
         <template v-slot:prepend>
             <nav-user-header v-if="userProfile" :user="userObject" @clickEditUser="clickUser"/>

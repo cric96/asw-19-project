@@ -1,12 +1,12 @@
 <template>
     <v-lazy v-model="initialize">
         <v-layout wrap>
-           <v-col v-for="(filter,index) in filterTrashesBy" :key="filter" cols="12" md="6" sm="6">
+           <v-col v-for="(filter,index) in filterTrashesBy" :key="filter" cols="12" md="4" sm="6">
               <v-lazy v-model="initialize[index]">
                 <trash-chart :height="300" :filterBy="filter"/>
               </v-lazy>
           </v-col>
-          <v-col cols="12" md="6" sm="6">
+          <v-col cols="12" md="4" sm="6">
             <v-lazy v-model="initialize[4]">
               <comparison-chart :height="300"/>
             </v-lazy>

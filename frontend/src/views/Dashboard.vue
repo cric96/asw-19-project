@@ -7,13 +7,19 @@
       <snackbar-notification/>
 
       <complete-user-info v-if="userProfile" :value="needCompletation" :user="userObject"/>
-
-      <v-app-bar app clipped-left>
+      <!-- a style changing... 
+      <v-app-bar src="../assets/background-home.svg" app clipped-left dark>
         <v-app-bar-nav-icon @click="drawer = !drawer"/>
+        <v-toolbar-title class="display-1 font-weight-bold">Scanbage</v-toolbar-title>
+        <v-spacer></v-spacer>
+      </v-app-bar>
+      -->
+      <v-app-bar app clipped-left>
+        <v-app-bar-nav-icon @click="drawer = !drawer" />
         <v-toolbar-title>Scanbage</v-toolbar-title>
         <v-spacer></v-spacer>
       </v-app-bar>
-
+      
       <navigation-drawer v-model="drawer" :navItems="navItems"></navigation-drawer>
 
       <v-content>
@@ -39,7 +45,7 @@ import NavigationDrawer from '@/components/navigation/NavigationDrawer'
 import CompleteUserInfoForm from '@/components/authentication/CompleteUserInfoForm'
 import SnackbarNotification from '@/components/SnackbarNotification'
 import NewLevel from '@/components/NewLevel'
-import Footer from '@/components/Footer'
+import Footer from '@/components/footer/Footer'
 import { mapGetters } from 'vuex'
 import { createNamespacedHelpers } from 'vuex'
 const { mapActions } = createNamespacedHelpers('trashCategories');

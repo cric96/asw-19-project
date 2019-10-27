@@ -10,10 +10,7 @@
 </template>
 <script>
 export default {
-    name : "Loader",
-    data: () => ({
-      color: "red"
-    })
+    name : "Loader"
 }
 </script>
 <style scoped>
