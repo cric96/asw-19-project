@@ -1,7 +1,7 @@
 <template>
     <v-layout>
       <!-- Content loader -->
-      <v-layout v-if="loadingBins" row wrap align-center justify-center>
+      <v-layout v-if="buildingsIsLoading || binsAreLoading" row wrap align-center justify-center>
         <loader></loader>
       </v-layout>
     
@@ -19,7 +19,7 @@
       </v-layout>
 
       <!-- No building selected or available, show an empty view-->
-      <empty-view v-else class="full-vh align-center" icon="fas fa-home">
+      <empty-view v-else-if="!areAvailableBuildings" class="full-vh align-center" icon="fas fa-home">
         <template slot="title">Nessuna abitazione attiva</template>
         <template slot="message">Crea ed imposta una nuova abitazione per iniziare a gettare rifiuti! :)</template>
         <template slot="actions">
@@ -51,18 +51,20 @@ export default {
     'empty-view': EmptyView
   },
   data: () => ({
-    binsAreLoadings: true
+    binsAreLoading: true
   }),
   computed: {
     ...mapGetters({
+      buildingsIsLoading: "building/buildingsIsLoading",
       activeBuilding: "building/activeBuilding",
-      bins : "building/bins"
+      buildings: "building/buildings",
+      bins : "building/bins",
     }),
-    loadingBins: function() {
-      return this.binsAreLoadings
-    },
     canInsertTrash: function() {
-      return this.activeBuilding && !this.loadingBins
+      return this.areAvailableBuildings && this.activeBuilding && !this.binsAreLoading
+    },
+    areAvailableBuildings() {
+      return !this.buildingsIsLoading && this.buildings.length > 0
     }
   },
   watch: {
@@ -75,10 +77,10 @@ export default {
   },
   methods: {
     updateBins() {
-      this.binsAreLoadings = true
+      this.binsAreLoading = true
       this.$store.dispatch("building/fetchBinsOfActiveBuilding")
         .catch(err => {})
-        .finally(() => this.binsAreLoadings = false)
+        .finally(() => this.binsAreLoading = false)
     }
   }
 };

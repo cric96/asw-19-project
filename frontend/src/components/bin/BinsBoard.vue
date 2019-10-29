@@ -2,7 +2,7 @@
     <v-layout wrap>
         <content-loader justify="center" v-if="loading" :loading="loading"></content-loader>
         <v-col v-else v-for="(bin, index) in bins" :key="index" cols="12" md="3" sm="6">
-            <bin-card :bin="bin" hover="true"></bin-card>
+            <bin-card :bin="bin"></bin-card>
         </v-col>
     </v-layout>
 </template>

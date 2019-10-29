@@ -108,10 +108,14 @@ export default {
             if(!this.loaded) {
                 return []
             }
-            var labels = this.userAndTrashData.map(element => element[MEMBER].nickname)
+            /* nickname is not always available, ex. user logged with facebook,
+             * format the user display name using a vuejs filter */
+            let format = this.$options.filters.formatUserDisplayName
+            var labels = this.userAndTrashData.map(element => format(element[MEMBER]))
             var colors = this.userAndTrashData[FIRST][TRASH].map(trash => {
                 return trash.binCategory.colour
             })
+            console.log(labels)
             return createOptions(labels, colors)
         }
     },
@@ -137,7 +141,10 @@ export default {
     methods: {
         fetchData : function() {
             binsApi.getBinsGroupByMember(this.activeBuilding)
-                .then(userAndTrashes => this.userAndTrashData = userAndTrashes)
+                .then(userAndTrashes => {
+                    console.log("then: ", userAndTrashes)
+                    this.userAndTrashData = userAndTrashes
+                })
         }
     }
 }

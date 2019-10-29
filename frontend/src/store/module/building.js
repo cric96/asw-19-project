@@ -68,6 +68,7 @@ export default {
             return ApiBuilding.createBuilding(building).then(newBuilding => 
                 ApiBuilding.addMembers(newBuilding._id, building.members).then(addedMembers => {
                     newBuilding.members = addedMembers
+                    newBuilding.members.unshift(building.owner)
                     commit(types.APPEND_AVAILABLE_BUILDING, newBuilding)
                 })
             )
@@ -75,23 +76,14 @@ export default {
         updateBuilding({ commit, state }, building) {
             let oldMembers = state.availableBuildings.find(current => current._id == building._id).members
             let [toAdd, toRemove] = computeDiff(building.members.map(m => m.firebase_uid), oldMembers.map(m => m.firebase_uid))
-            // create the promise associate to add of members
-            let promiseAdd = toAdd.length == 0 ? Promise.resolve([]) : ApiBuilding.addMembers(building._id, toAdd)
-            // create the promise associate to remove of members
-            let promiseRemove = toRemove.length == 0 ? Promise.resolve() : Promise.all(toRemove.map(uid => ApiBuilding.removeMember(building._id, uid)))
             
-            return ApiBuilding.updateBuilding(building).then(updatedBuilding => {
-                return promiseAdd.then(newMembers => {
-                    updatedBuilding.members = updatedBuilding.members.concat(newMembers)
-                    return promiseRemove.then(() => updatedBuilding)
+            return ApiBuilding.updateBuilding(building)
+                .then(updatedBuilding => addMembers(updatedBuilding, toAdd))
+                .then(updatedBuilding => removeMembers(updatedBuilding, toRemove))
+                .then(updatedBuilding => {
+                    commit(types.UPDATE_BUILDING, updatedBuilding)
+                    return updatedBuilding
                 })
-            })
-            .then(updatedBuilding => {
-                // remove members from local copy
-                updatedBuilding.members = updatedBuilding.members.removeIf(m => toRemove.includes(m.firebase_uid))
-                commit(types.UPDATE_BUILDING, updatedBuilding)
-                return updatedBuilding
-            })
         },
         deactivateBuilding({ commit, state }, buildingId) {
             return ApiBuilding.deleteBuilding(buildingId).then(() => {
@@ -162,13 +154,32 @@ export default {
     }
 };
 
+function addMembers(building, membersToAdd) {
+    if(membersToAdd.length > 0) {
+        return ApiBuilding.addMembers(building._id, membersToAdd).then(newMembers => {
+            building.members = building.members.concat(newMembers)
+            return building
+        })
+    }
+    return Promise.resolve(building)
+}
+
+function removeMembers(building, membersToRemove) {
+    if(membersToRemove.length > 0) {
+        let promises = membersToRemove.map(memberUid => ApiBuilding.removeMember(building._id, memberUid))
+        Promise.all(promises)
+            .then(() => {
+                building.members = building.members.removeIf(m => membersToRemove.includes(m.firebase_uid))
+                return building
+            })
+    }
+    return Promise.resolve(building)
+}
+
 /**
  * Compute the difference between two array. 
  * What element are present in excess to array1 and 
- * what element are missing  
- * @param {*} array1 
- * @param {*} array2 
- * @returns Array Array of two arrays, the first one contains
+ * what element are missing 
  */
 function computeDiff(array1, array2) {
     let diff1 = array1.filter(elem => !array2.includes(elem))
