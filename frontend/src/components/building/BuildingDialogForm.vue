@@ -77,7 +77,7 @@
                             </v-row>
                             <v-row>
                                 <v-col cols="12">
-                                    <autocomplete-managers v-model="building.members"></autocomplete-managers>
+                                    <autocomplete-managers v-model="building.members" :filter="filterExcludeOwner"></autocomplete-managers>
                                 </v-col>
                             </v-row>
                         </v-form>
@@ -94,11 +94,10 @@
 </template>
 
 <script>
-import { createNamespacedHelpers } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import citiesApi from '@/services/citiesApi'
 import AutocompletMembers from '@/components/AutocompleteMembers'
 import Notification from "@/model/notification"
-const { mapGetters, mapActions } = createNamespacedHelpers('building')
 
 
 export default {
@@ -125,7 +124,10 @@ export default {
                     vm.value = !vm.value
                 }
             }
-        }
+        },
+        ...mapGetters({
+            currentUser: 'user/userProfile'
+        })
     },
     watch: {
         citySearchText(query) {
@@ -133,9 +135,12 @@ export default {
         }
     },
     methods: {
-         ...mapActions([
-            'createBuilding' 
+         ...mapActions('building', [
+            'createBuilding'
         ]),
+        filterExcludeOwner(member) {
+          return member.firebase_uid != this.currentUser.firebase_uid
+        },
         fetchCities(query) {
             this.cities.loading = true
             citiesApi.getAllFilter(query).then(data => {
@@ -154,6 +159,7 @@ export default {
         pressSaveBuilding() {
             if (this.$refs.form.validate()) {
                 let newBuilding = Object.assign({}, this.building)
+                newBuilding.owner = this.currentUser
                 newBuilding.members = (this.building.members) ? this.building.members.map(member => member.firebase_uid) : []
                 let promise = this.createBuilding(newBuilding).then(() => {
                     this.$refs.form.reset()

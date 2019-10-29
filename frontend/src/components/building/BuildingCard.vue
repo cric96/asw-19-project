@@ -1,5 +1,5 @@
 <template>
-    <v-card v-if="building">
+    <v-card v-if="building" :loading="pendingOperation">
       <v-img height="200" :src="mapImage" class="align-end"></v-img>
       <v-card-title class="display-1 gradient-text">{{ building.name }}</v-card-title>
       <v-card-text class="subtitle-1">
@@ -33,7 +33,7 @@
           </v-icon>
         </v-btn>
       </v-card-actions>
-      <dialog-details v-model="showManager" :building="building" :editable="canEdit"></dialog-details>
+      <dialog-details v-if="building" v-model="showManager" :building="building" :editable="canEdit"></dialog-details>
     </v-card>
 </template>
 
@@ -48,7 +48,8 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
     name: 'building-card',
     data: () => ({
-      showManager: false
+      showManager: false,
+      pendingOperation: false
     }),
     props: {
       building: {
@@ -67,14 +68,12 @@ export default {
         ]),
         // TODO: add dialog for confirm the delete of building
         onClickDelete() {
-          /*this.$alertDialog('ciao', {
-            positiveButtonText: 'ciaoooo'
-          })*/
+          this.pendingOperation = true
           this.deactivateBuilding(this.building._id).then(() => {
             this.$store.dispatch('msg/addMessage', new Notification('Abitazione eliminata'))
           }).catch(err => {
             // TODO: show error
-          })
+          }).finally(() => this.pendingOperation = false)
         },
         markAsActive: function() {
           this.changeActiveBuilding(this.building._id)
@@ -89,10 +88,6 @@ export default {
     ]),
     canEdit: function() {
       return this.building.owner.firebase_uid == this.userProfile.firebase_uid
-    },
-    buildingMembers: function() {
-      let ownerId = this.building.owner.firebase_uid
-      return this.building.members.filter(member => member.firebase_uid.toString() !== ownerId.toString())
     },
     mapImage: function() {
       return hereApi.mapImageURL(this.building.city.state, this.building.city.name, this.building.address, this.building.apartmentNumber, 400)
