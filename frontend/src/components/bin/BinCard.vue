@@ -23,8 +23,13 @@
                 <v-card-title primary-title two-line>{{bin.binCategory.name}}</v-card-title>
                 <v-divider></v-divider>
                 <v-card-text style="height: 200px;">
-                    <v-layout row wrap justify-center>
+                    <v-layout row wrap justify-center v-if="bin.totalQuantity != 0">
                         <apexchart :options="options" :series="series"></apexchart>
+                    </v-layout>
+                    <v-layout fill-height row wrap justify-center align-center v-else>
+                         <div class="text-xs-center headline">
+                            Nessun rifiuto <v-icon size=34>sentiment_dissatisfied</v-icon> 
+                         </div>
                     </v-layout>
                 </v-card-text>
                 <v-card-actions>
@@ -85,7 +90,6 @@ export default {
 }
 
 function createChartOptions(trashes) {
-    console.log(trashes.map(collectedTrash => collectedTrash.trashCategory))
     return {
         chart: {
             width: '100%',
@@ -97,15 +101,13 @@ function createChartOptions(trashes) {
             position: 'bottom'
         },
         labels: trashes.map(collectedTrash => collectedTrash.trashCategory.name),
-        fill: {
-            type: 'image',
-            opacity: 0.85,
-            image: {
-              src: trashes.map(collectedTrash => collectedTrash.trashCategory.image)
-            },
-            width: 50,
-            imagedHeight: 50
+        dataLabels: {
+            enabled: true,
+            formatter: function (val, opts) {
+                return trashes[opts.seriesIndex].trashCategory.name
+            }
         },
+        colors : ["#004D40", "#00695C", "#00796B", "#00897B", "#00897B", "#388E3C"]
     }
 }
 

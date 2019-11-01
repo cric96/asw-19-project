@@ -1,12 +1,13 @@
 <template>
   <v-container>
-    <div v-if="$vuetify.breakpoint.smAndDown">                                                                
-    <v-list-group append-icon="keyboard_arrow_down" flat>
+    <div v-if="$vuetify.breakpoint.mdAndDown">                                                                
+    <v-list-group append-icon="keyboard_arrow_down" class="elevation-1">
       <template slot="activator">
         <v-list-item-content>
           <v-list-item-title class="overline" ><h2>Filtri</h2></v-list-item-title>                   
         </v-list-item-content>
       </template>
+      <v-divider class="mx-2"></v-divider>
       <v-list-item-group >
           <v-list-item>
           <v-list-item-content>          
@@ -27,7 +28,9 @@
               </v-list>
             </v-menu>                
           </v-list-item-content>
+          
            </v-list-item>
+           <v-divider class="mx-8"></v-divider>
         <v-list-item @click="computeRank()"> 
           <v-list-item-content >        
             <v-btn color="success" block class="myButton text-left"  text height="60" >                                    
@@ -39,12 +42,13 @@
       </v-list-group>
     </div>       
     <div v-else>
-      <v-list-group append-icon="keyboard_arrow_down" flat>
+      <v-list-group append-icon="keyboard_arrow_down" class="elevation-1">
       <template slot="activator">
         <v-list-item-content>
           <v-list-item-title class="overline" ><h2>Filtri</h2></v-list-item-title>                   
         </v-list-item-content>
       </template>
+      <v-divider class="mx-2"></v-divider>
       <v-list-item>
           <v-list-item-content>          
             <v-menu bottom :offset-y="true">
@@ -79,6 +83,7 @@
       </v-list-group>
     </div>
     <leaderboard-table
+      class="my-2"
       :rankHeaders="getRankHeader"
       :rankRows="elements"
     ></leaderboard-table>

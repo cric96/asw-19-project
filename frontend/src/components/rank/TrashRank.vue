@@ -1,12 +1,13 @@
 <template class="generalFont">
   <v-container>
-    <div v-if="$vuetify.breakpoint.lgAndDown">                                                                
-    <v-list-group append-icon="keyboard_arrow_down" flat>
+    <div v-if="$vuetify.breakpoint.mdAndDown">                                                                
+    <v-list-group append-icon="keyboard_arrow_down" class="elevation-1 ">
       <template slot="activator">
         <v-list-item-content>
           <v-list-item-title class="overline" ><h2>Filtri</h2></v-list-item-title>                   
         </v-list-item-content>
       </template>
+      <v-divider class="mx-2"></v-divider>
       <v-list-item-group >
       <v-list-item >
           <v-list-item-content>
@@ -31,6 +32,7 @@
             </v-menu>          
           </v-list-item-content>
           </v-list-item>
+          <v-divider class="mx-8"></v-divider>
           <v-list-item>
           <v-list-item-content>    
             <v-menu bottom :offset-y="true">
@@ -51,6 +53,7 @@
             </v-menu>                  
           </v-list-item-content>
            </v-list-item>
+           <v-divider class="mx-8"></v-divider>
         <v-list-item v-if="!isSubjectCity()">
           <v-list-item-content>
            <v-menu bottom :offset-y="true" :close-on-content-click="false" v-model="closeMenuOnCitySelection">
@@ -83,6 +86,7 @@
             </v-menu>       
           </v-list-item-content>
           </v-list-item>
+          <v-divider class="mx-8"></v-divider>
         <v-list-item>
           <v-list-item-content>
             <v-menu bottom :offset-y="true">
@@ -106,6 +110,7 @@
             </v-menu>                                         
           </v-list-item-content>
           </v-list-item>
+          <v-divider class="mx-8"></v-divider>
         <v-list-item :ripple="false" class="formButtons">
           <v-list-item-content>        
             <v-btn color="success" block class="lastButtons text-left" text height="60" @click="computeRank">                                    
@@ -122,12 +127,13 @@
       </v-list-group>
     </div>       
     <div v-else>
-      <v-list-group append-icon="keyboard_arrow_down" flat>
+      <v-list-group append-icon="keyboard_arrow_down" class="elevation-1">
       <template slot="activator">
         <v-list-item-content>
           <v-list-item-title class="overline" ><h2>Filtri</h2></v-list-item-title>                   
         </v-list-item-content>
       </template>
+      <v-divider class="mx-2"></v-divider>
       <v-list-item>
           <v-list-item-content>
             <v-menu bottom :offset-y="true" :close-on-content-click="false" v-model="closeMenuOnCategorySelection">
@@ -240,6 +246,7 @@
     <leaderboard-table
       :rankHeaders="getRankHeader"
       :rankRows="elements"
+      class="my-2"
     ></leaderboard-table>
   </v-container>
 </template>
@@ -395,5 +402,8 @@ export default {
   font-size: 12 !important;
   letter-spacing: 1.5 !important;
   text-transform: uppercase !important;
+}
+.prova {
+  background-color: #e1ffb1
 }
 </style>

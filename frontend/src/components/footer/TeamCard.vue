@@ -9,25 +9,23 @@
 
         <v-card-text>
             <v-list three-line>
-                <template v-for="(worker) in team">
+                <template v-for="(worker, index) in team">
                     <v-list-item
                         :key="worker.name"
                     >
-
                         <v-list-item-avatar>
                             <v-img :src="worker.avatar"></v-img>
                         </v-list-item-avatar>
                         
                         <v-list-item-content>
-                            <v-list-item-name v-html="worker.name"></v-list-item-name>
-                            <v-list-item-description v-html="worker.description"></v-list-item-description>
+                            <v-list-item-title v-html="worker.name"></v-list-item-title>
+                            <v-list-item-subtitle v-html="worker.description"></v-list-item-subtitle>
                         </v-list-item-content>
                     </v-list-item>
                     <v-divider
                         inset
-                        :key="worker.name"
+                        :key="index"
                     ></v-divider>
-
                 </template>
             </v-list>         
         </v-card-text>

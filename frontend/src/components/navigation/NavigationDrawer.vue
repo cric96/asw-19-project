@@ -10,7 +10,7 @@
         <nav-building-selector/>
         <v-divider/>
         <v-list app nav dense>
-            <v-list-item v-for="item in navItems" :key="item.title" :to="item.path" exact>
+            <v-list-item v-for="item in navItems" :key="item.title" :to="item.path" exact  color="primary">
                 <v-list-item-icon>
                     <v-icon>{{ item.icon }}</v-icon>
                 </v-list-item-icon>
