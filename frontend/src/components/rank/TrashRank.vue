@@ -403,7 +403,5 @@ export default {
   letter-spacing: 1.5 !important;
   text-transform: uppercase !important;
 }
-.prova {
-  background-color: #e1ffb1
-}
+
 </style>

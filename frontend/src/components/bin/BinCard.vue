@@ -7,7 +7,12 @@
                 <v-divider></v-divider>
                 <v-card-text style="height: 200px;">
                     <v-layout row wrap justify-center>
+                        
                         <dynamic-bin :bin="bin"></dynamic-bin>
+                        
+                        <!--
+                        <bin-svg :height="150" :color="bin.binCategory.colour"/>
+                        -->
                     </v-layout>
                 </v-card-text>
                 <v-card-actions>
@@ -57,7 +62,7 @@ import VueApexCharts from 'vue-apexcharts'
 import Bin from '@/model/bin'
 import DynamicBin from '@/components/bin/DynamicBin'
 import FlippingCard from '@/components/FlippingCard'
-
+import BinSvg from '@/components/bin/BinSvg'
 export default {
     name: 'BinCard',
     props: {
@@ -69,7 +74,8 @@ export default {
     components: {
         'flip-card': FlippingCard,
         'dynamic-bin': DynamicBin,
-        'apexchart': VueApexCharts
+        'apexchart': VueApexCharts,
+        'bin-svg' : BinSvg
     },
     data:() => ({
         show: false,
