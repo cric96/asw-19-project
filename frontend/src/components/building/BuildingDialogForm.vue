@@ -58,14 +58,14 @@
                                 </v-col>
                             </v-row>
                             <v-row>
-                                <v-col cols="6" md="6">
+                                <v-col cols="12" sm="6">
                                     <v-text-field 
                                         name="floor" 
                                         label="Piano abitazione" 
                                         type="number"
                                         v-model="building.floor"/>
                                 </v-col>
-                                <v-col cols="6" md="6">
+                                <v-col cols="12" sm="6">
                                     <v-text-field 
                                         name="apartmentNumber" 
                                         label="Interno"

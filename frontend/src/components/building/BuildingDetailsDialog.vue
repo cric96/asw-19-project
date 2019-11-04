@@ -27,7 +27,7 @@
                         <v-card-text>
                             <v-form ref="form" lazy-validation>
                                 <v-row>
-                                    <v-col cols="6">
+                                    <v-col cols="12" sm="6">
                                         <v-text-field name="name" 
                                             label="Nome abitazione" 
                                             v-model="updatedBuilding.name"
@@ -36,7 +36,7 @@
                                             :readonly="!editable"
                                             required/>
                                     </v-col>
-                                    <v-col cols="6">
+                                    <v-col cols="12" sm="6">
                                         <v-text-field name="city" 
                                             label="Citta"
                                             :value="formattedCity"
@@ -44,21 +44,22 @@
                                     </v-col>
                                 </v-row>
                                 <v-row>
-                                    <v-col cols="6">
+                                    <v-col cols="12" sm="6">
                                         <v-text-field 
                                             name="address" 
                                             label="Indirizzo abitazione"
                                             :value="updatedBuilding.address"
                                             readonly/>
                                     </v-col>
-                                    <v-col cols="3" md="3">
+                                    <v-col cols="12" sm="3">
                                         <v-text-field 
                                             name="floor" 
                                             label="Piano abitazione" 
                                             type="number"
-                                            :value="updatedBuilding.floor" readonly/>
+                                            :value="updatedBuilding.floor"
+                                            readonly/>
                                     </v-col>
-                                    <v-col cols="3" md="3">
+                                    <v-col cols="12" sm="3">
                                         <v-text-field 
                                             name="apartmentNumber" 
                                             label="Interno"
