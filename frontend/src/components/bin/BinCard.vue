@@ -1,49 +1,38 @@
 <template>
-    <flip-card v-model="flip" fill-height>
-        <template slot="front">
-            <!-- Definition of FRONT card -->
-            <v-card fill-height>
-                <v-card-title primary-title two-line>{{bin.binCategory.name}}</v-card-title>
-                <v-divider></v-divider>
-                <v-card-text style="height: 200px;">
-                    <v-layout row wrap justify-center>
-                        
-                        <dynamic-bin :bin="bin"></dynamic-bin>
-                        
-                        <!--
-                        <bin-svg :height="150" :color="bin.binCategory.colour"/>
-                        -->
-                    </v-layout>
-                </v-card-text>
-                <v-card-actions>
-                    <h6 class="ml-2 headline font-weight-light">Totale: {{collectedTotal}}</h6> <!-- or font-weight-thin? -->
-                    <v-spacer></v-spacer>
-                    <v-btn icon @click="flip = !flip"><v-icon small>fas fa-sync-alt</v-icon></v-btn>
-                </v-card-actions>
-            </v-card>
-        </template>
-        <template slot="back">
-            <!-- Definition of BACK card -->
-            <v-card>
-                <v-card-title primary-title two-line>{{bin.binCategory.name}}</v-card-title>
-                <v-divider></v-divider>
-                <v-card-text style="height: 200px;">
-                    <v-layout row wrap justify-center v-if="bin.totalQuantity != 0">
-                        <apexchart :options="options" :series="series"></apexchart>
-                    </v-layout>
-                    <v-layout fill-height row wrap justify-center align-center v-else>
-                         <div class="text-xs-center headline">
-                            Nessun rifiuto <v-icon size=34>sentiment_dissatisfied</v-icon> 
-                         </div>
-                    </v-layout>
-                </v-card-text>
-                <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn icon @click="flip = !flip"><v-icon small>fas fa-sync-alt</v-icon></v-btn>
-                </v-card-actions>
-            </v-card>
-        </template>
-    </flip-card>
+    <v-card height="390px" fill-height>
+        <v-list-item class="secondary text--white">
+            <v-list-item-avatar >
+                <v-badge>
+                    <bin-svg :height="40" :color="bin.binCategory.colour"/>
+                </v-badge>
+            </v-list-item-avatar>
+            <v-list-item-content class="ml-n4">
+                <v-list-item-title class="white--text card-font">    
+                    {{bin.binCategory.name}}
+                </v-list-item-title>
+            </v-list-item-content>
+        </v-list-item>
+        <v-divider></v-divider>
+        <v-layout row wrap justify-center v-if="bin.totalQuantity != 0" class="mt-5">
+            <apexchart :options="options" :series="series"></apexchart>
+        </v-layout>
+            <div style="height:255px;
+                        margin: 0 auto;  
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;" 
+                        class="card-font" v-else>
+            Nessun rifiuto <v-icon size=34>sentiment_dissatisfied</v-icon> 
+            </div>
+        
+        <v-divider class="mb-4"/>
+        <v-card-actions>
+            <v-spacer></v-spacer>
+            <p class=" total-font">Totale: <span class="font-weight-bold">{{collectedTotal}}</span></p> <!-- or font-weight-thin? -->
+            <v-spacer></v-spacer>
+        </v-card-actions>
+    </v-card>
+
 </template>
 
 <style scoped>
@@ -53,6 +42,18 @@
 .canvas {
     max-width: 100%;
     height: auto;
+}
+.card-font {
+    font-family: "Roboto" !important;
+    font-size: 0.9em !important;
+    letter-spacing: 1.5 !important;
+    text-transform: uppercase !important;
+}
+.total-font {
+    font-family: "Roboto" !important;
+    font-size: 1.2em !important;
+    letter-spacing: 1.5 !important;
+    text-transform: uppercase !important;
 }
 </style>
 

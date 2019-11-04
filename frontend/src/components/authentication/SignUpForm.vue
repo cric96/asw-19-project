@@ -10,8 +10,8 @@
             v-bind:userProperties="userProperties" 
             v-bind:user="user"
             :resettable="true"
-            :loading="inRegistration">
-          Crea utente
+            :loading="inRegistration"
+            actionName="Crea utente">
         </user-form>
       </v-card-text>
       <v-card-text>

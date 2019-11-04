@@ -21,9 +21,9 @@
       <!-- No building selected or available, show an empty view-->
       <empty-view v-else-if="!areAvailableBuildings" class="full-vh align-center" icon="fas fa-home">
         <template slot="title">Nessuna abitazione attiva</template>
-        <template slot="message">Crea ed imposta una nuova abitazione per iniziare a gettare rifiuti! :)</template>
+        <template slot="message">Crea ed imposta una nuova abitazione per iniziare a riciclare!</template>
         <template slot="actions">
-          <v-btn color="orange" outlined text to="/buildings"> Gestisci abitazioni </v-btn>
+          <v-btn color="primary" to="/buildings"> Gestisci abitazioni </v-btn>
         </template>
       </empty-view>
 

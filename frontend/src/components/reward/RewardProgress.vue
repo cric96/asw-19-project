@@ -5,8 +5,6 @@
             height="15"
             striped
             rounded
-            v-bind:class="{ taken: progress == '100' }"
-            class="x"
         ></v-progress-linear>
     </v-col>
 
@@ -72,9 +70,3 @@ export default {
     }
 }
 </script>
-
-<style scoped>
-.taken {
-  opacity: 0;
-}
-</style>

@@ -5,8 +5,8 @@
         <v-dialog v-model="value" persistent transition="dialog-bottom-transition" max-width="600px">
             <v-card>
                 <v-alert v-if="alert" :type="alert.type">{{ alert.message }}</v-alert>
-                <v-card-title>
-                    <span class="headline"> Aggiungi nuova abitazione</span>
+                <v-card-title class="headline secondary white--text" primary-title>
+                    Aggiungi nuova abitazione
                 </v-card-title>
                 <v-card-text>
                     <v-container>
