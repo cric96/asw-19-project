@@ -32,8 +32,8 @@
                 </v-card-text>
 
                 <v-card-actions class="justify-center">
-                <v-btn icon @click="onAccept" :loading="waitingTrashInsertion"><v-icon>done</v-icon></v-btn>
-                <v-btn v-if="aiMode" icon @click="close"> <v-icon>close</v-icon></v-btn>
+                <v-btn x-large icon @click="onAccept" :loading="waitingTrashInsertion"><v-icon>done</v-icon></v-btn>
+                <v-btn x-large v-if="aiMode" icon @click="close"> <v-icon>close</v-icon></v-btn>
                 </v-card-actions>
             </v-card>
             <v-card
@@ -45,10 +45,9 @@
                     <v-icon size=70>sentiment_dissatisfied</v-icon> 
                 </v-card-title>
                  
-               
                 <v-card-title class="justify-center">Rifiuto non riconosciuto..</v-card-title>
                 <v-card-actions class="justify-center">
-                    <v-btn icon @click="close"> <v-icon>done</v-icon></v-btn>
+                    <v-btn x-large icon @click="close"> <v-icon>done</v-icon></v-btn>
                 </v-card-actions> 
             </v-card>
         </v-dialog>

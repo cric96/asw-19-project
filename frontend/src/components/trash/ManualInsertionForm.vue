@@ -1,7 +1,7 @@
 <template>
     <div>
         <v-dialog v-model="value" persistent transition="dialog-bottom-transition" max-width="600px">
-            <v-card>
+            <v-card color="secondary" class="headline secondary white--text">
                 <v-card-title>
                     <span class="headline"> Tipologia di rifiuto</span>
                 </v-card-title>

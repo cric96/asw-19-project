@@ -29,19 +29,20 @@
       >
         
         <template v-slot:activator>
-          <v-btn fab light v-model="fabExpanded" class="ping">
+          <v-btn color="primary" fab light v-model="fabExpanded" class="ping" 
+                    x-large>
             <v-icon v-if="fabExpanded">close</v-icon>
-            <img style="width: 35%" v-else src="@/assets/addTrash.png"/>
+            <img style="width: 45%" v-else src="@/assets/add-trash-white.png"/>
           </v-btn>
         </template>
-        <v-btn fab light @click='openCamera("ia-insertion")'>
+        <v-btn color="primary darken-1" x-large fab light @click='openCamera("ia-insertion")'>
             <v-icon>camera_alt</v-icon>
         </v-btn>
-        <v-btn fab light @click="openManualForm">
+        <v-btn color="primary darken-2" x-large fab light @click="openManualForm">
             <v-icon>edit</v-icon>
         </v-btn>
-        <v-btn fab light @click='openCamera("barcode-insertion")'>
-            <img style="width: 32%" src="@/assets/barcode.png"/>
+        <v-btn color="primary darken-3" x-large fab light @click='openCamera("barcode-insertion")'>
+            <img style="width: 42%" src="@/assets/barcode-white.png"/>
         </v-btn>
       </v-speed-dial>
     </div>

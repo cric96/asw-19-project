@@ -1,6 +1,6 @@
 <template>
-  <v-container>
-    <v-card v-bind:style="{ backgroundColor: color}">
+  <v-container fluid fill-height>
+    <v-card v-bind:style="{ backgroundColor: color}" class="mx-auto">
       <alert v-model="showAlert" ref="alert"/>
       <v-card-title class="justify-center"> REGISTRATI </v-card-title>
       <v-card-text >
@@ -10,11 +10,11 @@
             v-bind:userProperties="userProperties" 
             v-bind:user="user"
             :resettable="true"
-            :loading="inRegistration">
-          Crea utente
+            :loading="inRegistration"
+            actionName="Crea utente">
         </user-form>
       </v-card-text>
-      <v-card-text>
+      <v-card-text class="text-center">
         <p> Hai già un account? <router-link to="/login">Log in</router-link></p>
       </v-card-text>
     </v-card>

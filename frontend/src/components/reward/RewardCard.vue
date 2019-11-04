@@ -1,8 +1,8 @@
 <template>
     <v-card
-        class="mx-auto" v-bind:class="{ pulsing: newReward, lockStyle : locked }"
+        class="mx-auto " v-bind:class="{ pulsing: newReward, lockStyle : locked }"
     >
-        <v-list-item>
+        <v-list-item :class="(locked ? '' : 'secondary text--white')">
             <v-list-item-avatar >
                 <v-badge>
                     <template v-slot:badge v-if="newReward">!</template>

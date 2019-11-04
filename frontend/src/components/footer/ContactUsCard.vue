@@ -22,19 +22,17 @@
                 </v-list-item-content>
             </v-list-item>
             <v-row class="align-center justify-center">
-                <v-flex xs6>
-                    <div class="text-xs-center">
-                        <v-btn
-                            v-for="icon in socialIcons"
-                            :key="icon.name"
-                            class="mx-4"
-                            color="primary"
-                            icon
-                        >
-                            <v-icon size="24px">{{icon.name}}</v-icon>
-                        </v-btn>
-                    </div>
-                </v-flex>
+                <div class="text-xs-center">
+                    <v-btn
+                        v-for="icon in socialIcons"
+                        :key="icon.name"
+                        class="mx-4"
+                        color="primary"
+                        icon
+                    >
+                        <v-icon size="24px">{{icon.name}}</v-icon>
+                    </v-btn>
+                </div>
             </v-row>
                 
         </v-card-text>

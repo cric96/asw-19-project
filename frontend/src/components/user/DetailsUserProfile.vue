@@ -1,28 +1,36 @@
 <template>
   <v-card
     class="overflow-hidden"
-    dark
   >
     <v-toolbar
       flat
-      color="grey"
+      color="secondary"
+      class="white--text"
     >
-      <v-icon>mdi-account</v-icon>
+      <v-icon color="white">mdi-account</v-icon>
       <v-toolbar-title class="font-weight-light">Profilo utente</v-toolbar-title>
       <div class="flex-grow-1"></div>
       <v-btn
-        color="grey darken-3"
+        color="primary"
         fab
         small
         @click="isEditing = !isEditing"
       >
-        <v-icon v-if="isEditing">mdi-close</v-icon>
-        <v-icon v-else>mdi-pencil</v-icon>
+        <v-icon  v-if="isEditing">mdi-close</v-icon>
+        <v-icon  v-else>mdi-pencil</v-icon>
       </v-btn>
     </v-toolbar>
     <v-card-text>
-        <user-form v-model="isEditing" v-bind:userProperties="userProperties" v-bind:user="user" :beDisabled="true" @validateForm="updateUser">
-          Salva modifiche
+        <user-form v-model="isEditing" 
+        v-bind:userProperties="userProperties" 
+        v-bind:user="user" 
+        :beDisabled="true" 
+        actionName="Aggiorna"
+        @validateForm="updateUser">
+        
+          <v-btn>
+              Cambia password
+          </v-btn>
         </user-form>
     </v-card-text>
    
@@ -70,7 +78,7 @@ export default {
     },
     computed: {
       userProperties: function () {
-        return userPropsFilteredBuilder(this.user, 'firebase_uid', 'email','name','surname','nickname')
+        return userPropsFilteredBuilder(this.user, 'email','name','surname','nickname')
       }
     }
 }

@@ -33,3 +33,12 @@ export default {
     })
 }
 </script>
+
+<style>
+  .card-visualization-title {
+      font-family: "Roboto" !important;
+      font-size: 0.9em !important;
+      letter-spacing: 1.5 !important;
+      text-transform: uppercase !important;
+  }
+</style>

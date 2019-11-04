@@ -9,7 +9,7 @@
     :mobile-breakpoint="0"
     :loading="emptyRows"
     loading-text="Calcolo classifica in corso.."
-    class="elevation-1"
+    class="elevation-3 overline header"
   ></v-data-table>
 </template>
 
@@ -27,3 +27,8 @@ export default {
     }
 }
 </script>
+<style>
+thead.v-data-table-header {
+   background-color: #aed681 !important
+}
+</style>

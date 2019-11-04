@@ -3,7 +3,7 @@
 
         <building-dialog-form v-if="!buildingsIsLoading" ref="createDialog">
             <template v-slot:activator="{on}">
-                <v-btn fab bottom right fixed direction="top" v-on="on">
+                <v-btn fab color="primary" x-large bottom right fixed direction="top" v-on="on">
                     <v-icon>add</v-icon>
                 </v-btn>
             </template>
@@ -27,13 +27,13 @@
         </v-layout>
 
         <empty-view v-else class="full-vh align-center">
-            <template slot="title">Ops! Nessuna abitazione.</template>
+            <template slot="title">Ops! Nessuna abitazione</template>
             <template slot="message">
                 Crea una nuova abitazione <v-btn depressed fab disabled x-small><v-icon small>add</v-icon></v-btn> 
-                per iniziare subito a... bla bla bla bla bla bla
+                per iniziare subito a riciclare!
             </template>
             <template slot="actions">
-                <v-btn @click="$refs.createDialog.value = true" text color="orange" outlined>Crea abitazione</v-btn>
+                <v-btn @click="$refs.createDialog.value = true" color="primary">Crea abitazione</v-btn>
             </template>
         </empty-view>
     </v-layout>

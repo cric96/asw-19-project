@@ -3,14 +3,14 @@
         v-bind:value.sync="value" @input="val => $emit('input', val)" app clipped>
         <!-- Header navigation drawer -->
         <template v-slot:prepend>
-            <nav-user-header v-if="userProfile" :user="userObject" @clickEditUser="clickUser"/>
+            <nav-user-header v-if="userProfile" :user="userObject" @clickEditUser="clickUser" />
         </template>
         <v-divider/>
         <!-- Main content navigation drawer -->
         <nav-building-selector/>
         <v-divider/>
         <v-list app nav dense>
-            <v-list-item v-for="item in navItems" :key="item.title" :to="item.path" exact>
+            <v-list-item v-for="item in navItems" :key="item.title" :to="item.path" exact  color="primary">
                 <v-list-item-icon>
                     <v-icon>{{ item.icon }}</v-icon>
                 </v-list-item-icon>
@@ -21,7 +21,7 @@
         <!-- Footer navigation drawer -->
         <template v-slot:append>
             <div class="pa-2">
-                <v-btn block @click="logout">Logout</v-btn>
+                <v-btn block @click="logout" color="primary">Logout</v-btn>
             </div>
         </template>
     </v-navigation-drawer>

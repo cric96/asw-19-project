@@ -1,7 +1,7 @@
 <template>
   <v-container fluid fill-height>
     <v-layout row align-center justify-center>
-        <v-card v-bind:style="{ backgroundColor: color}" class="mx-auto ma-3 mp-5">
+        <v-card v-bind:style="{ backgroundColor: color}" class="mx-auto ma-3 mp-5" max-width=340>
           <alert v-model="showAlert" ref="alert"></alert>
           <v-card-title class="justify-center"> ACCEDI </v-card-title>
           <v-card-text>
@@ -32,17 +32,14 @@
               ></v-text-field>
             </v-form>
           </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
+          <v-card-actions class="justify-center">
             <v-btn :disabled="!valid" color="success" :loading="loggingIn" @click="validate">Login</v-btn>
             <v-btn color="error" @click="reset">Reset Form</v-btn>
           </v-card-actions>
           <social-login/>
-          <v-card-text>
-            <p class="pa-3">
+          <v-card-text class="text-center">
               Hai già un account?
               <router-link to="/sign-up">Registrati</router-link>
-            </p>
           </v-card-text>
         </v-card>
     </v-layout>

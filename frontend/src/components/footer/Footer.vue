@@ -1,7 +1,7 @@
 <template>
     <v-footer
-    color="primary lighten-1" 
-    padless
+      color="secondary" 
+      padless
   >
     <v-row
       justify="center"
@@ -16,8 +16,7 @@
           <v-btn
             color="white"
             text
-            rounded
-            class="my-2"
+            class="ma-2"
             v-on="on"
           >
             {{ link }}
@@ -26,14 +25,8 @@
       
         <component :is="getComponentFromName(link)"/>
       </v-dialog>
-      <v-col
-        class="primary lighten-2 py-4 text-center white--text"
-        
-        cols="12"
-      >
-        {{ new Date().getFullYear() }} — <strong>Scanbage</strong>
-      </v-col>
     </v-row>
+
   </v-footer>
 </template>
 

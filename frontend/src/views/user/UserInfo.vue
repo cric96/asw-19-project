@@ -1,7 +1,7 @@
 <template>
   <v-container fluid fill-height>
     <v-layout row align-center justify-center>
-      <v-flex xs12 sm8 md4>
+      <v-flex xs12 sm8 class="ma-4">
         <v-btn to="/changePassword"> Cambia password </v-btn>
         <user-info-details :user="userProfile" class="mx-auto"></user-info-details>
       </v-flex>

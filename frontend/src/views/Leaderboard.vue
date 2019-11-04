@@ -1,9 +1,10 @@
 <template>
     <v-container fluid>
-        <v-card >
+        <v-card>
             <v-tabs
                 center-active
                 centered
+                background-color="secondary lighten-1"
             >
                 <v-tab>Per Livello</v-tab>
                 <v-tab>Per Punteggio</v-tab>
@@ -33,9 +34,6 @@ export default {
     components : {
         'level-and-score' : LevelAndScoreRank,
         'trash' : TrashRank
-    },
-    mounted() {
-        //ranksApi.getRank().then(rank => this.$data.elements = rank)
     }
 }
 </script>
