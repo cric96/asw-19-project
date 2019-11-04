@@ -28,10 +28,12 @@
             clearable
           ></v-text-field>
       </v-row>
-      <v-btn :disabled="!valid && !isEditing && loading" color="success" class="mr-4" @click="validate" :loading="loading">
+      <v-row class="justify-center">
+      <v-btn class=" ma-4" :disabled="!valid && !isEditing && loading" color="success"  @click="validate" :loading="loading">
         <slot></slot>
       </v-btn>
-      <v-btn v-if="resettable" color="error" @click="reset" :disabled="loading">Reset Form</v-btn>
+      <v-btn class=" ma-4" v-if="resettable" color="error" @click="reset" :disabled="loading">Reset Form</v-btn>
+      </v-row>
     </v-form>
   </v-container>
 </template>
