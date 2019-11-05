@@ -42,5 +42,4 @@ export default {
 .v-list-item:hover:before, .v-list-item:focus:before {
   color : rgba(1,1,1,0)
 }
-
 </style>

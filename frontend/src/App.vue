@@ -28,6 +28,7 @@ export default {
 </script>
 
 <style>
+  @import './assets/styles/roboto.css';
   .container_background {
     background: rgba(255,255,255,0.2) url('./assets/back_material.png'); 
     background-position: center bottom;
@@ -35,7 +36,12 @@ export default {
     background-size: cover;
     height: 100%;
   }
+  
   .full-vh {
     height: 100vh;
+  }
+  
+  div[role="tablist"] {
+      border-radius: 0px;
   }
 </style>
