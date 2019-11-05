@@ -10,7 +10,7 @@
             </v-chip>
             <slot></slot>
         </template>
-        <v-card width="400" v-if="expandable">
+        <v-card max-width="400" v-if="expandable">
             <v-list>
               <v-list-item>
                     <v-list-item-avatar left v-if="user.avatar"><v-img :src="user.avatar"/></v-list-item-avatar>
