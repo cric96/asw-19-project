@@ -6,7 +6,6 @@
       </v-layout>
     
       <v-layout v-else-if="canInsertTrash">
-
         <v-row dense>
           <v-col cols="12">
             <v-card flat color="secondary" class="mx-3">
@@ -23,7 +22,7 @@
             </v-card>
           </v-col>
 
-          <v-divider></v-divider>
+          <v-divider></v-divider> 
           <v-col cols="12">
             <bins-board :bins="bins"></bins-board>
           </v-col>

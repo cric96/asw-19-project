@@ -82,8 +82,8 @@
                                     <autocomplete-members v-model="membersAutoComplete"
                                         :filter="excludeBuildingMembers" :disabled="pendingOperation"></autocomplete-members>
                                 </v-col>
-                                <v-col cols="1">
-                                    <v-btn fab elevation="1" small justify-center 
+                                <v-col cols="1" class="d-flex justify-center align-end">
+                                    <v-btn fab elevation="1" small color="primary"
                                         @click="addMembers(membersAutoComplete)" :disabled="pendingOperation">
                                         <v-icon small>fas fa-user-plus</v-icon>
                                     </v-btn>
