@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid class="container_background" >
+  <v-container fluid class="container_background" fill-height>
     <!--<v-layout align-center justify-center >
       <v-flex lg3 md4 sm7 xs10>
         <v-img :src="require('@/assets/logo.png')" class="mx-auto" height="300" width="300" style="background-color:rgba(255,255,255,0.8);border-radius: 50%"></v-img>
@@ -20,10 +20,10 @@
           </v-row>
       </v-flex>
     </v-layout>-->
-    <v-layout row wrap>
+    <v-layout row wrap align-center>
       <v-flex xs12 sm12 md6>
         <v-layout wrap justify-center align-center >     
-          <v-img :src="require('@/assets/logo.png')"  height="250" width="250" contain style="background-color:rgba(255,255,255,0.2);" ></v-img> 
+          <v-img :src="require('@/assets/logo.png')"   aspect-ratio="1.9" contain style="background-color:rgba(255,255,255,0.2);" ></v-img> 
         </v-layout>       
       </v-flex>
       <v-flex xs12 sm12 md6>
