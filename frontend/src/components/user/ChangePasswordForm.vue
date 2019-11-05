@@ -1,15 +1,21 @@
   
 <template>
-    <v-container>
+    <v-container align-center justify-center>
         <confirm-change-password-dialog v-model="dialog" @confirmChange="changePassword(newPassword)"/>
        <v-card
-            class="mx-auto"
-            max-width="500"
-            outlined>
+        class="overflow-hidden"
+        min-width="500"
+        outlined>
             <alert v-model="showAlert" ref="alert"/>
-            <v-list-item three-line>
+            <v-toolbar
+            flat
+            color="secondary"
+            class="white--text"
+            >
+                <v-toolbar-title class="font-weight-light">Cambia password</v-toolbar-title>        
+            </v-toolbar>
+            <v-list-item two-line>
             <v-list-item-content>
-                <div class="overline mb-4">CAMBIA PASSWORD</div>
                 <v-list-item-subtitle> 
                     Scegli una password efficace e non utilizzarla per altri account
                 </v-list-item-subtitle>
@@ -41,6 +47,7 @@
             </v-card-text>
             <v-card-actions>
                 <v-btn color="primary" :disabled="!valid" @click="changePasswordPressed">Cambia password</v-btn>
+                <v-btn color="primary"  @click="$emit('userinfoview')">Visualizza informazioni</v-btn>
             </v-card-actions>
             </v-form>
         </v-card>
