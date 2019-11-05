@@ -9,17 +9,16 @@
         <div class="subtitle-2">
            {{ building | formatAddressInfo(includeCity=false) }}
         </div>
-      </v-card-text>
-  
-      <v-divider class="mx-4"></v-divider>
-  
-      <v-card-text>
-        <div class="overline">Proprietario</div>
-        <user-chip :user="building.owner" expandable></user-chip>
-      </v-card-text>
-      <v-card-text>
-        <div class="overline">Membri</div>
-        <div class="body-2">{{ building.members.length }}</div>
+
+        <v-divider class="mt-4"></v-divider>
+        <v-row class="overline">
+          <v-col cols="6">Proprietario</v-col>
+          <v-col cols="6">Membri</v-col>
+        </v-row>
+        <v-row class="mt-n3">
+          <v-col cols="6" class="body-2"><user-chip :user="building.owner" expandable></user-chip></v-col>
+          <v-col cols="6" class="body-2">{{ building.members.length }}</v-col>
+        </v-row>  
       </v-card-text>
   
       <v-divider class="mx-4"></v-divider>
@@ -28,7 +27,7 @@
         <v-btn v-if="canEdit" color="error accent-4" text @click="onClickDelete">Elimina</v-btn>
         <div class="flex-grow-1"></div>
         <v-btn icon small @click="markAsActive" alt-labels="Imposta come abitazione attiva">
-          <v-icon :color="(this.activeBuilding._id == this.building._id) ? 'green darken-1' : 'grey lighten-1'">
+          <v-icon small :color="(this.activeBuilding._id == this.building._id) ? 'green darken-1' : 'grey lighten-1'">
             fas fa-check
           </v-icon>
         </v-btn>
