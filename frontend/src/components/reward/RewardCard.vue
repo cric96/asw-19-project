@@ -5,20 +5,16 @@
         <v-list-item :class="(locked ? '' : 'secondary text--white')">
             <v-list-item-avatar >
                 <v-badge>
-                    <template v-slot:badge v-if="newReward">!</template>
-                    <v-icon v-if="locked">lock</v-icon>
-                    <v-icon v-else>lock_open</v-icon>
+                    <v-icon v-if="locked" color="white">lock</v-icon>
+                    <v-icon color="white" v-else>lock_open</v-icon>
                 </v-badge>
             </v-list-item-avatar>
-            <v-list-item-content>
-                <v-list-item-title>    
-                    <div v-resize-text="{ratio:1.3, minFontSize: '15px', maxFontSize: '20px', delay: 200}">
-                        {{reward.name}}
-                    </div>
+            <v-list-item-content class="ml-n4">
+               <v-list-item-title class="roboto-xs white--text">    
+                    {{reward.name}}
                 </v-list-item-title>
             </v-list-item-content>
         </v-list-item>
-        <v-divider class="mr-2 ml-2" />
         <v-img
             class="mt-2"
             :src="reward.picture" heigth="200"

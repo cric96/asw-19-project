@@ -3,7 +3,9 @@
         <v-list-item v-if="user">
             <div class="d-flex flex-row full-width" >
                 <v-list-item-avatar size=60>
-                    <v-img src="https://cdn.vuetifyjs.com/images/john.png" />
+                    <v-img v-if="user.imageProfile" src="https://cdn.vuetifyjs.com/images/john.png" />
+                    <v-img v-else src="@/assets/no-user-pic.png" />
+                    
                 </v-list-item-avatar>
                 <v-spacer></v-spacer>
                 <div class="my-2" >
