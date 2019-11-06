@@ -39,7 +39,7 @@
           <v-card-text class="mt-6">L'abitazione verrà eliminata, perderai definitivamente l'accesso ad essa.</v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="info accent-4" text @click="showDeleteConfirm = false">Annulla</v-btn>
+            <v-btn color="primary accent-4" text @click="showDeleteConfirm = false">Annulla</v-btn>
             <v-btn color="error accent-4" text @click="onClickDelete">Conferma</v-btn>
           </v-card-actions>
         </v-card>
