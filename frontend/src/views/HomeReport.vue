@@ -4,15 +4,16 @@
       <v-layout v-if="buildingsIsLoading || binsAreLoading" row wrap align-center justify-center>
         <loader></loader>
       </v-layout>
-
+  
       <v-row v-else-if="canInsertTrash">
         <v-col cols="12">
-          <v-card flat outlined color="secondary darken-2" class="mx-3">
+          <v-card color="secondary darken-2" class="mx-3">
             <v-list-item two-line>
               <v-list-item-avatar class="ml-n1">
-                <v-icon large color="white">home</v-icon>
+                <v-icon large color="white">location_city</v-icon>
               </v-list-item-avatar>
-              <v-list-item-content class="roboto-s white--text">Sei in: {{activeBuilding.name}}
+              <v-list-item-content class="roboto-s white--text">
+                Bentornato in casa: {{activeBuilding.name}}
               </v-list-item-content>
             </v-list-item>
           </v-card>
@@ -30,7 +31,7 @@
       </v-row>
 
       <!-- No building selected or available, show an empty view-->
-      <empty-view v-else-if="!areAvailableBuildings" class="full-vh align-center" icon="fas fa-home">
+      <empty-view v-else-if="!areAvailableBuildings" class="full-vh align-center" icon="location_city">
         <template slot="title">Nessuna abitazione attiva</template>
         <template slot="message">Crea ed imposta una nuova abitazione per iniziare a riciclare!</template>
         <template slot="actions">

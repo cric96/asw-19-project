@@ -23,7 +23,7 @@
   
       <v-divider class="mx-4"></v-divider>
       <v-card-actions>
-        <v-btn color="info accent-4" text @click="showManager=true">{{ canEdit ? "Gestisci" : "Info"}}</v-btn>       
+        <v-btn color="primary accent-4" text @click="showManager=true">{{ canEdit ? "Gestisci" : "Info"}}</v-btn>       
         <v-btn v-if="canEdit" color="error accent-4" text @click="showDeleteConfirm = true">Elimina</v-btn>
         <div class="flex-grow-1"></div>
         <v-btn icon small @click="markAsActive" alt-labels="Imposta come abitazione attiva">
@@ -77,7 +77,6 @@ export default {
             'deactivateBuilding',
             'changeActiveBuilding'
         ]),
-        // TODO: add dialog for confirm the delete of building
         onClickDelete() {
           this.pendingOperation = true
           this.deactivateBuilding(this.building._id).then(() => {
