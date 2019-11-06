@@ -1,6 +1,7 @@
 <template>
   <v-card
     class="overflow-hidden"
+    min-width="500"
   >
     <v-toolbar
       flat
@@ -28,7 +29,7 @@
         actionName="Aggiorna"
         @validateForm="updateUser">
         
-          <v-btn>
+          <v-btn @click="$emit('changepasswordclicked',true)">
               Cambia password
           </v-btn>
         </user-form>
@@ -61,7 +62,8 @@ export default {
     },
     data: () => ({
         isEditing: false,
-        hasSaved: false
+        hasSaved: false,
+        flipped: false
     }),
     methods:{
         updateUser(user){

@@ -1,7 +1,7 @@
 <template>
     <v-card>
         <v-card-title
-            class="headline secondary white--text"
+            class="roboto-s secondary white--text"
             primary-name
         >
             Ideologia
