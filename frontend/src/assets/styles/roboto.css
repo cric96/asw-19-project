@@ -1,3 +1,8 @@
+.roboto {
+    font-family: "Roboto" !important;
+    text-transform: uppercase !important;
+}
+
 .roboto-xs {
     font-family: "Roboto" !important;
     font-size: 0.9em !important;

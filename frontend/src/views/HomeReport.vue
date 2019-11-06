@@ -12,7 +12,7 @@
               <v-list-item-avatar class="ml-n1">
                 <v-icon large color="white">home</v-icon>
               </v-list-item-avatar>
-              <v-list-item-content class="headline white--text">Sei in: {{activeBuilding.name}}
+              <v-list-item-content class="roboto-s white--text">Sei in: {{activeBuilding.name}}
               </v-list-item-content>
             </v-list-item>
           </v-card>
