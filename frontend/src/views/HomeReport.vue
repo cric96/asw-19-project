@@ -33,7 +33,7 @@
           </v-col>
         </v-row>
       </v-layout>
-
+      
       <!-- No building selected or available, show an empty view-->
       <empty-view v-else-if="!areAvailableBuildings" class="full-vh align-center" icon="fas fa-home">
         <template slot="title">Nessuna abitazione attiva</template>
@@ -46,17 +46,19 @@
       <insert-trash-selection v-if="canInsertTrash"/>
       
     </v-layout>
+    
 </template>
 
 <script>
 import BinsBoard from '@/components/bin/BinsBoard.vue'
+import UserPhotoInsertion from '@/components/UserPhotoInsertion'
 import InsertTrashSelection from '@/components/trash/InsertTrashSelection.vue'
 import EmptyView from '@/components/EmptyView'
 import ApiBin from "@/services/binsApi"
 import Loader from '@/components/Loader'
 import TrashHistoryVisualization from '@/components/visualization/TrashHistoryVisualization.vue'
 import { createNamespacedHelpers } from 'vuex'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
@@ -92,6 +94,9 @@ export default {
     this.updateBins()
   },
   methods: {
+    ...mapActions ({
+      'checkImagePresence' : 'user/checkPicturePresence'
+    }),
     updateBins() {
       this.binsAreLoading = true
       this.$store.dispatch("building/fetchBinsOfActiveBuilding")

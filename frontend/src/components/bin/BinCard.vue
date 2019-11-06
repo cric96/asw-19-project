@@ -14,7 +14,7 @@
         </v-list-item>
         <v-divider></v-divider>
         <v-layout row wrap justify-center v-if="bin.totalQuantity != 0" class="mt-5">
-            <apexchart :options="options" :series="series"></apexchart>
+            <apexchart height=256px :options="options" :series="series"></apexchart>
         </v-layout>
             <div style="height:255px;
                         margin: 0 auto;  
