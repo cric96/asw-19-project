@@ -24,7 +24,7 @@
       <v-divider class="mx-4"></v-divider>
       <v-card-actions>
         <v-btn color="info accent-4" text @click="showManager=true">{{ canEdit ? "Gestisci" : "Info"}}</v-btn>       
-        <v-btn v-if="canEdit" color="error accent-4" text @click="onClickDelete">Elimina</v-btn>
+        <v-btn v-if="canEdit" color="error accent-4" text @click="showDeleteConfirm = true">Elimina</v-btn>
         <div class="flex-grow-1"></div>
         <v-btn icon small @click="markAsActive" alt-labels="Imposta come abitazione attiva">
           <v-icon small :color="(this.activeBuilding._id == this.building._id) ? 'green darken-1' : 'grey lighten-1'">
@@ -33,6 +33,17 @@
         </v-btn>
       </v-card-actions>
       <dialog-details v-if="building" v-model="showManager" :building="building" :editable="canEdit"></dialog-details>
+      <v-dialog v-model="showDeleteConfirm" persistent max-width="300">
+        <v-card>
+          <v-card-title class="headline primary white--text">Sei sicuro?</v-card-title>
+          <v-card-text class="mt-6">L'abitazione verrà eliminata, perderai definitivamente l'accesso ad essa.</v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="info accent-4" text @click="showDeleteConfirm = false">Annulla</v-btn>
+            <v-btn color="error accent-4" text @click="onClickDelete">Conferma</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-card>
 </template>
 
@@ -48,7 +59,8 @@ export default {
     name: 'building-card',
     data: () => ({
       showManager: false,
-      pendingOperation: false
+      pendingOperation: false,
+      showDeleteConfirm: false
     }),
     props: {
       building: {
@@ -72,7 +84,10 @@ export default {
             this.$store.dispatch('msg/addMessage', new Notification('Abitazione eliminata'))
           }).catch(err => {
             // TODO: show error
-          }).finally(() => this.pendingOperation = false)
+          }).finally(() => {
+            this.pendingOperation = false
+            this.showDeleteConfirm = false
+          })
         },
         markAsActive: function() {
           this.changeActiveBuilding(this.building._id)
