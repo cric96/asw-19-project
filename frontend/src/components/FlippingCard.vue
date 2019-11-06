@@ -1,5 +1,5 @@
 <template>
-  <div :class="value ? 'flip-container flipped': 'flip-container'" v-on="mouseEvents">
+  <div :class="value ? 'flip-container flipped': 'flip-container'" v-on="mouseEvents" >
     <div class="flipper">
       <v-flex class="front">
         <slot name="front"></slot>
@@ -22,6 +22,10 @@ export default {
     mouseover: { // if true, enable the on hover mouse feature
       type: Boolean,
       default() { return false }
+    },
+    mouseclick: {
+      type: Boolean,
+      default() { return false }
     }
   },
   computed: {
@@ -29,7 +33,7 @@ export default {
       if(this.mouseover) {
         return {
           mouseover: e => this.$emit('input', true),
-          mouseleave:e => this.$emit('input', false)
+          mouseleave:e => this.$emit('input', false),
         }
       }
       return {}

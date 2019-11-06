@@ -7,7 +7,7 @@
                 </v-badge>
             </v-list-item-avatar>
             <v-list-item-content class="ml-n4">
-                <v-list-item-title class="white--text card-font">    
+                <v-list-item-title class="white--text roboto-xs">    
                     {{bin.binCategory.name}}
                 </v-list-item-title>
             </v-list-item-content>
@@ -28,7 +28,7 @@
         <v-divider class="mb-4"/>
         <v-card-actions>
             <v-spacer></v-spacer>
-            <p class=" total-font">Totale: <span class="font-weight-bold">{{collectedTotal}}</span></p> <!-- or font-weight-thin? -->
+            <p class="roboto-m">Totale: <span class="font-weight-bold">{{collectedTotal}}</span></p> <!-- or font-weight-thin? -->
             <v-spacer></v-spacer>
         </v-card-actions>
     </v-card>

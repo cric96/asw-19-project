@@ -1,6 +1,6 @@
 <template>
     <v-list app nav dense v-if="buildings.length > 0">
-        <v-list-group prepend-icon="home" append-icon="mdi-menu-down" v-model="expanded">
+        <v-list-group prepend-icon="location_city" append-icon="mdi-menu-down" v-model="expanded">
             <template slot="activator" v-if="activeBuilding != null">
                 <v-list-item-content>
                     <v-list-item-title>{{activeBuilding.name}}</v-list-item-title>

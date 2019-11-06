@@ -85,8 +85,8 @@
                 </v-card-text>
                 <v-card-actions>
                     <div class="flex-grow-1"></div>
-                    <v-btn color="blue darken-1" text :disabled="pendingOperation" @click="value = false">Chiudi</v-btn>
-                    <v-btn color="blue darken-1" text :loading="pendingOperation" @click="pressSaveBuilding">Salva</v-btn>
+                    <v-btn color="primary" text :disabled="pendingOperation" @click="value = false">Chiudi</v-btn>
+                    <v-btn color="primary" text :loading="pendingOperation" @click="pressSaveBuilding">Salva</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>

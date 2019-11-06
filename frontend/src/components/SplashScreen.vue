@@ -1,21 +1,19 @@
-<!-- TODO: finish and improve this component -->
 <template>
-    <v-content fluid>
-        <v-layout align-center justify-center fill-height>
-            <!-- TODO: spiegare il problema e riesportare png -->
-            <v-flex lg3 md4 sm7 xs10>
+    <v-container fluid fill-height>
+        <v-layout align-center justify-center row wrap>
+            <v-flex lg3 md4 sm7 xs10 style="">
                 <div class="logo-animation-box mx-auto">
-                    <v-img src="../assets/animationlogo/lens.png" class="overlay rotate-90-ccw" width="300" height="300"/>
-                    <v-img src="../assets/animationlogo/recycle.png" class="background focus-on" width="300" height="300"></v-img>
+                    <v-img src="../assets/animationlogo/lens.png" class="overlay rotate-90-ccw" width="60%" height="60%" contain/>
+                    <v-img src="../assets/animationlogo/recycle.png" class="background focus-on" width="300" height="300" contain></v-img>
                 </div>
                 <v-row>
-                    <v-col align="center">
-                        <div class="display-3 font-weight-thin focus-in-contract" font-wi>Scanbage</div>
+                    <v-col cols="12" align="center">
+                        <div class="font-weight-thin focus-in-contract crumpled-display-2" style="overflow: hidden;">Scanbage</div>
                     </v-col>
                 </v-row>
             </v-flex>
         </v-layout>
-    </v-content>
+    </v-container>
 </template>
 
 
