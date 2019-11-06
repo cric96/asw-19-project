@@ -76,6 +76,7 @@ export default {
         },
         markAsActive: function() {
           this.changeActiveBuilding(this.building._id)
+          this.$store.dispatch('msg/addMessage', new Notification(`${this.building.name} impostata come abitazione attiva.`))
         }
     },
   computed: {
