@@ -29,6 +29,7 @@ export default {
 
 <style>
   @import './assets/styles/roboto.css';
+  @import './assets/styles/crumpled.css';
   .container_background {
     background: rgba(255,255,255,0.2) url('./assets/back_material.png'); 
     background-position: center bottom;
