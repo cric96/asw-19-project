@@ -8,7 +8,7 @@
                 </div>
                 <v-row>
                     <v-col cols="12" align="center">
-                        <div class="font-weight-thin focus-in-contract roboto display-2" style="overflow: hidden;">Scanbage</div>
+                        <div class="font-weight-thin focus-in-contract crumpled-display-2" style="overflow: hidden;">Scanbage</div>
                     </v-col>
                 </v-row>
             </v-flex>
