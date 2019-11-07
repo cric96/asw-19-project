@@ -16,7 +16,7 @@
       -->
       <v-app-bar app clipped-left color="primary" dark>
         <v-app-bar-nav-icon @click="drawer = !drawer" />
-        <v-toolbar-title>Scanbage</v-toolbar-title>
+        <v-toolbar-title class="crumpled">SCANBAGE</v-toolbar-title>
         <v-spacer></v-spacer>
       </v-app-bar>
       

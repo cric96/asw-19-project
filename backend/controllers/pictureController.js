@@ -1,7 +1,6 @@
 const folder = require('../imageStore.js').folder
 const httpCode = require('../utils/httpCode')
 exports.getPicture = function(req, res) {
-    console.log(res.locals.ext)
     res.contentType('image/jpeg')
     folder.find(res.locals.imageId, ext = res.locals.ext).then(
         image => {
@@ -10,7 +9,6 @@ exports.getPicture = function(req, res) {
         }
     ).catch(
         err => {
-            console.log(err)
             res.setNotFound()
         }
     )
@@ -27,8 +25,8 @@ exports.insertPicture = function(req, res) {
     })
 
     req.on('end', function() {
-        folder.save(buffer, res.locals.uid).then(
-            res => console.log(res)
+        folder.save(buffer, res.locals.imageId).then(
+            out => res.setOk()
         ).catch(err => console.log(err))
     })
     

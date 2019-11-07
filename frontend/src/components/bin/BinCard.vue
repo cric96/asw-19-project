@@ -13,15 +13,17 @@
             </v-list-item-content>
         </v-list-item>
         <v-divider></v-divider>
-        <v-layout row wrap justify-center v-if="bin.totalQuantity != 0" class="mt-5">
-            <apexchart height=256px :options="options" :series="series"></apexchart>
-        </v-layout>
+            <div style="height:255px;" 
+                        class="card-font center-element"
+                         v-if="bin.totalQuantity != 0">
+                <apexchart height=250px width=250px :options="options" :series="series"></apexchart>
+            </div>
             <div style="height:255px;
                         margin: 0 auto;  
                         display: flex;
                         align-items: center;
                         justify-content: center;" 
-                        class="card-font" v-else>
+                        class="card-font center-element " v-else>
             Nessun rifiuto <v-icon size=34>sentiment_dissatisfied</v-icon> 
             </div>
         
@@ -54,6 +56,12 @@
     font-size: 1.2em !important;
     letter-spacing: 1.5 !important;
     text-transform: uppercase !important;
+}
+.center-element {
+    margin: 0 auto;  
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 </style>
 

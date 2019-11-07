@@ -70,11 +70,6 @@ const router = new Router({
           component: UserInfo,
         },
         {
-          path: '/changePassword',
-          name: 'ChangePassword',
-          component: ChangePassword,
-        },
-        {
           path: '/rewards',
           name: 'Rewards',
           component: Rewards

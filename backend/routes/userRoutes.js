@@ -14,7 +14,7 @@ router.route('/users/:userId')
     .put(auth, userValidation, usersController.updateUser)
 
 router.route('/users/:userId/picture')
-    .post(auth, userValidation, pictureController.insertPicture)
+    .post(auth, userValidation, imageMiddleware, pictureController.insertPicture)
     .get(imageMiddleware, pictureController.getPicture)
     .put(auth, userValidation, pictureController.updatePicture)
 

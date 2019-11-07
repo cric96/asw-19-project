@@ -49,20 +49,31 @@ module.exports.dropboxFolder = function() {
     }
 }
 
-module.exports.fileSystemFolder =  function() {
+module.exports.fileSystemFolder = function() {
     const fs = require('fs')
-    this.init = function() {
-
-    }
+    this.init = function() { }
     this.save = function(image, id, ext = "jpg") {
-        fs.writeFile('logo.png', imagedata, 'binary', function(err){
-            if (err) throw err
-            console.log('File saved.')
+        return new Promise((resolve, reject) => {
+            fs.writeFile('./assets/'+id + "." + ext, image, 'binary', function(err){
+                if (err) reject(err)
+                else resolve()
+            })
         })
+        
     }
 
-    this.find = function(link) {
-        
+    this.find = function(imageId, ext = "jpg") {
+        return new Promise((resolve, reject) => {
+            console.log("Here (inner)")
+            fs.readFile('./assets/' + imageId + "." + ext, function(err, data) {
+                if(err) {
+                    console.log("here (reject)")
+                    reject(err)
+                } else {
+                    resolve(data)
+                }
+            })
+        })
     }
 }
 
