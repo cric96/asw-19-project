@@ -1,16 +1,15 @@
   
 <template>
-    <v-container align-center justify-center>
+    <v-layout class="center">
         <confirm-change-password-dialog v-model="dialog" @confirmChange="changePassword(newPassword)"/>
        <v-card
-        class="overflow-hidden"
-        min-width="500"
+        class="overflow-hidden width-max-600"
         outlined>
             <alert v-model="showAlert" ref="alert"/>
             <v-toolbar
-            flat
-            color="secondary"
-            class="white--text"
+                flat
+                color="secondary"
+                class="white--text"
             >
                 <v-toolbar-title class="font-weight-light">Cambia password</v-toolbar-title>        
             </v-toolbar>
@@ -51,9 +50,15 @@
             </v-card-actions>
             </v-form>
         </v-card>
-    </v-container>    
-    </template>
+    </v-layout>
 </template>
+
+<style scoped>
+.width-max-600 {
+  width:100%; 
+  max-width:600px;
+}
+</style>
 
 <script>
     import ConfirmChangePasswordDialog from "@/components/user/ChangePasswordConfirmDialog";

@@ -1,5 +1,5 @@
 <template>
-    <flipping-card v-model="flipped" mouseclick> 
+    <flipping-card v-model="flipped" mouseclick>
         <template v-slot:front>
             <details-user-profile :user="user" @changepasswordclicked="flipped=true"/>
         </template>
