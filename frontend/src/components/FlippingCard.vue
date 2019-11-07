@@ -1,6 +1,6 @@
 <template>
   <div :class="value ? 'flip-container flipped': 'flip-container'" v-on="mouseEvents">
-    <div class="flipper center  ">
+    <div class="flipper center">
       <v-flex class="front">
         <slot name="front"></slot>
       </v-flex>

@@ -8,12 +8,13 @@
       <v-row v-else-if="canInsertTrash">
         <v-col cols="12">
           <v-card color="secondary darken-2" class="mx-3">
-            <v-list-item two-line>
+            <v-list-item>
               <v-list-item-avatar class="ml-n1">
                 <v-icon large color="white">location_city</v-icon>
               </v-list-item-avatar>
-              <v-list-item-content class="roboto-s white--text">
-                Bentornato in casa: {{activeBuilding.name}}
+              <v-list-item-content class="roboto white--text">
+                <span> Bentornato in casa <strong>{{activeBuilding.name}}</strong></span>
+               
               </v-list-item-content>
             </v-list-item>
           </v-card>
