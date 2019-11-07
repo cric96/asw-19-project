@@ -5,6 +5,8 @@
                 center-active
                 centered
                 background-color="secondary lighten-1"
+                :hide-slider="true"
+                active-class="primary"
             >
                 <v-tab>Per Livello</v-tab>
                 <v-tab>Per Punteggio</v-tab>

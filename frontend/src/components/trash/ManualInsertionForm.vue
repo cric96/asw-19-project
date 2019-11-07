@@ -1,9 +1,9 @@
 <template>
     <div>
         <v-dialog v-model="value" persistent transition="dialog-bottom-transition" max-width="600px">
-            <v-card color="secondary" class="headline secondary white--text">
-                <v-card-title>
-                    <span class="headline"> Tipologia di rifiuto</span>
+            <v-card>
+                <v-card-title class="roboto-s secondary white--text">
+                    <span > Tipologia di rifiuto</span>
                 </v-card-title>
                 <v-toolbar >
                     <!-- loading is used to show the loading time 
@@ -37,10 +37,10 @@
                       </template>
                     </v-autocomplete>
                     <v-btn icon @click="onAccept" :disabled="confirmDisabled">
-                        <v-icon>done</v-icon>
+                        <v-icon :color="'primary darken-1'">done</v-icon>
                     </v-btn>
                     <v-btn icon @click="close">
-                        <v-icon>close</v-icon>
+                        <v-icon :color="'error'">close</v-icon>
                     </v-btn>
                 </v-toolbar>
             </v-card>

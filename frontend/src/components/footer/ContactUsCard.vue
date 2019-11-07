@@ -12,13 +12,13 @@
         <v-card-text>
             <v-list-item two-line>
                 <v-list-item-content>
-                    <v-list-item-title>Per segnalazioni potete contattarci alla mail:</v-list-item-title>
+                    <v-list-item-content class="subtitle-1">Per segnalazioni potete contattarci alla mail:</v-list-item-content>
                     <v-list-item-subtitle><a href=”mailto:scanbage@gmail.it”>scanbage@gmail.it</a></v-list-item-subtitle>
                 </v-list-item-content>
             </v-list-item>
             <v-list-item two-line>
                 <v-list-item-content>
-                    <v-list-item-title>Oppure potete utilizzare i nostri canali social:</v-list-item-title>
+                    <v-list-item-content class="subtitle-1">Oppure potete utilizzare i nostri canali social:</v-list-item-content>
                 </v-list-item-content>
             </v-list-item>
             <v-row class="align-center justify-center">

@@ -40,7 +40,7 @@ export default {
                 commit('setUserProfile', updatedUser)
                 return updatedUser
             })
-        },       
+        }      
     },
     mutations: {
         ...userSubmodule.mutations,
