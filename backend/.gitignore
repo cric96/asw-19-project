@@ -63,3 +63,7 @@ typings/
 
 /scanbage-firebase-adminsdk-itzje-52ab1c019c.json
 /mongoose-config.json
+
+#photo
+
+assets/user
