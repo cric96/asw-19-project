@@ -8,7 +8,9 @@ var cors = require('cors');
 var admin = require('firebase-admin');
 var app = express();
 var fallback = require('connect-history-api-fallback');
-
+//image store initialization 
+var imageStore = require('./imageStore.js')
+imageStore.init(new imageStore.fileSystemFolder())
 let tokenRetriver = require('./firebaseTokenRetriever')
 admin.initializeApp({
     credential: admin.credential.cert(tokenRetriver())

@@ -295,6 +295,7 @@ export default {
       getRankHeader : function() {
         switch (this.headerSubject) {
           case "utente" :
+
             return [
               {text : 'Utente', value : 'user.nickname'}, 
               {text : this.headerCategory, value : 'value'}

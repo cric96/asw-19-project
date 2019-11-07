@@ -29,6 +29,7 @@
           <v-col cols="12">
             <trash-history></trash-history>
         </v-col>
+        <photo/>
       </v-row>
 
       <!-- No building selected or available, show an empty view-->
@@ -52,18 +53,20 @@
 
 <script>
 import BinsBoard from '@/components/bin/BinsBoard.vue'
+import UserPhotoInsertion from '@/components/UserPhotoInsertion'
 import InsertTrashSelection from '@/components/trash/InsertTrashSelection.vue'
 import EmptyView from '@/components/EmptyView'
 import ApiBin from "@/services/binsApi"
 import Loader from '@/components/Loader'
 import TrashHistoryVisualization from '@/components/visualization/TrashHistoryVisualization.vue'
 import { createNamespacedHelpers } from 'vuex'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 
 export default {
   components: {
     'bins-board': BinsBoard,
     'loader': Loader,
+    'photo' : UserPhotoInsertion,
     'insert-trash-selection' : InsertTrashSelection,
     'trash-history' : TrashHistoryVisualization,
     'empty-view': EmptyView
@@ -94,6 +97,9 @@ export default {
     this.updateBins()
   },
   methods: {
+    ...mapActions ({
+      'checkImagePresence' : 'user/checkPicturePresence'
+    }),
     updateBins() {
       this.binsAreLoading = true
       this.$store.dispatch("building/fetchBinsOfActiveBuilding")
