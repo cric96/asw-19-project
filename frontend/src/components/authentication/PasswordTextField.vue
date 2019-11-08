@@ -1,33 +1,36 @@
 <template>
-    <div>
+    <v-content>
     <v-text-field
-        v-model="password"
-        v-bind="passwordProps"
+        :value="value"
+        @input="$emit('input',$event)"
+        name="password"
+        :label="passwordLabel"
         prepend-icon="lock"
         :outlined="outlined"
         :required="required"
         :clearable="clearable"
-        :append-icon="show ? 'visibility' : 'visibility_off'"
-        :type="show ? 'text' : 'password'"
-        @click:append="show = !show"
+        :append-icon="showPassword ? 'visibility' : 'visibility_off'"
+        :type="showPassword ? 'text' : 'password'"
+        @click:append="showPassword = !showPassword"
         v-validate="rules"
         :error-messages="errors.collect('password')"
     ></v-text-field>
     <v-text-field
         v-if="withConfirmation"
         v-model="passwordConfirmation"
-        v-bind="passwordConfProps"
+        :label="passwordConfirmationLabel"
+        name="confirmPassword"
         prepend-icon="check"
         :outlined="outlined"
         :required="required"
         :clearable="clearable"
         v-validate="confirmationRules"
-        :append-icon="show ? 'visibility' : 'visibility_off'"
-        :type="show ? 'text' : 'password'"
-        @click:append="show = !show"
+        :append-icon="showConfirm ? 'visibility' : 'visibility_off'"
+        :type="showConfirm ? 'text' : 'password'"
+        @click:append="showConfirm = !showConfirm"
         :error-messages="errors.collect('confirmPassword')"
     ></v-text-field>
-    </div>
+    </v-content>
 </template>
 
 <script>
@@ -35,6 +38,14 @@ import { passwordRule } from '../user/userProperties';
 
 export default {
     props: {
+        passwordLabel:{
+            type:String,
+            default:"Password"
+        },
+        passwordConfirmationLabel:{
+            type:String,
+            default:"Conferma della password"
+        },
         withConfirmation: {
             type:Boolean,
             default:false
@@ -56,21 +67,13 @@ export default {
         }
     },
     data: scope => ({
-        show: false,
+        showPassword: false,
+        showConfirm: false,
         passwordConfirmation:"",
-        password:"",
-        passwordProps:{
-            name: 'password', 
-            label: "Password",
-            required: true,
-        },
-         passwordConfProps:{
-            label:"Conferma della password",
-            name:"confirmPassword",
-            required: true,
-        },           
+        password:"",          
         rules: {
-            required: () => 'Hi.',
+            required: true,
+            min:6
 		},
         confirmationRules: {
             required: true,
@@ -85,7 +88,7 @@ export default {
                 },
                 confirmPassword: {
                     required: 'La conferma della password è obbligatoria',
-                    min: 'come la password, la sua conferma deve contenere almeno 6 caratteri',
+                    min: 'Come la password, la sua conferma deve contenere almeno 6 caratteri',
                     confirmed: 'La conferma della password non coincide'
                 }
             },
@@ -94,7 +97,7 @@ export default {
     
     mounted () {
         const { $validator } = this;
-        $validator.localize(this.dictionary)
+        $validator.localize('it',this.dictionary)
     },
 }
 </script>

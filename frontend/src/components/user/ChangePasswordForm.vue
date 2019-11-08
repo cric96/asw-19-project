@@ -23,7 +23,17 @@
             </v-list-item>
             <v-form ref="form" v-model="valid">
                 <v-card-text>
+                    <password-text-field
+                        passwordLabel="Password corrente" 
+                        v-model="oldPassword"
+                        :outlined="true"
+                        :required="true"
+                        :clearable="true"
+                    />
                     <password-text-field 
+                        passwordLabel="Nuova password" 
+                        passwordConfirmationLabel="Conferma della nuova password" 
+                        v-model="newPassword"
                         :withConfirmation="true" 
                         :outlined="true"
                         :required="true"
@@ -48,13 +58,12 @@
     import store  from '@/store/store.js'
     import fb from '@/firebaseConfig.js'
     import firebaseAuthService from '@/services/firebaseAuthService'
-    import validator from '@/components/authentication/validator'
     export default {
         data:scope =>({
                 dialog: false,
                 showAlert: false,
                 valid: true,
-                oldPassword: "",
+                password: "",
                 newPassword: "",
                 newPasswordConfirmation: ""
         }),  
@@ -84,7 +93,6 @@
         "confirm-change-password-dialog": ConfirmChangePasswordDialog,
         "alert": AlertMessageComponent,
         "password-text-field": PasswordTextField,
-        "validator": validator
     },
     
 

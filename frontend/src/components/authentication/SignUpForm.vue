@@ -11,6 +11,7 @@
             v-bind:user="user"
             :resettable="true"
             :loading="inRegistration"
+            maxwidth="150px"
             actionName="Crea utente">
         </user-form>
       </v-card-text>
@@ -45,7 +46,7 @@ export default {
   }),
   computed: {
     userProperties: function () {
-      return userPropsFilteredBuilder(this.user, 'email','password','passwordConfirm','name','surname','nickname')
+      return userPropsFilteredBuilder(this.user, 'email','password','name','surname','nickname')
     }
   },
   methods: {

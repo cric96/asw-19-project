@@ -1,21 +1,15 @@
 <template>
   <v-container v-if="finalUser" fluid>
-    <v-form ref="form" v-model="valid" @keyup.native.enter="validate">
+    <v-form ref="form" v-model="valid" @keyup.native.enter="validate" :max-width="maxwidth">
       <v-row v-for="property in userProperties" :key="property.propertyName">
-          <password-text-field
+          <password-text-field 
               v-if="property.propertyName==='password'"
               v-model="user.password"
-              :prependIcon="property.prependedIcon"
-              :labelDescription="property.propertyLabel"
-              :passwordRules="passwordRuleComp"
-          ></password-text-field>
-          <password-text-field
-              v-else-if="property.propertyName==='passwordConfirm'"
-              :prependIcon="property.prependedIcon"
-              :toCheck="user.password"
-              :labelDescription="property.propertyLabel"
-              :passwordRules="passwordRuleComp"
-          ></password-text-field>
+              :withConfirmation="true" 
+              :outlined="true"
+              :required="true"
+              :clearable="true"
+          />
           <v-text-field
             v-else
             :disabled="beDisabled && (!property.editable || !isEditing)"
@@ -48,6 +42,9 @@ import PasswordTextField from "@/components/authentication/PasswordTextField";
 
 export default {
   props: {
+    maxwidth:{
+      type: String
+    },
     user: {
       required: true
     },
