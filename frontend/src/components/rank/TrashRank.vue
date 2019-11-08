@@ -246,12 +246,16 @@
     <leaderboard-table
       :rankHeaders="getRankHeader"
       :rankRows="elements"
+      :loggedUserRow="userProfile"
       class="my-2"
     ></leaderboard-table>
   </v-container>
 </template>
 
 <script>
+
+import { createNamespacedHelpers } from 'vuex'
+const { mapGetters } = createNamespacedHelpers('user')
 import ranksApi from '@/services/ranksApi'
 import trashCategories from '@/services/trashCategoriesApi'
 import citiesApi from '@/services/citiesApi'
@@ -295,9 +299,8 @@ export default {
       getRankHeader : function() {
         switch (this.headerSubject) {
           case "utente" :
-
             return [
-              {text : 'Utente', value : 'user.nickname'}, 
+              {text : 'Utente', value : 'user'}, 
               {text : this.headerCategory, value : 'value'}
             ]
           case "città" :
@@ -311,7 +314,10 @@ export default {
               {text : this.headerCategory, value : 'value'}
             ]
         }
-      }
+      },
+      ...mapGetters([
+          'userProfile'
+      ])
     },
     methods: {
       changeOrder(changeIn){
