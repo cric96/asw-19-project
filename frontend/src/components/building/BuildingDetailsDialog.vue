@@ -132,7 +132,7 @@ export default {
     components: {
         'alert': AlertMessageComponent,
         'autocomplete-members': AutocompleteMembers,
-        'userAvatar': UserAvatar
+        'user-avatar': UserAvatar
     },
     data: () => ({
         membersAutoComplete: [],

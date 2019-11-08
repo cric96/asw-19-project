@@ -13,6 +13,11 @@
   >
   <!--item.user.nickname || item.user.email-->
      <template v-slot:item.user="{ item }">
+       <v-avatar class="mr-2" size="27">
+          <user-avatar :user="item.user">
+            <v-icon size="30">account_circle</v-icon> 
+          </user-avatar>
+        </v-avatar>
       <span v-if="item.user._id === loggedUserRow._id"><b>{{item.user.nickname || item.user.email}}    </b></span>     
       <span v-else>{{item.user.nickname || item.user.email}}</span>
       <v-icon v-if="item.user._id === loggedUserRow._id" color="primary" class="mb-1">star</v-icon>
@@ -21,8 +26,12 @@
 </template>
 
 <script>
+import UserAvatar from '@/components/user/UserAvatar'
 export default {
     name : "LeaderboardTable",
+    components : {
+      'user-avatar': UserAvatar
+    },
     props : {
         rankHeaders : {type : Array},
         rankRows : {type : Array},
