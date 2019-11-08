@@ -6,7 +6,7 @@ import store  from './store/store.js'
 import vuetify from './plugins/vuetify'
 import SocketIO from 'socket.io-client'
 import VueSocketIO from 'vue-socket.io'
-
+import VeeValidate from 'vee-validate';
 import filters from './filters'
 import './utils'
 import firebaseConfig from "./firebaseConfig"
@@ -16,6 +16,7 @@ firebaseConfig.init()
 Vue.config.productionTip = false
 const SocketInstance = SocketIO(process.env.VUE_APP_WEBSOCKET)
 Vue.use(filters)
+Vue.use(VeeValidate)
 //inject socket in vue instance
 Vue.use(new VueSocketIO({
   debug: true,
@@ -29,6 +30,9 @@ Vue.use(new VueSocketIO({
 //image uploader is used to upload and resize images
 Vue.use(ImageUploader)
 new Vue({
+  $_veeValidate: {
+    validator: 'new'
+  },
   router,
   vuetify,
   store,

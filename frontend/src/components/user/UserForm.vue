@@ -6,7 +6,6 @@
               v-if="property.propertyName==='password'"
               v-model="user.password"
               :prependIcon="property.prependedIcon"
-              :toCheck="undefined"
               :labelDescription="property.propertyLabel"
               :passwordRules="passwordRuleComp"
           ></password-text-field>

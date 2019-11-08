@@ -1,68 +1,101 @@
 <template>
+    <div>
     <v-text-field
-    :v-model="value"
-    @input="$emit('input', $event)"
-    :label="labelDescription"
-    :rules="computedRules"
-    :prepend-icon="prependIcon"
-    outlined
-    required
-    clearable
-    :append-icon="show ? 'visibility' : 'visibility_off'"
-    :type="show ? 'text' : 'password'"
-    @click:append="show = !show"
+        v-model="password"
+        v-bind="passwordProps"
+        prepend-icon="lock"
+        :outlined="outlined"
+        :required="required"
+        :clearable="clearable"
+        :append-icon="show ? 'visibility' : 'visibility_off'"
+        :type="show ? 'text' : 'password'"
+        @click:append="show = !show"
+        v-validate="rules"
+        :error-messages="errors.collect('password')"
     ></v-text-field>
+    <v-text-field
+        v-if="withConfirmation"
+        v-model="passwordConfirmation"
+        v-bind="passwordConfProps"
+        prepend-icon="check"
+        :outlined="outlined"
+        :required="required"
+        :clearable="clearable"
+        v-validate="confirmationRules"
+        :append-icon="show ? 'visibility' : 'visibility_off'"
+        :type="show ? 'text' : 'password'"
+        @click:append="show = !show"
+        :error-messages="errors.collect('confirmPassword')"
+    ></v-text-field>
+    </div>
 </template>
 
 <script>
 import { passwordRule } from '../user/userProperties';
+
 export default {
     props: {
+        withConfirmation: {
+            type:Boolean,
+            default:false
+        },
+        outlined: {
+            type:Boolean,
+            default:false
+        },
+        required: {
+            type:Boolean,
+            default:false
+        },
         value: {
             type: String
         },
-        toCheck:{
-            type: String,
-            default: undefined,
-            required:false
-        },
-        labelDescription: {
-            type: String,
-            required: true
-        },
-        prependIcon: {
-            type: String
-        },
-        passwordRules: {
-            type: Array
+        clearable: {
+            type:Boolean,
+            default:false
         }
     },
-    data: () => ({
+    data: scope => ({
         show: false,
-        changingPassword: ""
-    }),
-    computed:{
-        computedRules: function(){
-            var newRules = Object.assign([],this.passwordRules)
-            if (this.toCheck != undefined) {
-                newRules.push(this.passwordConfirmationRule)
-                return newRules
-            }else{
-                return this.passwordRules
-            }  
+        passwordConfirmation:"",
+        password:"",
+        passwordProps:{
+            name: 'password', 
+            label: "Password",
+            required: true,
         },
-        passwordConfirmationRule: function(){
-            return v => {return v == this.changingPassword || "La password di conferma non coincide con quella sopra inserita"}
-        } 
+         passwordConfProps:{
+            label:"Conferma della password",
+            name:"confirmPassword",
+            required: true,
+        },           
+        rules: {
+            required: () => 'Hi.',
+		},
+        confirmationRules: {
+            required: true,
+            min:6,
+            confirmed: 'password',
+        },
+        dictionary: {
+            custom: {
+                password: {
+                    required: 'Password è un campo obbligatorio',
+                    min: 'la password deve contenere almeno 6 caratteri'
+                },
+                confirmPassword: {
+                    required: 'La conferma della password è obbligatoria',
+                    min: 'come la password, la sua conferma deve contenere almeno 6 caratteri',
+                    confirmed: 'La conferma della password non coincide'
+                }
+            },
+        },
+    }),
+    
+    mounted () {
+        const { $validator } = this;
+        $validator.localize(this.dictionary)
     },
-    watch: {
-        toCheck: {
-            immediate: true,
-            handler: function(val) {
-                this.changingPassword = val;
-            }
-        }
-    }
 }
 </script>
 
