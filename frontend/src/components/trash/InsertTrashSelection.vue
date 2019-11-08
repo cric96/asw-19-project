@@ -30,19 +30,19 @@
         
         <template v-slot:activator>
           <v-btn color="primary" fab light v-model="fabExpanded" class="ping" 
-                    x-large>
+                    :x-large="mdAndUp" >
             <v-icon v-if="fabExpanded">close</v-icon>
-            <img style="width: 45%" v-else src="@/assets/add-trash-white.png"/>
+            <img :style="mdAndUp ? 'width: 45%' : 'width: 35%'" v-else src="@/assets/add-trash-white.png"/>
           </v-btn>
         </template>
-        <v-btn color="primary darken-1" x-large fab light @click='openCamera("ia-insertion")'>
+        <v-btn color="primary darken-1" :x-large="mdAndUp" fab light @click='openCamera("ia-insertion")'>
             <v-icon>camera_alt</v-icon>
         </v-btn>
-        <v-btn color="primary darken-2" x-large fab light @click="openManualForm">
+        <v-btn color="primary darken-2" :x-large="mdAndUp" fab light @click="openManualForm">
             <v-icon>edit</v-icon>
         </v-btn>
-        <v-btn color="primary darken-3" x-large fab light @click='openCamera("barcode-insertion")'>
-            <img style="width: 42%" src="@/assets/barcode-white.png"/>
+        <v-btn color="primary darken-3" :x-large="mdAndUp" fab light @click='openCamera("barcode-insertion")'>
+            <img :style="mdAndUp ? 'width: 42%' : 'width: 32%'" src="@/assets/barcode-white.png"/>
         </v-btn>
       </v-speed-dial>
     </div>
@@ -67,7 +67,13 @@ export default {
     ...mapGetters({
       activeBuilding: "building/activeBuilding",
       loaded : "trashCategories/loaded", //used to see if the trash category are loaded
-    })
+    }),
+    smAndDown: function() {
+      return this.$vuetify.breakpoint.smAndDown
+    },
+    mdAndUp : function() {
+      return this.$vuetify.breakpoint.mdAndUp
+    }
   },
   methods: {
     openManualForm() {

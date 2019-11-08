@@ -6,22 +6,23 @@
     max-width="600px"
   >
     <v-card>
-    	<alert v-model="showAlert" ref="alert"/>
-	  	<v-card-title>
-        	<span class="headline">Completa la registrazione</span>
-      	</v-card-title>
-      	<v-card-text>
-			<user-form
-			v-bind:userProperties="userProperties"
-			v-bind:user="user"
-      :v-model="true"
-			@validateForm="updateUser"
-			>Completa profilo</user-form>
-      	</v-card-text>
-      	<v-card-actions>
-        	<div class="flex-grow-1"></div>
-        	<v-btn color="blue darken-1" text @click="opened = false">Chiudi</v-btn>
-      	</v-card-actions>
+    	<v-card-title class="secondary headline white--text" primary-title>
+        	Completa la registrazione
+      </v-card-title>
+      <alert class="mt-3 mx-3" text v-model="showAlert" ref="alert"/>
+      <v-card-text>
+        <user-form ref="form"
+          v-bind:userProperties="userProperties"
+          v-bind:user="user"
+          :value="valid"
+          @validateForm="updateUser">
+          </user-form>
+      </v-card-text>
+      <v-card-actions>
+          <div class="flex-grow-1"></div>
+          <v-btn color="primary" text @click="validateForm" :disabled="!valid">Salva</v-btn>
+          <v-btn color="primary" text @click="opened = false">Chiudi</v-btn>
+      </v-card-actions>
     </v-card>
   </v-dialog>
 </template>
@@ -40,7 +41,6 @@ export default {
   },
   props: {
     user: {
-      type: User,
       required: true
     },
     value: Boolean
@@ -56,19 +56,32 @@ export default {
   data: () => ({
     showAlert: false,
     valid: true,
+    pendingOperation: false,
     opened: false
   }),
   methods: {
+    validateForm: function() {
+      this.$refs.form.validate();
+    },
     updateUser: function(user) {
+      this.pendingOperation = true
+      this.showAlert = false
       this.$store.dispatch("user/updateUserData", user)
       .then(response => {
           this.showAlert = true
-          this.$refs.alert.changeConfig(UPDATED_INFO, "success")
+          this.$refs.alert.showSuccess(messages.UPDATED_INFO)
           this.opened = false;
       })
       .catch(err => {
-        
-      });
+        this.showAlert = true
+        this.$refs.alert.showError(
+          (err.status == 400) ? // this means bad request for existing nickname
+          messages.SIGNUP_ERR_NICKNAME_CONFLICT : 
+          messages.UPDATE_INFO_ERR 
+        )
+      }).finally(() => {
+        this.pendingOperation = false
+      })
     }
   }, 
   computed: {

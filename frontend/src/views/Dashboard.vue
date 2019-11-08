@@ -46,9 +46,8 @@ import CompleteUserInfoForm from '@/components/authentication/CompleteUserInfoFo
 import SnackbarNotification from '@/components/SnackbarNotification'
 import NewLevel from '@/components/NewLevel'
 import Footer from '@/components/footer/Footer'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import { createNamespacedHelpers } from 'vuex'
-const { mapActions } = createNamespacedHelpers('trashCategories');
 
 import User from '@/model/user'
 
@@ -98,9 +97,10 @@ export default {
     'new-level' : NewLevel
   },
   methods: {
-    ...mapActions([
-      'fetchCategories',
-    ])
+    ...mapActions({
+        'fetchCategories' : 'trashCategories/fetchCategories',
+        'checkPicturePresence' : 'user/checkPicturePresence'
+    })
   },
   beforeMount() {
     this.fetchCategories()

@@ -1,5 +1,5 @@
 <template>
-    <v-alert v-if="show" :type="type" dismissable dense v-model="show">
+    <v-alert v-if="show" :text="text" :type="type" dismissable dense v-model="show">
         {{ message }}
     </v-alert>
 </template>
@@ -7,7 +7,11 @@
 <script>
 export default {
     props:{
-        value: Boolean
+        value: Boolean,
+        text: {
+            type: Boolean,
+            default: false
+        }
     },
     data: () => ({
         type: "",

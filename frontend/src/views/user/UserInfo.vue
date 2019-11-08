@@ -1,10 +1,10 @@
 <template>
   <v-container fluid fill-height>
-    <v-layout row align-center justify-center>
-      <v-flex xs12 sm8 class="ma-4">
-        <user-info :user="userProfile" class="mx-auto"></user-info>
-      </v-flex>
-    </v-layout>
+    <v-row>
+      <v-col cols="12" class="justify-center align-center mx-auto">
+        <user-info :user="userProfile"></user-info>
+      </v-col>
+    </v-row>
   </v-container>
 </template>
 

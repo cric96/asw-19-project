@@ -18,6 +18,7 @@
             text
             class="ma-2"
             v-on="on"
+
           >
             {{ link }}
           </v-btn>
@@ -46,7 +47,7 @@ export default {
       links: [
         'Team',
         'Ideologia',
-        'Contattaci',
+        'Contatti',
       ]
     }),
     methods : {
@@ -54,7 +55,7 @@ export default {
         switch(name) {
           case "Ideologia":
             return 'ideology-card'
-          case "Contattaci":
+          case "Contatti":
             return 'contact-us-card'
           case 'Team':
             return 'team-card'

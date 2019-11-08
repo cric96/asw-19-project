@@ -11,7 +11,7 @@ class User {
                 nickname = undefined, 
                 score = undefined, 
                 level = undefined,
-                profileImage = undefined) {
+                avatarName = undefined) {
         this._id = id;
         this.firebase_uid = firebase_uid;
         this.avatar = "";
@@ -21,7 +21,7 @@ class User {
         this.score = score;
         this.level = level;
         this.nickname = nickname;
-        this.profileImage = profileImage
+        this.avatarName = avatarName
     }
 
     displayName() {

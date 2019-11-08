@@ -9,3 +9,4 @@ export const SIGNUP_ERR_NICKNAME_CONFLICT = "Esiste già un account registrato c
 export const UPDATED_INFO = "Informazioni aggiornate"
 export const CHANGE_PASSWORD_SUCCESS = "La tua password è stata aggiornata con successo"
 export const CHANGE_PASSWORD_ERROR = "Si è verificato un errore nell'aggiornamento della password"
+export const UPDATE_INFO_ERR = "Errore nell'aggiornamento delle informazioni"

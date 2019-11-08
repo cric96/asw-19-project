@@ -13,16 +13,18 @@
             </v-list-item-content>
         </v-list-item>
         <v-divider></v-divider>
-        <v-layout row wrap justify-center v-if="bin.totalQuantity != 0" class="mt-5">
-            <apexchart :options="options" :series="series"></apexchart>
-        </v-layout>
+            <div style="height:255px;" 
+                        class="card-font center-element"
+                         v-if="bin.totalQuantity != 0">
+                <apexchart height=250px width=250px :options="options" :series="series"></apexchart>
+            </div>
             <div style="height:255px;
                         margin: 0 auto;  
                         display: flex;
                         align-items: center;
                         justify-content: center;" 
-                        class="card-font" v-else>
-            Nessun rifiuto <v-icon size=34>sentiment_dissatisfied</v-icon> 
+                        class="card-font center-element " v-else>
+            Nessun rifiuto <v-icon size=34 class="ml-2">sentiment_dissatisfied</v-icon> 
             </div>
         
         <v-divider class="mb-4"/>
@@ -54,6 +56,12 @@
     font-size: 1.2em !important;
     letter-spacing: 1.5 !important;
     text-transform: uppercase !important;
+}
+.center-element {
+    margin: 0 auto;  
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 </style>
 
@@ -112,10 +120,22 @@ function createChartOptions(trashes) {
             enabled: true,
             formatter: function (val, opts) {
                 return trashes[opts.seriesIndex].trashCategory.name
+            },
+            style: {
+                colors: ['#000000']
             }
         },
-        colors : ["#004D40", "#00695C", "#00796B", "#00897B", "#00897B", "#388E3C"]
+        tooltip: {
+            theme: "light"
+        },
+        colors : ["#B3E5FC", "#B2EBF2", "#B2DFDB", "#E1F5FE", "#80CBC4", "#388E3C"]
     }
 }
 
 </script>
+
+<style scoped>
+.apexcharts-tooltip {
+    color: black
+}
+</style>

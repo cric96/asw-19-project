@@ -60,7 +60,11 @@ var userSchema = new Schema({
     rewards: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Reward'
-    }]
+    }],
+    avatarUrl: {
+        type : String,
+        default : undefined
+    }
 });
 
 /*

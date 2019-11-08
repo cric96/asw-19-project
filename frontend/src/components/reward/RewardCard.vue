@@ -2,23 +2,33 @@
     <v-card
         class="mx-auto " v-bind:class="{ pulsing: newReward, lockStyle : locked }"
     >
-        <v-list-item :class="(locked ? '' : 'secondary text--white')">
-            <v-list-item-avatar >
+        <v-list-item :class="(locked ? 'lockStyleDarken' : 'secondary text--white')">
+            <v-list-item-avatar class="ml-n3">
                 <v-badge>
                     <v-icon v-if="locked" color="white">lock</v-icon>
                     <v-icon color="white" v-else>lock_open</v-icon>
                 </v-badge>
             </v-list-item-avatar>
-            <v-list-item-content class="ml-n4">
+            <v-list-item-content class="ml-n6">
                <v-list-item-title class="roboto-xs white--text">    
                     {{reward.name}}
                 </v-list-item-title>
             </v-list-item-content>
         </v-list-item>
+        <div>
+            
         <v-img
             class="mt-2"
-            :src="reward.picture" heigth="200"
-        ></v-img>
+            contain
+            :src="rewardUrl" :height="200"
+        >
+             <template v-slot:placeholder>
+                <v-row class="fill-height ma-0" align="center" justify="center">
+                <v-progress-circular indeterminate color="primary lighten-1"></v-progress-circular>
+                </v-row>
+            </template>
+        </v-img>
+        </div>
         <v-card-text>
             <v-row>
                 <reward-progress
@@ -78,7 +88,13 @@ export default {
         }),
         newReward : function() {
             return this.rewardsNotification(this.reward._id)
-        }  
+        },
+        rewardUrl : function() {
+            return  process.env.VUE_APP_NODE_SERVER + 
+                            "/rewards/" +
+                            this.reward.picture + 
+                            "/picture"
+        }
     },
     methods: {
         ...mapActions({
@@ -106,6 +122,9 @@ export default {
 }
 .lockStyle {
     background-color: lightgray;
+}
+.lockStyleDarken {
+    background-color: gray;
 }
 @-webkit-keyframes pulse {
   0% {

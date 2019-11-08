@@ -1,6 +1,6 @@
 <template>
-  <div :class="value ? 'flip-container flipped': 'flip-container'" v-on="mouseEvents" >
-    <div class="flipper">
+  <div :class="value ? 'flip-container flipped': 'flip-container'" v-on="mouseEvents">
+    <div class="flipper center">
       <v-flex class="front">
         <slot name="front"></slot>
       </v-flex>
@@ -10,6 +10,15 @@
     </div>
   </div>
 </template>
+
+<style scoped>
+.center {
+  display: flex;
+  align-items: center;
+  justify-items: center;
+  justify-content: center;
+}
+</style>
 
 <script>
 export default {
