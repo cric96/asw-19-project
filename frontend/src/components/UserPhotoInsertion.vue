@@ -105,7 +105,6 @@ export default {
                     this.value = false
                 })
                 .catch(err => {
-                    console.log("here")
                     this.error = true
                     this.loading = false
                     this.imageSrc =  null,

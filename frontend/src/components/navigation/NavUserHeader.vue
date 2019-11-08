@@ -12,9 +12,9 @@
                         </template>
                     </v-img>
                     <v-img v-else src="@/assets/no-user-pic.png" />
-                    <v-badge color="primary" class="mt-12 ml-n4">
+                    <v-badge color="secondary" class="mt-12 ml-n4 elevation-1" style="border">
                         <template v-slot:badge>
-                            <v-icon x-small dark @click="onEdit">edit</v-icon>
+                            <v-icon  x-small dark @click="onEdit">edit</v-icon>
                         </template>
                     </v-badge>
                 </v-list-item-avatar>

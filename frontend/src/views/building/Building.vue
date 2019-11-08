@@ -3,7 +3,8 @@
 
         <building-dialog-form v-if="!buildingsIsLoading" ref="createDialog">
             <template v-slot:activator="{on}">
-                <v-btn fab color="primary" x-large bottom right fixed direction="top" v-on="on">
+                <v-btn fab color="primary" :x-large="$vuetify.breakpoint.mdAndUp"
+                    bottom right fixed direction="top" v-on="on">
                     <v-icon>add</v-icon>
                 </v-btn>
             </template>

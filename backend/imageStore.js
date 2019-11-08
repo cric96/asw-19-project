@@ -3,7 +3,8 @@ module.exports.dropboxFolder = function() {
     var Readable = require('stream').Readable
     
     this.dropbox = dropboxV2Api.authenticate({
-        token: 'xZUXN5rU7PQAAAAAAAACANg2yYSRa6eHWYFFkzl3WQ8R4oZTa2CRucyshg1xek9-'
+        //TODO, put your token..
+        token: ''
     });
 
     this.save = function(image, id, ext = "jpg") {
