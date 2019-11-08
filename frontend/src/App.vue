@@ -45,4 +45,7 @@ export default {
   div[role="tablist"] {
       border-radius: 0px;
   }
+  .v-list-item__avatar {
+    justify-content: center !important;
+  }
 </style>

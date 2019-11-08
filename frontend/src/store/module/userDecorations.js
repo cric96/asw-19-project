@@ -11,7 +11,9 @@ export default {
     },
     getters : {
         trashThrown : state => state.trashThrown,
-        isTrashCached : state => state.trashThrown.length != 0
+        isTrashCached : state => state.trashThrown.length != 0,
+        absoluteAvatarPath : state => process.env.VUE_APP_NODE_SERVER + ""
+        + state.userProfile.avatarUrl
     },
     actions : {
         //retrive trash throweb by logged user
@@ -25,7 +27,7 @@ export default {
                     .then(() => {
                         commit("putAvatar")
                     })
-                    .catch(err => {console.log(err)})
+                    .catch(err => {})
         },
         invalidatePicture({commit}) {
             commit("putAvatar")
@@ -61,9 +63,7 @@ export default {
         },
         putAvatar(state) {
             var user = Object.assign({}, state.userProfile)
-            user.avatarUrl = process.env.VUE_APP_NODE_SERVER + 
-                            "/users/" + 
-                            user.firebase_uid + 
+            user.avatarUrl = "/users/" + user.firebase_uid + 
                             "/picture?t=" + new Date().getTime()
             state.userProfile = user
         },

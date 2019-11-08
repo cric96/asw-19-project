@@ -104,7 +104,7 @@ export default {
   },
   beforeMount() {
     this.fetchCategories()
-    this.checkPicturePresence()
+    //this.checkPicturePresence()
   }
 };
 </script>
