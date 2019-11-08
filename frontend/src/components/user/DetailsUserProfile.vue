@@ -27,10 +27,11 @@
           :beDisabled="true" 
           actionName="Aggiorna"
           @validateForm="updateUser">
-          
-            <v-btn @click="$emit('changepasswordclicked',true)">
-                Cambia password
-            </v-btn>
+            <v-col cols="12" sm="auto" md="auto">
+              <v-btn block @click="$emit('changepasswordclicked',true)">
+                  Cambia password
+              </v-btn>
+            </v-col>
           </user-form>
       </v-card-text>
     </v-card>
