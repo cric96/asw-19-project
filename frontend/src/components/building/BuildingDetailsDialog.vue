@@ -93,7 +93,9 @@
                                 <template v-for="(member, index) in currentMembersList"> 
                                     <v-list-item :key="member._id">
                                         <v-list-item-avatar color="secondary" class="font-weight-light white--text">
-                                                {{ member | formatUserDisplayName | initial }}
+                                                <user-avatar :user="member">
+                                                    {{ member | formatUserDisplayName | initial }}
+                                                </user-avatar>
                                         </v-list-item-avatar>
                                         <v-list-item-content>
                                             <v-list-item-title>{{ member | formatUserDisplayName }}</v-list-item-title>
@@ -121,6 +123,7 @@
 <script>
 import AlertMessageComponent from '@/components/AlertMessageComponent'
 import AutocompleteMembers from '@/components/AutocompleteMembers'
+import UserAvatar from '@/components/user/UserAvatar'
 import Notification from "@/model/notification"
 import { building as buildingError } from '@/resource/errors.js'
 import { mapActions } from 'vuex'
@@ -128,7 +131,8 @@ import { mapActions } from 'vuex'
 export default {
     components: {
         'alert': AlertMessageComponent,
-        'autocomplete-members': AutocompleteMembers
+        'autocomplete-members': AutocompleteMembers,
+        'userAvatar': UserAvatar
     },
     data: () => ({
         membersAutoComplete: [],

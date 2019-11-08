@@ -10,6 +10,7 @@
             @input="onPictureSelected"
     />
     <v-card class="mx-auto" minWidth="250px" :loading="loading">
+            <alert v-model="error" ref="alert" class="mb-n1"/>
             <v-card-title class="roboto-s secondary white--text" primary-name>
                 {{ title }}
             </v-card-title>
@@ -53,15 +54,19 @@
 
 import { mapGetters, mapActions } from 'vuex'
 import usersApi from "@/services/usersApi";
-
+import AlertMessageComponent from './AlertMessageComponent'
 export default {
     name: "UserPhotoInsertion",
+    components: {
+        'alert' : AlertMessageComponent
+    },
     data: () => ({
         title: "Foto profilo",
         imageSrc: null,
         imageData : null,
         loading : false,
-        value : false
+        value : false,
+        error : false,
     }),
     computed: {
         ...mapGetters ({
@@ -78,7 +83,8 @@ export default {
         open: function() {
             this.value = true
             this.imageSrc = null
-            this.loading=false
+            this.loading = false
+            this.error = false
         },
         close: function() {
             this.value = false
@@ -95,12 +101,16 @@ export default {
             this.loading=true
             usersApi.insertPicture(this.imageData, this.user.firebase_uid)
                 .then(() => {
-                    console.log("here..")
                     this.invalidatePicture()
-                    
                     this.value = false
                 })
-                .catch(err => console.log(err))
+                .catch(err => {
+                    console.log("here")
+                    this.error = true
+                    this.loading = false
+                    this.imageSrc =  null,
+                    this.$refs.alert.showError("Immagine non caricata...")
+                })
         }
     }
 };

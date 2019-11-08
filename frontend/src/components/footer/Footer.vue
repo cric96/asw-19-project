@@ -18,6 +18,7 @@
             text
             class="ma-2"
             v-on="on"
+
           >
             {{ link }}
           </v-btn>
