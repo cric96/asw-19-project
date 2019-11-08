@@ -28,14 +28,16 @@
             clearable
           ></v-text-field>
       </v-row>
-      <v-row>
-        <v-btn :disabled="!valid && !isEditing && loading" color="success" class="mr-4" @click="validate" :loading="loading">
-          {{actionName}}
-        </v-btn>
-        <v-btn v-if="resettable" color="error" @click="reset" :disabled="loading">Reset Form</v-btn>
-    
-        <slot></slot>
-        
+      <v-row v-if="actionName || resettable">
+          <v-col v-if="actionName" cols="12" sm="auto" md="auto">      
+            <v-btn block :disabled="!valid && !isEditing && loading" color="success" class="mr-4" @click="validate" :loading="loading">
+              {{actionName}}
+            </v-btn>
+          </v-col>
+          <v-col v-if="resettable" cols="12" sm="auto" md="auto">
+              <v-btn v-if="resettable" block color="error" @click="reset" :disabled="loading">Reset Form</v-btn>
+          </v-col>
+          <slot></slot>
       </v-row>
       
     </v-form>
