@@ -44,11 +44,19 @@
                         :passwordRules="passwordRuleComp"
                     ></password-text-field>
             </v-card-text>
-            <v-card-actions>
-                <v-btn color="primary" :disabled="!valid" @click="changePasswordPressed">Cambia password</v-btn>
-                <v-btn color="primary"  @click="$emit('userinfoview')">Visualizza informazioni</v-btn>
-            </v-card-actions>
             </v-form>
+            
+            <v-card-actions>
+                <v-row>
+                    <v-col cols="12" sm="auto" md="auto">
+                        <v-btn color="primary" :disabled="!valid" @click="changePasswordPressed">Cambia password</v-btn>
+                    </v-col>
+                    <v-col cols="auto">
+                        <v-btn color="primary" @click="$emit('userinfoview')">Visualizza Informazioni</v-btn>
+                    </v-col>
+                    <v-spacer></v-spacer>
+                </v-row>
+            </v-card-actions>
         </v-card>
     </v-layout>
 </template>

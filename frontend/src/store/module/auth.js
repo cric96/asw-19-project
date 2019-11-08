@@ -73,8 +73,9 @@ export default {
                     // if there is any error, the firebase user is deleted.
                     if(error.code && error.code != 201) { // handle conflit or any other error on scanbage backend
                         firebaseAuthService.deleteCurrentUser().then(() => dispatch('logout'))
+                    } else {
+                        dispatch('logout')
                     }
-                    dispatch('logout')
                     throwSignUpError(error)
                 })
         },

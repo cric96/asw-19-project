@@ -13,8 +13,7 @@
                 <v-icon large color="white">location_city</v-icon>
               </v-list-item-avatar>
               <v-list-item-content class="roboto white--text">
-                <span> Bentornato in casa <strong>{{activeBuilding.name}}</strong></span>
-               
+                <span>Bentornato in casa <strong>{{activeBuilding.name}}</strong></span>
               </v-list-item-content>
             </v-list-item>
           </v-card>
