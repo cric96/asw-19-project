@@ -1,8 +1,13 @@
 <template>
       <v-dialog v-model="show" persistent max-width="290">
         <v-card>
-          <v-card-title class="headline">Sei sicuro di voler cambiare la password con quella appena inserita? </v-card-title>
-          <v-card-text>Il cambio della password è una procedura irreversibile. Premi il tasto conferma sei sei sicuro di cambiare la tua password con quella appena inserita, altrimenti premi annulla. </v-card-text>
+          <v-card-title class="roboto-s warning white--text">
+            <v-icon class="mr-2" color="white">warning</v-icon>
+            Attenzione! 
+          </v-card-title>
+          <v-divider/>
+          <v-card-text class="mt-2">Sei sicuro di voler cambiare password? </v-card-text>
+          
           <v-card-actions>
             <div class="flex-grow-1"></div>
             <v-btn color="error" text @click="show = false">Annulla</v-btn>

@@ -60,10 +60,13 @@ typings/
 # next.js build output
 .next
 
-
 /scanbage-firebase-adminsdk-itzje-52ab1c019c.json
 /mongoose-config.json
 
+<<<<<<< HEAD
 #photo
 
 assets/user
+=======
+/assets/user
+>>>>>>> develop

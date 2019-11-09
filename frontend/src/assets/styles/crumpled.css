@@ -14,3 +14,8 @@
     font-size: 3em !important; /* 3em = 48sp that is the display-2 */
     letter-spacing: 2.0 !important;
 }
+.crumpled-display-logo {
+    font-family: "Crumpled" !important;
+    font-size: 5em !important; /* 3em = 48sp that is the display-2 */
+    letter-spacing: 2.0 !important;
+}
