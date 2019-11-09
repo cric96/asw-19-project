@@ -30,7 +30,7 @@ exports.insertTrash = function(req, res) {
     //update user
     var newLevel = user.updateScore(category.score)
     var rewardsUnlocked = []
-    cache.rewards.getUnlockedByUser(user)
+    cache.rewards.getUnlockedByUser(user, category.name)
         .then(rewards => {
             rewardsUnlocked = rewards.map(reward => reward._id)
             user.rewards = user.rewards.concat(rewards)

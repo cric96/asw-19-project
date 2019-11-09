@@ -4,6 +4,7 @@ var utils = require("../utils/utils")
 var TrashCategory = mongoose.model('TrashCategory')
 var Reward = mongoose.model('Reward')
 var trashQuery = require("../controllers/trashQueries")
+const USER_TRASH_THROWN = 1
 /**
  * the base class used to manage cache
  */
@@ -55,9 +56,9 @@ class CacheReward extends BaseCache {
         super(Reward)
     }
 
-    async getUnlockedByUser(user) {
+    async getUnlockedByUser(user, categoryThrown) {
         var toUnlock = this.getRewardToUnlock(user.rewards)
-        var rewardsAboutTrash = await this.getUnlockedByTrash(user , toUnlock)
+        var rewardsAboutTrash = await this.getUnlockedByTrash(user , toUnlock, categoryThrown)
         return rewardsAboutTrash.concat(
             this.getUnlockedByLevel(user.level, toUnlock),
             this.getUnlockedByScore(user.score, toUnlock),
@@ -94,13 +95,22 @@ class CacheReward extends BaseCache {
         }
         return false
     }
-    async getUnlockedByTrash(user, rewards) {
+    async getUnlockedByTrash(user, rewards, categoryThrown) {
+        
         var filteredReward = rewards.filter(r => r.aboutTotalTrash() || r.aboutTrash())
         if(filteredReward.length == 0) { //if there isn't trash rewards to unlock, it is possible to avoid trash query
             return []
         }
         var collectedTrashes = await trashQuery.searchUserTrashes(user)
-        var trashQuantity = collectedTrashes.reduce((acc,trash) => acc + trash.quantity, 0)
+        collectedTrashes = collectedTrashes.map(
+            trash => {
+                if(trash.trashCategory.name == categoryThrown) {
+                    trash.quantity += 1
+                }
+                return trash
+            }
+        )
+        var trashQuantity = collectedTrashes.reduce((acc,trash) => acc + trash.quantity, USER_TRASH_THROWN)
         return rewards.filter(reward => {
             if(reward.aboutTotalTrash()) {
                 return reward.unlockData.quantity < trashQuantity
