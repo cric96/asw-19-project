@@ -1,68 +1,108 @@
 <template>
-    <v-text-field
-    :v-model="value"
-    @input="$emit('input', $event)"
-    :label="labelDescription"
-    :rules="computedRules"
-    :prepend-icon="prependIcon"
-    outlined
-    required
-    clearable
-    :append-icon="show ? 'visibility' : 'visibility_off'"
-    :type="show ? 'text' : 'password'"
-    @click:append="show = !show"
-    ></v-text-field>
+    <v-row no-gutters>
+        <v-col cols="12">
+            <v-text-field
+            :value="value"
+            @input="$emit('input',$event)"
+            name="password"
+            :label="passwordLabel"
+            prepend-icon="lock"
+            :outlined="outlined"
+            :required="required"
+            :clearable="clearable"
+            :append-icon="showPassword ? 'visibility' : 'visibility_off'"
+            :type="showPassword ? 'text' : 'password'"
+            @click:append="showPassword = !showPassword"
+            v-validate="rules"
+            :error-messages="errors.collect('password')"
+        ></v-text-field>
+        </v-col>
+        <v-col cols="12">
+            <v-text-field
+            v-if="withConfirmation"
+            v-model="passwordConfirmation"
+            :label="passwordConfirmationLabel"
+            name="confirmPassword"
+            prepend-icon="check"
+            :outlined="outlined"
+            :required="required"
+            :clearable="clearable"
+            v-validate="confirmationRules"
+            :append-icon="showConfirm ? 'visibility' : 'visibility_off'"
+            :type="showConfirm ? 'text' : 'password'"
+            @click:append="showConfirm = !showConfirm"
+            :error-messages="errors.collect('confirmPassword')"
+        ></v-text-field>
+        </v-col>
+    </v-row>
 </template>
 
 <script>
 import { passwordRule } from '../user/userProperties';
+
 export default {
     props: {
+        passwordLabel:{
+            type:String,
+            default:"Password"
+        },
+        passwordConfirmationLabel:{
+            type:String,
+            default:"Conferma della password"
+        },
+        withConfirmation: {
+            type:Boolean,
+            default:false
+        },
+        outlined: {
+            type:Boolean,
+            default:false
+        },
+        required: {
+            type:Boolean,
+            default:false
+        },
         value: {
             type: String
         },
-        toCheck:{
-            type: String,
-            default: undefined,
-            required:false
-        },
-        labelDescription: {
-            type: String,
-            required: true
-        },
-        prependIcon: {
-            type: String
-        },
-        passwordRules: {
-            type: Array
+        clearable: {
+            type:Boolean,
+            default:false
         }
     },
-    data: () => ({
-        show: false,
-        changingPassword: ""
+    data: scope => ({
+        showPassword: false,
+        showConfirm: false,
+        passwordConfirmation:"",
+        password:"",          
+        rules: {
+            required: true,
+            min:6
+		},
+        confirmationRules: {
+            required: true,
+            min:6,
+            confirmed: 'password',
+        },
+        dictionary: {
+            custom: {
+                password: {
+                    required: 'Password è un campo obbligatorio',
+                    min: 'la password deve contenere almeno 6 caratteri'
+                },
+                confirmPassword: {
+                    required: 'La conferma della password è obbligatoria',
+                    min: 'Come la password, la sua conferma deve contenere almeno 6 caratteri',
+                    confirmed: 'La conferma della password non coincide'
+                }
+            },
+        },
     }),
-    computed:{
-        computedRules: function(){
-            var newRules = Object.assign([],this.passwordRules)
-            if (this.toCheck != undefined) {
-                newRules.push(this.passwordConfirmationRule)
-                return newRules
-            }else{
-                return this.passwordRules
-            }  
-        },
-        passwordConfirmationRule: function(){
-            return v => {return v == this.changingPassword || "La password di conferma non coincide con quella sopra inserita"}
-        } 
+    
+    mounted () {
+        const { $validator } = this;
+        $validator.localize('it',this.dictionary)
     },
-    watch: {
-        toCheck: {
-            immediate: true,
-            handler: function(val) {
-                this.changingPassword = val;
-            }
-        }
-    }
 }
 </script>
 

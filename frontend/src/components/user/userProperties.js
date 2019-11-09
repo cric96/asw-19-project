@@ -5,7 +5,7 @@ const emailRule = [
 ];
 export const passwordRule = [ 
     v => !!v || "il campo password è obbligatorio",
-    v =>  v!==undefined && v.length >= 6 || "La password deve essere almeno di 6 caratteri"
+    v =>  v!==null && v!==undefined && v.length >= 6 || "La password deve essere almeno di 6 caratteri"
 ];
 
 function passwordConfirmBuilder(user) {
