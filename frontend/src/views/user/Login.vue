@@ -38,7 +38,7 @@
           </v-card-actions>
           <social-login/>
           <v-card-text class="text-center">
-              Hai già un account?
+              Non hai ancora un account?
               <router-link to="/sign-up">Registrati</router-link>
           </v-card-text>
         </v-card>

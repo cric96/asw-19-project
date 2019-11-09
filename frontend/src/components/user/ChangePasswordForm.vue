@@ -11,7 +11,11 @@
                 color="secondary"
                 class="white--text"
             >
-                <v-toolbar-title class="font-weight-light">Cambia password</v-toolbar-title>        
+                <v-toolbar-title class="font-weight-light roboto-s">
+                    
+                    <v-icon color="white" class="mr-2">fas fa-key</v-icon>
+                    Cambia password
+                </v-toolbar-title>        
             </v-toolbar>
             <v-list-item two-line>
             <v-list-item-content>

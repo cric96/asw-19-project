@@ -11,7 +11,7 @@
                             </v-row>
                         </template>
                     </v-img>
-                    <v-img v-else src="@/assets/no-user-pic.png" />
+                    <v-icon v-else size="75">account_circle</v-icon>
                     <v-badge color="secondary" class="mt-12 ml-n4 elevation-1" style="border">
                         <template v-slot:badge>
                             <v-icon  x-small dark @click="onEdit">edit</v-icon>

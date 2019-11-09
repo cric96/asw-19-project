@@ -7,8 +7,8 @@
         color="secondary"
         class="white--text"
       >
-        <v-icon color="white">mdi-account</v-icon>
-        <v-toolbar-title class="font-weight-light">Profilo utente</v-toolbar-title>
+        <v-icon color="white" class="mr-2">mdi-account</v-icon>
+        <v-toolbar-title class="font-weight-light roboto-s">Profilo utente</v-toolbar-title>
         <div class="flex-grow-1"></div>
         <v-btn
           color="primary"
