@@ -1,8 +1,8 @@
 <template>
   <v-container fluid fill-height>
-    <v-card v-bind:style="{ backgroundColor: color}" class="mx-auto">
+    <v-card v-bind:style="{ backgroundColor: color}" class="mx-auto" max-width=500>
       <alert v-model="showAlert" ref="alert"/>
-      <v-card-title class="justify-center"> REGISTRATI </v-card-title>
+      <v-card-title id="top-card" class="justify-center"> REGISTRATI </v-card-title>
       <v-card-text >
         <user-form 
             @validateForm="doSignUp"
@@ -15,7 +15,7 @@
             actionName="Crea utente">
         </user-form>
       </v-card-text>
-      <v-card-text class="text-center">
+      <v-card-text class="text-center" id="bottom">
         <p> Hai già un account? <router-link to="/login">Log in</router-link></p>
       </v-card-text>
     </v-card>
@@ -50,6 +50,13 @@ export default {
     }
   },
   methods: {
+    returnOnTop : function() {
+      this.$vuetify.goTo("#top-card", {
+          easing : 'easeInOutCubic',
+          duration : 500,
+          offset : 100
+      })
+    },
     reset: function() {
       this.$refs.form.reset()
     },
@@ -60,14 +67,22 @@ export default {
       this.inRegistration = true
       this.signUp({ user : this.user, password : this.user.password}).then(user => {
         this.$refs.alert.showSuccess(messages.SIGNUP_SUCCESS)
-        setTimeout(() => { this.$router.replace("/dashboard"); }, 1500)
+        
+        setTimeout(() => { 
+          this.$router.replace("/dashboard"); 
+        }, 1500)
       })
       .catch(error => {
-        this.$refs.alert.showError(error.description)
+        if(error.description !== undefined) {
+          this.$refs.alert.showError(error.description)
+        } else {
+          this.$refs.alert.showError("Errore.. prova a modificare il form..")  
+        }
       })
       .finally(() => {
         this.showAlert = true
         this.inRegistration = false
+        this.returnOnTop()
       })
     }
   }

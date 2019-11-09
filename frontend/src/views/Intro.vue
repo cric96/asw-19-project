@@ -22,9 +22,13 @@
     </v-layout>-->
     <v-layout row wrap align-center>
       <v-flex xs12 sm12 md6>
-        <v-layout wrap justify-center align-center >     
-          <v-img :src="require('@/assets/logo.png')"   aspect-ratio="1.9" contain style="background-color:rgba(255,255,255,0.2);" ></v-img> 
-        </v-layout>       
+         
+        <v-layout wrap justify-center align-center>
+          <p class="crumpled-display-logo">SCANBAGE</p>
+        </v-layout>  
+        <v-layout wrap justify-center align-center class="mt-n12">     
+          <v-img :src="require('@/assets/logo.png')"   aspect-ratio="1.9" contain></v-img> 
+        </v-layout>    
       </v-flex>
       <v-flex xs12 sm12 md6>
         <router-view/>

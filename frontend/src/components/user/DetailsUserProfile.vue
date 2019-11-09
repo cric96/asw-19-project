@@ -8,27 +8,30 @@
         class="white--text"
       >
         <v-icon color="white" class="mr-2">mdi-account</v-icon>
-        <v-toolbar-title class="font-weight-light roboto-s">Profilo utente</v-toolbar-title>
+        <v-card-title class="font-weight-light roboto-s">Profilo utente</v-card-title>
         <div class="flex-grow-1"></div>
         <v-btn
           color="primary"
           fab
           small
-          @click="isEditing = !isEditing"
+          @click="onEditClick"
         >
           <v-icon  v-if="isEditing">mdi-close</v-icon>
           <v-icon  v-else>mdi-pencil</v-icon>
         </v-btn>
       </v-toolbar>
+        
       <v-card-text>
+        <alert class="mt-3 mx-3" text v-model="showAlert" ref="alert"/>
           <user-form v-model="isEditing" 
           v-bind:userProperties="userProperties" 
           v-bind:user="user" 
           :beDisabled="true" 
           actionName="Aggiorna"
+          :actionEnable="isEditing"
           @validateForm="updateUser">
             <v-col cols="12" sm="auto" md="auto">
-              <v-btn block @click="$emit('changepasswordclicked',true)">
+              <v-btn  block @click="onShowPassword">
                   Cambia password
               </v-btn>
             </v-col>
@@ -55,9 +58,11 @@
 </style>
 
 <script>
+import Notification from "@/model/notification"
 import UserForm from '@/components/user/UserForm'
 import {userPropsFilteredBuilder} from './userProperties';
-
+import * as messages from '@/resource/messages';
+import AlertMessageComponent from '@/components/AlertMessageComponent';
 export default {
     props:{
         user: {
@@ -65,22 +70,38 @@ export default {
         }
     },
     components: {
-        'user-form': UserForm
+        'user-form': UserForm,
+        'alert' : AlertMessageComponent
     },
     data: () => ({
         isEditing: false,
-        flipped: false
+        flipped: false,
+        showAlert: false,
     }),
     methods:{
         updateUser(user){
           this.$store.dispatch("user/updateUserData", user)
           .then(response => {
-              this.$refs.alert.changeConfig(UPDATED_INFO, "success")
-              this.$store.dispatch('msg/addMessage', new Notification('Il profilo dell\'utente è stato aggiornato'))
+              this.showAlert = true
+              this.$refs.alert.showSuccess(messages.UPDATED_INFO)
           })
           .catch(err => {
-            // TODO: handle error
-          });
+            this.showAlert = true
+            this.$refs.alert.showError(
+               (err.status == 409) ? // this means bad request for existing nickname
+                messages.SIGNUP_ERR_NICKNAME_CONFLICT : 
+                messages.UPDATE_INFO_ERR 
+            )
+          })
+        },
+        onShowPassword() {
+          this.showAlert = false
+
+          this.$emit('changepasswordclicked',true)
+        },
+        onEditClick() {
+          this.isEditing = !this.isEditing
+          this.showAlert = false
         }
     },
     computed: {

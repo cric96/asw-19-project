@@ -67,11 +67,11 @@ export default {
     loggingIn: false,
     email: "",
     emailRules: [
-      v => !!v || "E-mail is required",
-      v => /.+@.+/.test(v) || "E-mail must be valid"
+      v => !!v || "l'email è obbligatoria",
+      v => /.+@.+/.test(v) || "l'email deve essere valida"
     ],
     password: "",
-    passwordRules: [v => !!v || "Password is Required"]
+    passwordRules: [v => !!v || "la password è obbligatoria"]
   }),
   methods: {
     validate: function() {

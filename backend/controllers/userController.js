@@ -29,7 +29,7 @@ exports.updateUser = function(req, res) {
     User.findOneAndUpdate({ firebase_uid: uid }, updateUser, { new: true })
         .then(utils.filterNullElement)
         .then(updatedUser => res.setOk(updatedUser))
-        .catch(err => res.setBadRequest())
+        .catch(err => errorHandler(err, res))
 };
 
 function filterOrBuilder () {
