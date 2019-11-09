@@ -5,7 +5,6 @@
        <v-card
         class="overflow-hidden width-max-600"
         outlined>
-            <alert v-model="showAlert" ref="alert"/>
             <v-toolbar
                 flat
                 color="secondary"
@@ -17,6 +16,8 @@
                 </v-toolbar-title>        
             </v-toolbar>
             <v-card-text>
+                <alert class="mt-3 mx-3" text v-model="showAlert" ref="alert"/>
+        
                 <span class="subtitle">Scegli una password efficace e non utilizzarla per altri account</span>
                 <v-container fluid >
                     <v-form ref="form" v-model="valid">
@@ -42,7 +43,7 @@
                         <v-btn block color="primary" :disabled="!valid" @click="changePasswordPressed">Cambia password</v-btn>
                     </v-col>
                     <v-col cols="12" sm="auto" md="auto">
-                        <v-btn block color="primary" @click="$emit('userinfoview')">Visualizza Informazioni</v-btn>
+                        <v-btn block @click="onUserInfoView">Visualizza Informazioni</v-btn>
                     </v-col>
                     <v-spacer></v-spacer>
                 </v-row>
@@ -81,6 +82,10 @@
         changePasswordPressed:  function(){
             this.dialog = true
         },
+        onUserInfoView : function() {
+            this.showAlert = false;
+            this.$emit('userinfoview')
+        },
         changePassword: function(password){
             firebaseAuthService.changePassword(this.oldPassword, this.newPassword)
                 .then(() => {
@@ -104,7 +109,8 @@
         "alert": AlertMessageComponent,
         "password-text-field": PasswordTextField,
     },
-    
-
+    mounted() {
+        this.showAlert = false
+    }
 }
 </script>

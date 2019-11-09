@@ -61,5 +61,5 @@ buildingSchema.options.toJSON = {
         return ret;
     },
 }
-buildingSchema.index({ members: 1}, {unique: true})
+buildingSchema.index({ members: 1})
 module.exports = mongoose.model('Building', buildingSchema);

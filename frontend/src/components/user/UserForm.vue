@@ -26,7 +26,7 @@
     </v-form>
     <v-row v-if="actionName || resettable">
           <v-col v-if="actionName" cols="12" sm="auto" md="auto">      
-            <v-btn block :disabled="!valid && !isEditing && loading" color="success" class="mr-4" @click="validate" :loading="loading">
+            <v-btn block :disabled="(!valid && !isEditing && loading) || !actionEnable" color="success" class="mr-4" @click="validate" :loading="loading">
               {{actionName}}
             </v-btn>
           </v-col>
@@ -69,6 +69,10 @@ export default {
     actionName: {
       type : String
     },
+    actionEnable : {
+      type : Boolean,
+      default : true
+    },
     value: {
       type: Boolean,
       default: false
@@ -95,7 +99,8 @@ export default {
     user: {
       immediate: true,
       handler: function(val) {
-        this.finalUser = val;
+        console.log(val)
+        this.finalUser = Object.assign({},val);
       }
     }
   },

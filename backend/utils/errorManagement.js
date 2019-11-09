@@ -21,6 +21,7 @@ let mapErrorCodeToFunction = function(error, res) {
         break
         case MONGO_DB_DUPLICATE:
             res.setConflict(error.errmsg)
+            break
         default:
             res.setInternalError(error)
     } 
