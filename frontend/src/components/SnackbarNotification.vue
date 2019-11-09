@@ -1,6 +1,6 @@
 <template>
     <v-snackbar v-model="notificationShow"
-                :timeout="1500">
+                :timeout="timeout">
         {{notification.text}}
         <v-btn v-if="hasLink" :to="notification.to" text> Vedi </v-btn>
         <v-btn text color="primary" @click.native="notificationShow = false">Chiudi</v-btn>
@@ -26,6 +26,9 @@ export default {
         localQueue: [] //the local notification queue
     }),
     computed: {
+        timeout() {
+            return this.hasLink ? 3000 : 1500
+        },
         notifications() {
             //based on vuex stored, take messagge and considered it as notificaton
             return this.$store.state.msg.queue
