@@ -1,24 +1,19 @@
 <template>
   <v-container v-if="finalUser" fluid>
-    <v-form ref="form" v-model="valid" @keyup.native.enter="validate">
-      <v-row v-for="property in userProperties" :key="property.propertyName">
-          <password-text-field
+    <v-form ref="form" v-model="valid" @keyup.native.enter="validate" :max-width="maxwidth">
+      <template v-for="property in userProperties">
+          <password-text-field 
               v-if="property.propertyName==='password'"
+              :key="property.propertyName"
               v-model="user.password"
-              :prependIcon="property.prependedIcon"
-              :toCheck="undefined"
-              :labelDescription="property.propertyLabel"
-              :passwordRules="passwordRuleComp"
-          ></password-text-field>
-          <password-text-field
-              v-else-if="property.propertyName==='passwordConfirm'"
-              :prependIcon="property.prependedIcon"
-              :toCheck="user.password"
-              :labelDescription="property.propertyLabel"
-              :passwordRules="passwordRuleComp"
-          ></password-text-field>
+              :withConfirmation="true" 
+              :outlined="true"
+              :required="true"
+              :clearable="true"
+          />
           <v-text-field
             v-else
+            :key="property.propertyName"
             :disabled="beDisabled && (!property.editable || !isEditing)"
             v-model="finalUser[property.propertyName]"
             :label="property.propertyLabel"
@@ -27,8 +22,9 @@
             outlined
             clearable
           ></v-text-field>
-      </v-row>
-      <v-row v-if="actionName || resettable">
+      </template>
+    </v-form>
+    <v-row v-if="actionName || resettable">
           <v-col v-if="actionName" cols="12" sm="auto" md="auto">      
             <v-btn block :disabled="!valid && !isEditing && loading" color="success" class="mr-4" @click="validate" :loading="loading">
               {{actionName}}
@@ -39,8 +35,6 @@
           </v-col>
           <slot></slot>
       </v-row>
-      
-    </v-form>
   </v-container>
 </template>
 
@@ -51,6 +45,9 @@ import PasswordTextField from "@/components/authentication/PasswordTextField";
 
 export default {
   props: {
+    maxwidth:{
+      type: String
+    },
     user: {
       required: true
     },
