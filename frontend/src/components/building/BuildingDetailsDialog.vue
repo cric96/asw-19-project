@@ -77,12 +77,12 @@
                     <v-card elevation="0">
                         <v-card-title><div class="overline font-weight-medium">Membri</div></v-card-title>
                         <v-card-text>
-                            <v-row v-if="editable"> 
-                                <v-col cols="11">
+                            <v-row v-if="editable" align="center"> 
+                                <v-col cols="9" sm="auto" class="flex-grow-1">
                                     <autocomplete-members v-model="membersAutoComplete"
                                         :filter="excludeBuildingMembers" :disabled="pendingOperation"></autocomplete-members>
                                 </v-col>
-                                <v-col cols="1" class="d-flex justify-center align-end">
+                                <v-col cols="3" sm="auto">
                                     <v-btn fab elevation="1" small color="primary"
                                         @click="addMembers(membersAutoComplete)" :disabled="pendingOperation">
                                         <v-icon small>fas fa-user-plus</v-icon>
