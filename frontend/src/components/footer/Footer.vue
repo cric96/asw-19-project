@@ -1,32 +1,30 @@
 <template>
     <v-footer
-      color="secondary" 
+      color="secondary darken-1" 
       padless
-  >
-    <v-row
-      justify="center"
-      no-gutters
     >
-      <v-dialog
-        max-width="500"
-        v-for="link in links"
-        :key="link"
+      <v-row
+        justify="center"
+        no-gutters
       >
-        <template v-slot:activator="{ on }">
-          <v-btn
-            color="white"
-            text
-            class="ma-2"
-            v-on="on"
-          >
-            {{ link }}
-          </v-btn>
-        </template>
-      
-        <component :is="getComponentFromName(link)"/>
-      </v-dialog>
-    </v-row>
-
+        <v-dialog
+          max-width="500"
+          v-for="link in links"
+          :key="link"
+        >
+          <template v-slot:activator="{ on }">
+            <v-btn
+              color="white"
+              text
+              :class="reactiveBtn"
+              v-on="on"
+            >
+              {{ link }}
+            </v-btn>
+          </template>
+          <component :is="getComponentFromName(link)"/>
+        </v-dialog>
+      </v-row>
   </v-footer>
 </template>
 
@@ -41,6 +39,11 @@ export default {
       'ideology-card' : IdeologyCard,
       'contact-us-card' : ContactUsCard,
       'team-card' : TeamCard
+    },
+    computed : {
+      reactiveBtn : function(){
+        return this.$vuetify.breakpoint.xs ? "ma-2 onMobile" : "ma-2"
+      }
     },
     data: () => ({
       links: [
@@ -65,3 +68,9 @@ export default {
     }
 }
 </script>
+
+<style scoped>
+.onMobile {
+  width: 80%;
+}
+</style>

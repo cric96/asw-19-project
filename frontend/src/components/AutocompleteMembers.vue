@@ -29,14 +29,15 @@
     </template>
     <!-- slot template for list of suggestions -->
     <template v-slot:item="{ item }">
-      <v-list-item-avatar v-if="item.avatar">
-          <v-img :src="item.avatar" />
-        </v-list-item-avatar>
+      
         <v-list-item-avatar
-          v-else
           color="secondary"
           class="headline font-weight-light white--text"
-        >{{ item | formatUserDisplayName | initial }}</v-list-item-avatar>
+        >
+        <user-avatar :user="item">
+          {{ item | formatUserDisplayName | initial }}
+        </user-avatar>
+        </v-list-item-avatar>
         <v-list-item-content>
           <v-list-item-title v-if="item">{{item | formatUserDisplayName}}</v-list-item-title>
           <v-list-item-subtitle v-text="item.email"></v-list-item-subtitle>
@@ -49,12 +50,14 @@
 </template>
 
 <script>
-import userApi from "@/services/usersApi";
-import UserChip from "@/components/user/UserChip";
+import userApi from "@/services/usersApi"
+import UserChip from "@/components/user/UserChip"
+import UserAvatar from "@/components/user/UserAvatar"
 
 export default {
   components: {
-    "user-chip": UserChip
+    "user-chip": UserChip,
+    "user-avatar" : UserAvatar
   },
   props: {
     value: {

@@ -11,9 +11,7 @@ export default {
     },
     getters : {
         trashThrown : state => state.trashThrown,
-        isTrashCached : state => state.trashThrown.length != 0,
-        absoluteAvatarPath : state => process.env.VUE_APP_NODE_SERVER + ""
-        + state.userProfile.avatarUrl
+        isTrashCached : state => state.trashThrown.length != 0
     },
     actions : {
         //retrive trash throweb by logged user

@@ -51,12 +51,12 @@ export default {
             {
                 avatar: 'https://scontent-mxp1-1.xx.fbcdn.net/v/t1.0-9/10534743_767242256629735_3442239859492906482_n.jpg?_nc_cat=100&_nc_oc=AQnTsJRJdCj4geE37PsDiljefVc9TCHEXetZsIYX4SLpbcBJKrvAgU8SYpTj2m8-xd4&_nc_ht=scontent-mxp1-1.xx&oh=5f2e3392a01e045c9ed3eeda8ffa6e2a&oe=5E5B88B6',
                 name: 'Andrea Petreti',
-                description: "Sempre pronto ad aiutare a tutti. Fifa è il suo secondo lavoro.",
+                description: "Sempre pronto ad aiutare a tutti. Artista del codice.",
             },
             {
                 avatar: 'https://scontent-mxp1-1.xx.fbcdn.net/v/t1.0-1/p240x240/11062260_10205563256434373_8751593381476698597_n.jpg?_nc_cat=109&_nc_oc=AQkDMvBELfLcsLakwaj-F2aafsDhDyVRuOAphLl-p7ZW5qivZgz815IDoDxtIlla-NM&_nc_ht=scontent-mxp1-1.xx&oh=86a0cbd25e8a65d6317ed31494bd4ff0&oe=5E20CB74',
                 name: 'Gianluca Aguzzi',
-                description: "Cricchiolin, on the river.",
+                description: "Ama la tecnologia e la corsa.",
             }
       ],
     })

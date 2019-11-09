@@ -17,6 +17,7 @@
       <v-app-bar app clipped-left color="primary" dark>
         <v-app-bar-nav-icon @click="drawer = !drawer" />
         <v-toolbar-title class="crumpled">SCANBAGE</v-toolbar-title>
+        <v-avatar class="ml-2"><v-img src="@/assets/logoBiancoSfondoVerde.png"></v-img></v-avatar>
         <v-spacer></v-spacer>
       </v-app-bar>
       
@@ -104,7 +105,6 @@ export default {
   },
   beforeMount() {
     this.fetchCategories()
-    //this.checkPicturePresence()
   }
 };
 </script>
