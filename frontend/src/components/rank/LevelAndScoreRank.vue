@@ -86,10 +86,13 @@
       class="my-2"
       :rankHeaders="getRankHeader"
       :rankRows="elements"
+      :loggedUserRow="userProfile"
     ></leaderboard-table>
   </v-container>
 </template>
 <script>
+import { createNamespacedHelpers } from 'vuex'
+const { mapGetters } = createNamespacedHelpers('user')
 import ranksApi from '@/services/ranksApi'
 import LeaderboardTable from './LeaderboardTable'
 export default {
@@ -105,10 +108,13 @@ export default {
       getRankHeader : function() {
         var orderBy = this.isLevelRank ? "Livello" : "Punteggio"
         return [
-          {text : 'Utente', value : 'user.nickname'}, 
+          {text : 'Utente', value : 'user'}, 
           {text : orderBy, value : 'value'}
         ]
-      }
+      },
+      ...mapGetters([
+          'userProfile'
+      ])
     },
     mounted() {
         this.computeRank()

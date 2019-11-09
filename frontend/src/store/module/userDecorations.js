@@ -25,7 +25,7 @@ export default {
                     .then(() => {
                         commit("putAvatar")
                     })
-                    .catch(err => {console.log(err)})
+                    .catch(err => {})
         },
         invalidatePicture({commit}) {
             commit("putAvatar")
@@ -61,9 +61,7 @@ export default {
         },
         putAvatar(state) {
             var user = Object.assign({}, state.userProfile)
-            user.avatarUrl = process.env.VUE_APP_NODE_SERVER + 
-                            "/users/" + 
-                            user.firebase_uid + 
+            user.avatarUrl = "/users/" + user.firebase_uid + 
                             "/picture?t=" + new Date().getTime()
             state.userProfile = user
         },

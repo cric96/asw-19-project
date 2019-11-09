@@ -4,10 +4,10 @@
         <slot name="activator" v-bind:on="activatorListener"></slot>
         <v-dialog v-model="value" persistent transition="dialog-bottom-transition" max-width="600px">
             <v-card>
-                <v-alert v-if="alert" :type="alert.type">{{ alert.message }}</v-alert>
-                <v-card-title class="headline secondary white--text" primary-title>
+                <v-card-title class="roboto-s secondary white--text" >
                     Aggiungi nuova abitazione
                 </v-card-title>
+                <v-alert class="mt-3 mx-3" text v-if="alert" :type="alert.type">{{ alert.message }}</v-alert>
                 <v-card-text>
                     <v-container>
                         <v-form ref="form" lazy-validation>

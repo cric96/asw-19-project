@@ -77,12 +77,12 @@
                     <v-card elevation="0">
                         <v-card-title><div class="overline font-weight-medium">Membri</div></v-card-title>
                         <v-card-text>
-                            <v-row v-if="editable"> 
-                                <v-col cols="11">
+                            <v-row v-if="editable" align="center"> 
+                                <v-col cols="9" sm="auto" class="flex-grow-1">
                                     <autocomplete-members v-model="membersAutoComplete"
                                         :filter="excludeBuildingMembers" :disabled="pendingOperation"></autocomplete-members>
                                 </v-col>
-                                <v-col cols="1" class="d-flex justify-center align-end">
+                                <v-col cols="3" sm="auto">
                                     <v-btn fab elevation="1" small color="primary"
                                         @click="addMembers(membersAutoComplete)" :disabled="pendingOperation">
                                         <v-icon small>fas fa-user-plus</v-icon>
@@ -93,7 +93,9 @@
                                 <template v-for="(member, index) in currentMembersList"> 
                                     <v-list-item :key="member._id">
                                         <v-list-item-avatar color="secondary" class="font-weight-light white--text">
-                                                {{ member | formatUserDisplayName | initial }}
+                                                <user-avatar :user="member">
+                                                    {{ member | formatUserDisplayName | initial }}
+                                                </user-avatar>
                                         </v-list-item-avatar>
                                         <v-list-item-content>
                                             <v-list-item-title>{{ member | formatUserDisplayName }}</v-list-item-title>
@@ -121,6 +123,7 @@
 <script>
 import AlertMessageComponent from '@/components/AlertMessageComponent'
 import AutocompleteMembers from '@/components/AutocompleteMembers'
+import UserAvatar from '@/components/user/UserAvatar'
 import Notification from "@/model/notification"
 import { building as buildingError } from '@/resource/errors.js'
 import { mapActions } from 'vuex'
@@ -128,7 +131,8 @@ import { mapActions } from 'vuex'
 export default {
     components: {
         'alert': AlertMessageComponent,
-        'autocomplete-members': AutocompleteMembers
+        'autocomplete-members': AutocompleteMembers,
+        'user-avatar': UserAvatar
     },
     data: () => ({
         membersAutoComplete: [],

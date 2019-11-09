@@ -20,5 +20,5 @@ module.exports.setupCloud = function() {
     } else {
         mongooseConfig = require('./mongoose-config.json')
     }
-    mongoose.connect(`mongodb+srv://${mongooseConfig.username}:${mongooseConfig.password}@scanbage-fd95g.mongodb.net/v1?retryWrites=true&w=majority`, { useNewUrlParser: true, useFindAndModify: false });
+    mongoose.connect(`mongodb+srv://${mongooseConfig.username}:${mongooseConfig.password}@scanbage-fd95g.mongodb.net/v2?retryWrites=true&w=majority`, { useNewUrlParser: true, useFindAndModify: false });
 }

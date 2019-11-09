@@ -6,8 +6,6 @@ const tokenProvider = {
         return retrieveFirebaseCurrentUser()
             .then(firebaseUser => firebaseUser.getIdToken(true))
             .then(token => {
-                console.log("New token:")
-                console.log(token)
                 this.currentToken = token
             })
     }

@@ -3,13 +3,13 @@
         class="mx-auto " v-bind:class="{ pulsing: newReward, lockStyle : locked }"
     >
         <v-list-item :class="(locked ? 'lockStyleDarken' : 'secondary text--white')">
-            <v-list-item-avatar >
+            <v-list-item-avatar class="ml-n3">
                 <v-badge>
                     <v-icon v-if="locked" color="white">lock</v-icon>
                     <v-icon color="white" v-else>lock_open</v-icon>
                 </v-badge>
             </v-list-item-avatar>
-            <v-list-item-content class="ml-n4">
+            <v-list-item-content class="ml-n6">
                <v-list-item-title class="roboto-xs white--text">    
                     {{reward.name}}
                 </v-list-item-title>

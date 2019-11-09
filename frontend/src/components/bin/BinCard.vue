@@ -24,7 +24,7 @@
                         align-items: center;
                         justify-content: center;" 
                         class="card-font center-element " v-else>
-            Nessun rifiuto <v-icon size=34>sentiment_dissatisfied</v-icon> 
+            Nessun rifiuto <v-icon size=34 class="ml-2">sentiment_dissatisfied</v-icon> 
             </div>
         
         <v-divider class="mb-4"/>
@@ -120,10 +120,22 @@ function createChartOptions(trashes) {
             enabled: true,
             formatter: function (val, opts) {
                 return trashes[opts.seriesIndex].trashCategory.name
+            },
+            style: {
+                colors: ['#000000']
             }
         },
-        colors : ["#004D40", "#00695C", "#00796B", "#00897B", "#00897B", "#388E3C"]
+        tooltip: {
+            theme: "light"
+        },
+        colors : ["#B3E5FC", "#B2EBF2", "#B2DFDB", "#E1F5FE", "#80CBC4", "#388E3C"]
     }
 }
 
 </script>
+
+<style scoped>
+.apexcharts-tooltip {
+    color: black
+}
+</style>

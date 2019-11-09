@@ -4,17 +4,17 @@
             <div class="d-flex flex-row full-width" >
                 <v-list-item-avatar size=60 class="ml-n2">
                     <user-photo ref="photoLoader"/>
-                    <v-img v-if="isImageLoaded" :src="user.avatarUrl" class="elevation-2">
+                    <v-img v-if="isImageLoaded" :src="avatarImageUrl" class="elevation-2">
                         <template v-slot:placeholder>
                             <v-row class="fill-height ma-0" align="center" justify="center">
                             <v-progress-circular indeterminate color="primary lighten-1"></v-progress-circular>
                             </v-row>
                         </template>
                     </v-img>
-                    <v-img v-else src="@/assets/no-user-pic.png" />
-                    <v-badge color="primary" class="mt-12 ml-n4">
+                    <v-icon v-else size="75">account_circle</v-icon>
+                    <v-badge color="secondary" class="mt-12 ml-n4 elevation-1" style="border">
                         <template v-slot:badge>
-                            <v-icon x-small dark @click="onEdit">edit</v-icon>
+                            <v-icon  x-small dark @click="onEdit">edit</v-icon>
                         </template>
                     </v-badge>
                 </v-list-item-avatar>
@@ -61,7 +61,8 @@ export default {
             return this.user.avatarUrl !== undefined
         },
         avatarImageUrl : function() {
-            return this.user.avatarUrl
+            return process.env.VUE_APP_NODE_SERVER + ""
+                    + this.user.avatarUrl
         }
     },
     methods : {

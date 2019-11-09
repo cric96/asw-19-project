@@ -57,25 +57,28 @@ export default {
         },
         // sign up starting from user object and password
         signUp({ commit, dispatch }, {user, password}) {
+            var authUser = null
             return firebaseAuthService.signUpFromEmailPassword(user.email, password)
                 .then(firebaseUser => {
                     // if the sign up do a link operation, fetch directly the user from scanbage backend
                     // otherwise create a new one.
                     user.firebase_uid = firebaseUser.user.uid
+                    authUser = firebaseUser
                     if(firebaseUser.operationType == "link") {
-                        return dispatch('updateUserData', user)
+                        return dispatch('updateUserData', user).catch(err => throwSignUpError(err))
                     } else {
-                        return createUserProfile(commit, user)
+                        return createUserProfile(commit, user).catch(err => throwSignUpError(err))
                     }
                 })
                 .catch(error => {
                     // !!! here firebase have already created a new user on its backend, but our backend no.
                     // if there is any error, the firebase user is deleted.
-                    if(error.code && error.code != 201) { // handle conflit or any other error on scanbage backend
-                        firebaseAuthService.deleteCurrentUser().then(() => dispatch('logout'))
+                    if(error.code && error.code != 201 && authUser) { // handle conflit or any other error on scanbage backend
+                        authUser.user.delete().then(() => dispatch('logout'))
+                    } else {
+                        dispatch('logout')
                     }
-                    dispatch('logout')
-                    throwSignUpError(error)
+                    throw error
                 })
         },
         logout({ commit, getters }) {
