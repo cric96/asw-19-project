@@ -128,7 +128,7 @@ function createChartOptions(trashes) {
         tooltip: {
             theme: "light"
         },
-        colors : ["#B3E5FC", "#B2EBF2", "#B2DFDB", "#E1F5FE", "#80CBC4", "#388E3C"]
+        colors : ["#a6cee3", "#1f78b4", "#b2df8a", "#33a02c"]
     }
 }
 
