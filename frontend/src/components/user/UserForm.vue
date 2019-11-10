@@ -5,7 +5,7 @@
           <password-text-field 
               v-if="property.propertyName==='password'"
               :key="property.propertyName"
-              v-model="user.password"
+              v-model="finalUser.password"
               :withConfirmation="true" 
               :outlined="true"
               :required="true"
@@ -99,13 +99,13 @@ export default {
     user: {
       immediate: true,
       handler: function(val) {
-        console.log(val)
         this.finalUser = Object.assign({},val);
       }
     }
   },
   methods: {
     validate: function() {
+      console.log(this.finalUser)
       if (this.$refs.form.validate()) {
         this.valid = true
         this.$emit("validateForm", this.finalUser);

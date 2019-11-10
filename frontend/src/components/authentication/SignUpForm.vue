@@ -65,7 +65,7 @@ export default {
     ]),
     doSignUp: function(newUser) {
       this.inRegistration = true
-      this.signUp({ user : this.user, password : this.user.password}).then(user => {
+      this.signUp({ user : newUser, password : newUser.password}).then(user => {
         this.$refs.alert.showSuccess(messages.SIGNUP_SUCCESS)
         
         setTimeout(() => { 
