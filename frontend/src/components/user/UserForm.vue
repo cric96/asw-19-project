@@ -39,6 +39,7 @@
 </template>
 
 <script>
+import {mapGetters} from 'vuex'
 import User from "@/model/user";
 import { passwordRule } from "@/components/user/userProperties";
 import PasswordTextField from "@/components/authentication/PasswordTextField";
@@ -89,16 +90,24 @@ export default {
         return this.value;
       }
     },
-            passwordRuleComp: function(){
-                console.log("passRuleComp",passwordRule)
-                return passwordRule;
-            }
-    
+    passwordRuleComp: function(){
+        console.log("passRuleComp",passwordRule)
+        return passwordRule;
+    },
+    ...mapGetters({
+      'userFromVuex' : 'user/userProfile'
+    })
   },
   watch: {
+    userFromVuex: function(val) {
+      console.log("new user")
+      console.log(val)
+    },
     user: {
       immediate: true,
       handler: function(val) {
+        console.log("here")
+        console.log(val)
         this.finalUser = Object.assign({},val);
       }
     }
