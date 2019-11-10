@@ -98,7 +98,7 @@ function changePassword(oldPassword, newPassword) {
     return retrieveFirebaseCurrentUser().then(user => {
         let credentials = firebase.auth.EmailAuthProvider.credential(user.email, oldPassword);
         return user.reauthenticateWithCredential(credentials).then(() => user.updatePassword(newPassword))
-    }); 
+    }).then(() => tokenProvider.refreshToken()); 
 }
 
 function checkAvailableProvider(email, providerId) {
