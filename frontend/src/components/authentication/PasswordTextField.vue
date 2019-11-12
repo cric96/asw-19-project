@@ -15,10 +15,14 @@
             @click:append="showPassword = !showPassword"
             v-validate="rules"
             :error-messages="errors.collect('password')"
+                                  :rules="[]"
+
         ></v-text-field>
         </v-col>
         <v-col cols="12">
             <v-text-field
+                      :rules="[]"
+
             v-if="withConfirmation"
             v-model="passwordConfirmation"
             :label="passwordConfirmationLabel"

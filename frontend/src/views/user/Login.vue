@@ -1,7 +1,7 @@
 <template>
   <v-container fluid fill-height>
     <v-layout row align-center justify-center>
-        <v-card v-bind:style="{ backgroundColor: color}" class="mx-auto ma-3 mp-5" max-width=340>
+        <v-card v-bind:style="{ backgroundColor: color}" class="mx-auto ma-3 mp-5 bordered_card" elevation="20"  max-width=340 >
           <alert v-model="showAlert" ref="alert"></alert>
           <v-card-title class="justify-center"> ACCEDI </v-card-title>
           <v-card-text>
@@ -103,3 +103,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.bordered_card {
+  border: 1px solid black;
+}
+</style>

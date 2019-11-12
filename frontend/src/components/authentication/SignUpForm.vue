@@ -1,6 +1,6 @@
 <template>
   <v-container fluid fill-height>
-    <v-card v-bind:style="{ backgroundColor: color}" class="mx-auto" max-width=500>
+    <v-card v-bind:style="{ backgroundColor: color}" class="mx-auto bordered_card" elevation="20" max-width=500 >
       <alert v-model="showAlert" ref="alert"/>
       <v-card-title id="top-card" class="justify-center"> REGISTRATI </v-card-title>
       <v-card-text >
@@ -88,3 +88,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.bordered_card {
+  border: 1px solid black;
+}
+</style>

@@ -37,16 +37,17 @@
                             :required="true"
                             :clearable="true"
                         />
+                        
                 </v-form>
                 <v-row>
-                    <v-col cols="12" sm="auto" md="auto">
-                        <v-btn block color="primary" :disabled="!valid" @click="changePasswordPressed">Cambia password</v-btn>
-                    </v-col>
-                    <v-col cols="12" sm="auto" md="auto">
-                        <v-btn block @click="onUserInfoView">Visualizza Informazioni</v-btn>
-                    </v-col>
-                    <v-spacer></v-spacer>
-                </v-row>
+                            <v-col cols="12" sm="auto" md="auto">
+                                <v-btn block color="primary" :disabled="!valid" @click="changePasswordPressed">Cambia password</v-btn>
+                            </v-col>
+                            <v-col cols="12" sm="auto" md="auto">
+                                <v-btn block @click="onUserInfoView">Visualizza Informazioni</v-btn>
+                            </v-col>
+                            <v-spacer></v-spacer>
+                        </v-row>
                 </v-container>
             </v-card-text>
         </v-card>
@@ -73,7 +74,7 @@
         data:scope =>({
                 dialog: false,
                 showAlert: false,
-                valid: false,
+                valid: true,
                 password: "",
                 newPassword: "",
                 newPasswordConfirmation: ""
@@ -87,7 +88,8 @@
             this.$emit('userinfoview')
         },
         changePassword: function(password){
-            firebaseAuthService.changePassword(this.oldPassword, this.newPassword)
+            if (this.$refs.form.validate()) {
+firebaseAuthService.changePassword(this.oldPassword, this.newPassword)
                 .then(() => {
                     this.showAlert = true
                     this.$refs.alert.changeConfig(messages.CHANGE_PASSWORD_SUCCESS, "success")
@@ -96,7 +98,8 @@
                     console.log(error)
                     this.showAlert = true
                     this.$refs.alert.changeConfig(messages.CHANGE_PASSWORD_ERROR, "error")
-                })
+                })            }
+            
         }
     },
     computed:{
