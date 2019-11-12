@@ -17,7 +17,11 @@
                 <v-sheet color="rgba(0, 0, 0, .12)">
                 <div>
                     <!-- do better -->
-                    <apexchart type="bar" height=180px :options="options" :series="series"></apexchart>
+                    <apexchart type="bar"
+                    id="apexChart"
+                    height=180px
+                    :options="options" 
+                    :series="series"></apexchart>
                 </div>
                 </v-sheet>
             </v-card-text>
@@ -52,6 +56,9 @@ function createOptions(labels, colors) {
         xaxis: {
             type: 'string',
             categories: labels, //put trash label passed
+            labels: { 
+                minHeight: 50 ,
+            }
         },
         legend: {
             show: false
@@ -84,7 +91,6 @@ export default {
         loaded : function() {
             return this.userAndTrashData.length != 0
         },
-
         series : function() {
             if(!this.loaded) {
                 return []
@@ -140,7 +146,7 @@ export default {
     },
     methods: {
         fetchData : function() {
-            binsApi.getBinsGroupByMember(this.activeBuilding)
+            return binsApi.getBinsGroupByMember(this.activeBuilding)
                 .then(userAndTrashes => {
                     console.log("then: ", userAndTrashes)
                     this.userAndTrashData = userAndTrashes
