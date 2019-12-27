@@ -8,7 +8,7 @@
                 loader-height= 7
             >
               <v-card-title class="justify-center">
-                  Ricerca in corso..
+                  Searching..
               </v-card-title>
             </v-card>    
             <v-card
@@ -27,9 +27,9 @@
                 <v-card-title class="roboto-m">{{category.name}}</v-card-title>
                 
                 <v-card-text>
-                <p>Va in <em class="roboto-s"> {{ binName }} </em> </p>
+                <p>It goes in <em class="roboto-s"> {{ binName }} </em> </p>
                 <v-divider></v-divider>
-                <p v-if="aiMode" style="font-size: 20px; padding-top: 20px;">Confermi?</p>
+                <p v-if="aiMode" style="font-size: 20px; padding-top: 20px;">Agree?</p>
                 </v-card-text>
 
                 <v-card-actions class="justify-center">
@@ -50,7 +50,7 @@
                     <v-icon :color="'secondary darken-1'" size=70>sentiment_dissatisfied</v-icon> 
                 </v-card-title>
                  
-                <v-card-title class="roboto-xs justify-center">Rifiuto non riconosciuto..</v-card-title>
+                <v-card-title class="roboto-xs justify-center">Not recognized trash..</v-card-title>
                 <v-card-actions class="justify-center">
                     <v-btn x-large icon @click="close" :color="'primary darken-1'"> <v-icon>done</v-icon></v-btn>
                 </v-card-actions> 

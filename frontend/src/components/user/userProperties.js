@@ -43,21 +43,21 @@ function userPropsBuilder(user) {
         {
             propertyName : "passwordConfirm",
             propertyRule : passwordConfirmBuilder(user),
-            propertyLabel : "password di conferma",
+            propertyLabel : "password confirmation",
             prependedIcon: "check",
             editable : true
         },
         {
             propertyName : "name",
             propertyRule : [],
-            propertyLabel : "nome",
+            propertyLabel : "name",
             prependedIcon: "person",
             editable : true
         },
         {
             propertyName : "surname",
             propertyRule : [],
-            propertyLabel : "cognome",
+            propertyLabel : "surname",
             prependedIcon: "person",
             editable : true
         },

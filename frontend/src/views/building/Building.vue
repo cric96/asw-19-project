@@ -28,13 +28,13 @@
         </v-layout>
 
         <empty-view v-else class="full-vh align-center">
-            <template slot="title">Ops! Nessuna abitazione</template>
+            <template slot="title">No building..</template>
             <template slot="message">
-                Crea una nuova abitazione <v-btn depressed fab disabled x-small><v-icon small>add</v-icon></v-btn> 
-                per iniziare subito a riciclare!
+                Create a new building <v-btn depressed fab disabled x-small><v-icon small>add</v-icon></v-btn> 
+                to start recycling!
             </template>
             <template slot="actions">
-                <v-btn @click="$refs.createDialog.value = true" color="primary">Crea abitazione</v-btn>
+                <v-btn @click="$refs.createDialog.value = true" color="primary">Create a new building</v-btn>
             </template>
         </empty-view>
     </v-layout>

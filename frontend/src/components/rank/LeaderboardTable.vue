@@ -8,7 +8,7 @@
     disable-sort
     :mobile-breakpoint="0"
     :loading="emptyRows"
-    loading-text="Calcolo classifica in corso.."
+    loading-text="Computing rank.."
     class="elevation-3 overline header"
   >
   <!--item.user.nickname || item.user.email-->

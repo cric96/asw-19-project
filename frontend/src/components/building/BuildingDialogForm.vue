@@ -5,7 +5,7 @@
         <v-dialog v-model="value" persistent transition="dialog-bottom-transition" max-width="600px">
             <v-card>
                 <v-card-title class="roboto-s secondary white--text" >
-                    Aggiungi nuova abitazione
+                    Add new building
                 </v-card-title>
                 <v-alert class="mt-3 mx-3" text v-if="alert" :type="alert.type">{{ alert.message }}</v-alert>
                 <v-card-text>
@@ -14,7 +14,7 @@
                             <v-row>
                                 <v-col cols="12">
                                     <v-text-field name="name" 
-                                        label="Nome abitazione" 
+                                        label="Building name" 
                                         :rules="baseRule"
                                         v-model="building.name"
                                         required/>
@@ -27,14 +27,14 @@
                                         :loading="cities.loading"
                                         :search-input.sync="citySearchText"
                                         :rules="baseRule"
-                                        label="Seleziona la città" 
+                                        label="Choose a city" 
                                         hide-details hide-selected
                                         no-filter clearable return-object>
                                             <template v-slot:no-data>
                                                 <v-list-item>
                                                     <v-list-item-title>
-                                                    Cerca la tua
-                                                    <strong>città</strong>
+                                                    Search for your
+                                                    <strong>city</strong>
                                                     </v-list-item-title>
                                                 </v-list-item>
                                             </template>
@@ -51,7 +51,7 @@
                                 <v-col cols="12">
                                     <v-text-field 
                                         name="address" 
-                                        label="Indirizzo abitazione" 
+                                        label="Building address" 
                                         :rules="baseRule"
                                         v-model="building.address"
                                         required/>
@@ -61,14 +61,14 @@
                                 <v-col cols="12" sm="6">
                                     <v-text-field 
                                         name="floor" 
-                                        label="Piano abitazione" 
+                                        label="Building floor" 
                                         type="number"
                                         v-model="building.floor"/>
                                 </v-col>
                                 <v-col cols="12" sm="6">
                                     <v-text-field 
                                         name="apartmentNumber" 
-                                        label="Interno"
+                                        label="Building apartment number"
                                         type="number"
                                         min="0"
                                         v-model="building.apartmentNumber"
@@ -85,8 +85,8 @@
                 </v-card-text>
                 <v-card-actions>
                     <div class="flex-grow-1"></div>
-                    <v-btn color="primary" text :disabled="pendingOperation" @click="value = false">Chiudi</v-btn>
-                    <v-btn color="primary" text :loading="pendingOperation" @click="pressSaveBuilding">Salva</v-btn>
+                    <v-btn color="primary" text :disabled="pendingOperation" @click="value = false">Close</v-btn>
+                    <v-btn color="primary" text :loading="pendingOperation" @click="pressSaveBuilding">Save</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -114,7 +114,7 @@ export default {
         building: { },
         alert: null,
         pendingOperation: false,
-        baseRule: [v => !!v || "Questo campo è obbligatorio"]
+        baseRule: [v => !!v || "This field is mandatory"]
     }),
     computed: {
         activatorListener: function() {
@@ -164,7 +164,7 @@ export default {
                 let promise = this.createBuilding(newBuilding).then(() => {
                     this.$refs.form.reset()
                     this.closeDialog()
-                    this.$store.dispatch('msg/addMessage', new Notification('Nuova abitazione creata'))
+                    this.$store.dispatch('msg/addMessage', new Notification('New building created'))
                 }).catch(err => {
                     this.alert = { type: 'error', message: err }
                 })

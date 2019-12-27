@@ -12,25 +12,25 @@
             >
                 <v-toolbar-title class="font-weight-light roboto-s">
                     <v-icon color="white" class="mr-2">fas fa-key</v-icon>
-                    Cambia password
+                    Change password
                 </v-toolbar-title>        
             </v-toolbar>
             <v-card-text>
                 <alert class="mt-3 mx-3" text v-model="showAlert" ref="alert"/>
         
-                <span class="subtitle">Scegli una password efficace e non utilizzarla per altri account</span>
+                <span class="subtitle">Choose a secure password and don't use it in others account</span>
                 <v-container fluid >
                     <v-form ref="form" v-model="valid">
                         <password-text-field
-                            passwordLabel="Password corrente" 
+                            passwordLabel="Actual password" 
                             v-model="oldPassword"
                             :outlined="true"
                             :required="true"
                             :clearable="true"
                         />
                         <password-text-field 
-                            passwordLabel="Nuova password" 
-                            passwordConfirmationLabel="Conferma della nuova password" 
+                            passwordLabel="New password" 
+                            passwordConfirmationLabel="Confirm new password" 
                             v-model="newPassword"
                             :withConfirmation="true" 
                             :outlined="true"
@@ -41,10 +41,10 @@
                 </v-form>
                 <v-row>
                             <v-col cols="12" sm="auto" md="auto">
-                                <v-btn block color="primary" :disabled="!valid" @click="changePasswordPressed">Cambia password</v-btn>
+                                <v-btn block color="primary" :disabled="!valid" @click="changePasswordPressed">Change password</v-btn>
                             </v-col>
                             <v-col cols="12" sm="auto" md="auto">
-                                <v-btn block @click="onUserInfoView">Visualizza Informazioni</v-btn>
+                                <v-btn block @click="onUserInfoView">Show Info</v-btn>
                             </v-col>
                             <v-spacer></v-spacer>
                         </v-row>

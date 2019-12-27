@@ -64,17 +64,17 @@ export default {
       },
       {
         path: '/leaderboard',
-        title: 'Classifica',
+        title: 'Leaderboard',
         icon: 'emoji_events'
       },
       {
         path: '/rewards',
-        title: 'Premi',
+        title: 'Rewards',
         icon: 'star'
       }
       ,{
         path: '/buildings',
-        title: 'Edifici',
+        title: 'Buildings',
         icon: 'settings'
       },
     ]

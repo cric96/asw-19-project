@@ -8,9 +8,9 @@
                 :hide-slider="true"
                 active-class="primary"
             >
-                <v-tab>Per Livello</v-tab>
-                <v-tab>Per Punteggio</v-tab>
-                <v-tab>Per Rifiuto</v-tab>
+                <v-tab>By Level</v-tab>
+                <v-tab>By Score</v-tab>
+                <v-tab>By Trash</v-tab>
                
                 <v-tab-item>
                     <level-and-score :isLevelRank="true"/>

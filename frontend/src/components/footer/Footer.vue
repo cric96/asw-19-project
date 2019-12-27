@@ -48,8 +48,8 @@ export default {
     data: () => ({
       links: [
         'Team',
-        'Ideologia',
-        'Contatti',
+        'Philosophy',
+        'Contacts',
       ]
     }),
     methods : {

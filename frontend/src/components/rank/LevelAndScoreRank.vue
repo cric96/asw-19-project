@@ -4,7 +4,7 @@
     <v-list-group append-icon="keyboard_arrow_down" class="elevation-1">
       <template slot="activator">
         <v-list-item-content>
-          <v-list-item-title class="overline" ><h2>Filtri</h2></v-list-item-title>                   
+          <v-list-item-title class="overline" ><h2>Filters</h2></v-list-item-title>                   
         </v-list-item-content>
       </template>
       <v-divider class="mx-2"></v-divider>
@@ -19,11 +19,11 @@
                 </v-btn>
               </template>
               <v-list>
-                <v-list-item @click="changeOrder('ascendente')">
-                  <v-list-item-title class="overline"> <h3>Ascendente</h3> </v-list-item-title>
+                <v-list-item @click="changeOrder('ascending')">
+                  <v-list-item-title class="overline"> <h3>Ascending</h3> </v-list-item-title>
                 </v-list-item>
-                 <v-list-item @click="changeOrder('discendente')">
-                  <v-list-item-title class="overline"><h3>Discendente</h3></v-list-item-title>
+                 <v-list-item @click="changeOrder('descending')">
+                  <v-list-item-title class="overline"><h3>Descending</h3></v-list-item-title>
                 </v-list-item>
               </v-list>
             </v-menu>                
@@ -34,7 +34,7 @@
         <v-list-item @click="computeRank()"> 
           <v-list-item-content >        
             <v-btn color="success" block class="myButton text-left"  text height="60" >                                    
-              Applica                                    
+              Apply                                    
             </v-btn>           
           </v-list-item-content>
         </v-list-item> 
@@ -45,7 +45,7 @@
       <v-list-group append-icon="keyboard_arrow_down" class="elevation-1">
       <template slot="activator">
         <v-list-item-content>
-          <v-list-item-title class="overline" ><h2>Filtri</h2></v-list-item-title>                   
+          <v-list-item-title class="overline" ><h2>Filters</h2></v-list-item-title>                   
         </v-list-item-content>
       </template>
       <v-divider class="mx-2"></v-divider>
@@ -59,11 +59,11 @@
                 </v-btn>
               </template>
               <v-list>
-                <v-list-item @click="changeOrder('ascendente')">
-                  <v-list-item-title class="overline"> <h3>ascendente</h3> </v-list-item-title>
+                <v-list-item @click="changeOrder('ascending')">
+                  <v-list-item-title class="overline"> <h3>Ascending</h3> </v-list-item-title>
                 </v-list-item>
-                 <v-list-item @click="changeOrder('discendente')">
-                  <v-list-item-title class="overline"><h3>discendente</h3></v-list-item-title>
+                 <v-list-item @click="changeOrder('descending')">
+                  <v-list-item-title class="overline"><h3>Descending</h3></v-list-item-title>
                 </v-list-item>
               </v-list>
             </v-menu>    
@@ -74,7 +74,7 @@
             <v-list-item>
                <v-list-item-content>
             <v-btn color="success" block class="text-left" text height="60" @click="computeRank()">                                     
-              Applica                                    
+              Apply                                   
             </v-btn>                  
           </v-list-item-content>
               </v-list-item>         
@@ -99,16 +99,16 @@ export default {
     name: "LevelAndScoreRank",
     data: () => ({
         elements : [],
-        order : 'discendente'
+        order : 'descending'
     }),
     components : {
       "leaderboard-table" : LeaderboardTable
     },
     computed : {
       getRankHeader : function() {
-        var orderBy = this.isLevelRank ? "Livello" : "Punteggio"
+        var orderBy = this.isLevelRank ? "Level" : "Score"
         return [
-          {text : 'Utente', value : 'user'}, 
+          {text : 'User', value : 'user'}, 
           {text : orderBy, value : 'value'}
         ]
       },
@@ -128,9 +128,9 @@ export default {
       },
       computeRank() {
          if(this.isLevelRank) {
-          ranksApi.getLevelRank(this.order === "ascendente").then(rank => this.elements = rank)
+          ranksApi.getLevelRank(this.order === "ascending").then(rank => this.elements = rank)
         } else {
-          ranksApi.getScoreRank(this.order === "ascendente").then(rank => this.elements = rank)
+          ranksApi.getScoreRank(this.order === "ascending").then(rank => this.elements = rank)
         }
       }
     }

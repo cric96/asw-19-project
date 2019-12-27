@@ -12,8 +12,8 @@
 
         <v-divider class="mt-4"></v-divider>
         <v-row class="overline">
-          <v-col cols="6">Proprietario</v-col>
-          <v-col cols="6">Membri</v-col>
+          <v-col cols="6">Owner</v-col>
+          <v-col cols="6">Members</v-col>
         </v-row>
         <v-row class="mt-n3">
           <v-col cols="6" class="body-2"><user-chip :user="building.owner" expandable></user-chip></v-col>
@@ -23,10 +23,10 @@
   
       <v-divider class="mx-4"></v-divider>
       <v-card-actions>
-        <v-btn color="primary accent-4" text @click="showManager=true">{{ canEdit ? "Gestisci" : "Info"}}</v-btn>       
-        <v-btn v-if="canEdit" color="error accent-4" text @click="showDeleteConfirm = true">Elimina</v-btn>
+        <v-btn color="primary accent-4" text @click="showManager=true">{{ canEdit ? "Manage" : "Info"}}</v-btn>       
+        <v-btn v-if="canEdit" color="error accent-4" text @click="showDeleteConfirm = true">Delete</v-btn>
         <div class="flex-grow-1"></div>
-        <v-btn icon small @click="markAsActive" alt-labels="Imposta come abitazione attiva">
+        <v-btn icon small @click="markAsActive" alt-labels="Sets as active building">
           <v-icon small :color="(this.activeBuilding._id == this.building._id) ? 'green darken-1' : 'grey lighten-1'">
             fas fa-check
           </v-icon>
@@ -35,12 +35,12 @@
       <dialog-details v-if="building" v-model="showManager" :building="building" :editable="canEdit"></dialog-details>
       <v-dialog v-model="showDeleteConfirm" persistent max-width="300">
         <v-card>
-          <v-card-title class="headline primary white--text">Sei sicuro?</v-card-title>
-          <v-card-text class="mt-6">L'abitazione verrà eliminata, perderai definitivamente l'accesso ad essa.</v-card-text>
+          <v-card-title class="headline primary white--text">Are you sure?</v-card-title>
+          <v-card-text class="mt-6">The building will be deleted, you will lose the possibility to access it definitely.</v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="primary accent-4" text @click="showDeleteConfirm = false">Annulla</v-btn>
-            <v-btn color="error accent-4" text @click="onClickDelete">Conferma</v-btn>
+            <v-btn color="primary accent-4" text @click="showDeleteConfirm = false">Cancel</v-btn>
+            <v-btn color="error accent-4" text @click="onClickDelete">Confirm</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -80,7 +80,7 @@ export default {
         onClickDelete() {
           this.pendingOperation = true
           this.deactivateBuilding(this.building._id).then(() => {
-            this.$store.dispatch('msg/addMessage', new Notification('Abitazione eliminata'))
+            this.$store.dispatch('msg/addMessage', new Notification('Building deleted'))
           }).catch(err => {
             // TODO: show error
           }).finally(() => {
@@ -90,7 +90,7 @@ export default {
         },
         markAsActive: function() {
           this.changeActiveBuilding(this.building._id)
-          this.$store.dispatch('msg/addMessage', new Notification(`${this.building.name} impostata come abitazione attiva.`))
+          this.$store.dispatch('msg/addMessage', new Notification(`${this.building.name} sets as active building.`))
         }
     },
   computed: {

@@ -13,7 +13,7 @@
                 <v-icon large color="white">location_city</v-icon>
               </v-list-item-avatar>
               <v-list-item-content class="roboto white--text">
-                <span>Bentornato in casa <strong>{{activeBuilding.name}}</strong></span>
+                <span>Welcome back home <strong>{{activeBuilding.name}}</strong></span>
               </v-list-item-content>
             </v-list-item>
           </v-card>
@@ -33,10 +33,10 @@
 
       <!-- No building selected or available, show an empty view-->
       <empty-view v-else-if="!areAvailableBuildings" class="full-vh align-center" icon="location_city">
-        <template slot="title">Nessuna abitazione attiva</template>
-        <template slot="message">Crea ed imposta una nuova abitazione per iniziare a riciclare!</template>
+        <template slot="title">No active building</template>
+        <template slot="message">Create new buildings and start recycling!</template>
         <template slot="actions">
-          <v-btn color="primary" to="/buildings"> Gestisci abitazioni </v-btn>
+          <v-btn color="primary" to="/buildings"> Manage buildings </v-btn>
         </template>
       </empty-view>
       

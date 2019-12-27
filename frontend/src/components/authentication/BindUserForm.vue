@@ -3,7 +3,7 @@
     <v-card>
       <alert-message ref="alert" v-model="showAlert"></alert-message>
       <v-card-title>
-        <span class="headline">Esiste già un account (registrato con username e password) con la mail {{existingEmail}}; fornire la password per collegarlo all'account facebook con cui si vuole accedere:</span>
+        <span class="headline">There is an account (registered with username and password) having this email: {{existingEmail}}; please give the password to associate it with the facebook account you're trying to access with:</span>
       </v-card-title>
       <v-card-text>
         <v-container>
@@ -17,8 +17,8 @@
       </v-card-text>
       <v-card-actions>
         <div class="flex-grow-1"></div>
-        <v-btn color="blue darken-1" text @click="show=false" :disabled="pendingOperation">Chiudi</v-btn>
-        <v-btn color="blue darken-1" text @click="bind" :disabled="pendingOperation" :loading="pendingOperation">Collega</v-btn>
+        <v-btn color="blue darken-1" text @click="show=false" :disabled="pendingOperation">Close</v-btn>
+        <v-btn color="blue darken-1" text @click="bind" :disabled="pendingOperation" :loading="pendingOperation">Associate</v-btn>
       </v-card-actions>
     </v-card>
     
@@ -72,7 +72,7 @@ export default {
         password: this.password,
         socialCrendential: this.pendingCred
       }).then(user => {
-        this.$refs.alert.showSuccess("Collegamento completato con successo")
+        this.$refs.alert.showSuccess("Association successfully completed")
         this.$router.replace("/dashboard")
       }).catch(error => {
         this.$refs.alert.showError(error.description)

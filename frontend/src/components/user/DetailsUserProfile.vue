@@ -8,7 +8,7 @@
         class="white--text"
       >
         <v-icon color="white" class="mr-2">mdi-account</v-icon>
-        <v-card-title class="font-weight-light roboto-s">Profilo utente</v-card-title>
+        <v-card-title class="font-weight-light roboto-s">User profile</v-card-title>
         <div class="flex-grow-1"></div>
         <v-btn
           color="primary"
@@ -27,12 +27,12 @@
           v-bind:userProperties="userProperties" 
           v-bind:user="user" 
           :beDisabled="true" 
-          actionName="Aggiorna"
+          actionName="Update"
           :actionEnable="isEditing"
           @validateForm="updateUser">
             <v-col cols="12" sm="auto" md="auto">
               <v-btn  block @click="onShowPassword">
-                  Cambia password
+                  Change password
               </v-btn>
             </v-col>
           </user-form>

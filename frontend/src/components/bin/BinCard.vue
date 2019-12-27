@@ -24,13 +24,13 @@
                         align-items: center;
                         justify-content: center;" 
                         class="card-font center-element " v-else>
-            Nessun rifiuto <v-icon size=34 class="ml-2">sentiment_dissatisfied</v-icon> 
+            No trash <v-icon size=34 class="ml-2">sentiment_dissatisfied</v-icon> 
             </div>
         
         <v-divider class="mb-4"/>
         <v-card-actions>
             <v-spacer></v-spacer>
-            <p class="roboto-m">Totale: <span class="font-weight-bold">{{collectedTotal}}</span></p> <!-- or font-weight-thin? -->
+            <p class="roboto-m">Total: <span class="font-weight-bold">{{collectedTotal}}</span></p> <!-- or font-weight-thin? -->
             <v-spacer></v-spacer>
         </v-card-actions>
     </v-card>

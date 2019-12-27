@@ -83,11 +83,11 @@ export default {
         textFromFilter : function(){
             switch(this.filterBy) {
                 case 'DAY':
-                    return "Rifiuti delle ultime 24 ore"
+                    return "Last 24 hours wastes"
                 case 'WEEK':
-                    return "Rifiuti dell'ultima settimana"
+                    return "Last week wastes"
                 case 'MONTH':
-                    return "Rifiuti dell'ultimo mese"
+                    return "Last month wastes"
             }
         }, 
         loaded : function() {

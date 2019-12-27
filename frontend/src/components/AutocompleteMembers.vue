@@ -4,7 +4,7 @@
     :search-input.sync="searchText"
     :loading="loading"
     :disabled="disabled"
-    label="Membri dell'abitazione"
+    label="Building members"
     item-text="email"
     clearable
     hide-details hide-selected no-filter
@@ -16,8 +16,8 @@
     <template v-slot:no-data>
       <v-list-item>
         <v-list-item-title>
-          Cerca e aggiungi
-          <strong>membri</strong>
+          Find and add 
+          <strong>members</strong>
         </v-list-item-title>
       </v-list-item>
     </template>
