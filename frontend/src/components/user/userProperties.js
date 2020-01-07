@@ -1,18 +1,20 @@
-const generalRule =  [v => !!v || "Questo campo è obbligatorio"];
+
+import * as messages from "@/resource/messages"
+const generalRule =  [v => !!v || messages.MANDATORY_FIELD];
 const emailRule = [ 
-    v => !!v || "il campo E-mail è obbligatorio",
-    v => /.+@.+/.test(v) || "L'e-mail deve essere valida"
+    v => !!v || messages.EMAIL_MANDATORY,
+    v => /.+@.+/.test(v) || messages.EMAIL_INVALID
 ];
 export const passwordRule = [ 
-    v => !!v || "il campo password è obbligatorio",
-    v =>  v!==null && v!==undefined && v.length >= 6 || "La password deve essere almeno di 6 caratteri"
+    v => !!v || messages.PASSWD_MANDATORY,
+    v =>  v!==null && v!==undefined && v.length >= 6 || messages.PASSWD_INVALID
 ];
 
 function passwordConfirmBuilder(user) {
     return [
-        v => !!v || "il campo password è obbligatorio",
+        v => !!v || messages.PASSWD_MANDATORY,
         v => {
-            return v == user.password || "La password di conferma non coincide con quella sopra inserita"
+            return v == user.password || messages.CONFIRM_PASSWD_INVALID
         }
     ]
 }
