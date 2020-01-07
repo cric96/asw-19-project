@@ -6,11 +6,11 @@
                     <v-btn icon dark @click="$emit('input', false)" :disabled="pendingOperation">
                         <v-icon>mdi-close</v-icon>
                     </v-btn>
-                    <v-toolbar-title>{{ editable ? "Gestisci abitazione" : "Info abitazione"}}</v-toolbar-title>
+                    <v-toolbar-title>{{ editable ? "Manage building" : "Info building"}}</v-toolbar-title>
                     <v-spacer></v-spacer>
                     <v-toolbar-items v-if="editable">
                         <v-btn dark text @click="save" :loading="pendingOperation">
-                            <v-icon left small>fas fa-save</v-icon>Salva
+                            <v-icon left small>fas fa-save</v-icon>Save
                         </v-btn>
                     </v-toolbar-items>
                 </v-toolbar>
@@ -22,14 +22,14 @@
                     <!-- Building fields section -->
                     <v-card elevation="0">
                         <v-card-title>
-                            <div class="overline font-weight-medium">Info abitazione</div>
+                            <div class="overline font-weight-medium">Info building</div>
                         </v-card-title>
                         <v-card-text>
                             <v-form ref="form" lazy-validation>
                                 <v-row>
                                     <v-col cols="12" sm="6">
                                         <v-text-field name="name" 
-                                            label="Nome abitazione" 
+                                            label="Building name" 
                                             v-model="updatedBuilding.name"
                                             :rules="buildingNameRule"
                                             :disabled="pendingOperation"
@@ -38,7 +38,7 @@
                                     </v-col>
                                     <v-col cols="12" sm="6">
                                         <v-text-field name="city" 
-                                            label="Citta"
+                                            label="City"
                                             :value="formattedCity"
                                             readonly/>
                                     </v-col>
@@ -47,14 +47,14 @@
                                     <v-col cols="12" sm="6">
                                         <v-text-field 
                                             name="address" 
-                                            label="Indirizzo abitazione"
+                                            label="Building address"
                                             :value="updatedBuilding.address"
                                             readonly/>
                                     </v-col>
                                     <v-col cols="12" sm="3">
                                         <v-text-field 
                                             name="floor" 
-                                            label="Piano abitazione" 
+                                            label="Floor" 
                                             type="number"
                                             :value="updatedBuilding.floor"
                                             readonly/>
@@ -62,7 +62,7 @@
                                     <v-col cols="12" sm="3">
                                         <v-text-field 
                                             name="apartmentNumber" 
-                                            label="Interno"
+                                            label="Apartment number"
                                             type="number"
                                             min="0"
                                             :value="updatedBuilding.apartmentNumber"
@@ -75,7 +75,7 @@
                     
                     <!-- Members section -->
                     <v-card elevation="0">
-                        <v-card-title><div class="overline font-weight-medium">Membri</div></v-card-title>
+                        <v-card-title><div class="overline font-weight-medium">Members</div></v-card-title>
                         <v-card-text>
                             <v-row v-if="editable" align="center"> 
                                 <v-col cols="9" sm="auto" class="flex-grow-1">
@@ -106,7 +106,7 @@
                                                 @click="removeMember(member)" x-small icon>
                                                 <v-icon>mdi-close-circle</v-icon>
                                             </v-btn>
-                                            <v-chip v-if="member._id == updatedBuilding.owner._id">Proprietario</v-chip>
+                                            <v-chip v-if="member._id == updatedBuilding.owner._id">Owner</v-chip>
                                         </v-list-item-action>
                                     </v-list-item>
                                     <v-divider v-if="index + 1 < currentMembersList.length" :key="index"></v-divider>
@@ -139,7 +139,7 @@ export default {
         updatedBuilding: {},
         pendingOperation: false,
         showAlert: false,
-        buildingNameRule: [v => !!v && v.trim() != "" || "Nome non valido"]
+        buildingNameRule: [v => !!v && v.trim() != "" || "Not valid name"]
     }),
     props: {
         value: {
@@ -201,7 +201,7 @@ export default {
                     // close the dialog
                     this.$emit('input', false)
                     // show snackbar success
-                    this.$store.dispatch('msg/addMessage', new Notification("Abitazione aggiornata"))
+                    this.$store.dispatch('msg/addMessage', new Notification("Building updated"))
                 })
                 .catch(err => {
                     this.showAlert = true

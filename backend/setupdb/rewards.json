@@ -22,7 +22,7 @@
         "description": "Quanto vetro! Hai riciclato 10 rifiuti di vetro",
         "unlockData": {
             "type": "trash",
-            "categories": ["Vetro"],
+            "categories": ["Glass"],
             "quantity": 10
         }
     },
@@ -32,7 +32,7 @@
         "description": "La natura ti ringrazia! Hai gettato 50 rifiuti di carta",
         "unlockData": {
             "type": "trash",
-            "categories": ["Carta"],
+            "categories": ["Paper"],
             "quantity": 50
         }
     },

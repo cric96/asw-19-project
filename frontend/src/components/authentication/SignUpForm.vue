@@ -2,7 +2,7 @@
   <v-container fluid fill-height>
     <v-card v-bind:style="{ backgroundColor: color}" class="mx-auto bordered_card" elevation="20" max-width=500 >
       <alert v-model="showAlert" ref="alert"/>
-      <v-card-title id="top-card" class="justify-center"> REGISTRATI </v-card-title>
+      <v-card-title id="top-card" class="justify-center"> REGISTER </v-card-title>
       <v-card-text >
         <user-form 
             @validateForm="doSignUp"
@@ -12,11 +12,11 @@
             :resettable="true"
             :loading="inRegistration"
             maxwidth="150px"
-            actionName="Crea utente">
+            actionName="Create user">
         </user-form>
       </v-card-text>
       <v-card-text class="text-center" id="bottom">
-        <p> Hai già un account? <router-link to="/login">Log in</router-link></p>
+        <p> Have you already an account? <router-link to="/login">Log in</router-link></p>
       </v-card-text>
     </v-card>
   </v-container>
@@ -76,7 +76,7 @@ export default {
         if(error.description !== undefined) {
           this.$refs.alert.showError(error.description)
         } else {
-          this.$refs.alert.showError("Errore.. prova a modificare il form..")  
+          this.$refs.alert.showError("Error.. try to modify the form..")  
         }
       })
       .finally(() => {

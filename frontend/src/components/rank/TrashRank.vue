@@ -4,7 +4,7 @@
     <v-list-group append-icon="keyboard_arrow_down" class="elevation-1 ">
       <template slot="activator">
         <v-list-item-content>
-          <v-list-item-title class="overline" ><h2>Filtri</h2></v-list-item-title>                   
+          <v-list-item-title class="overline" ><h2>Filters</h2></v-list-item-title>                   
         </v-list-item-content>
       </template>
       <v-divider class="mx-2"></v-divider>
@@ -25,7 +25,7 @@
                     :items="trashCategories"
                     :menu-props="{closeOnClick: true, closeOnContentClick: true}"
                     hide-details hide-selected          
-                    label="Clicca e digita per cambiare.."
+                    label="Click and digit to change...."
                   ></v-autocomplete>
                  </v-card-text>
               </v-card>
@@ -43,11 +43,11 @@
                 </v-btn>
               </template>
               <v-list>
-                <v-list-item @click="changeOrder('ascendente')">
-                  <v-list-item-title class="overline"> <h3>ascendente</h3> </v-list-item-title>
+                <v-list-item @click="changeOrder('ascending')">
+                  <v-list-item-title class="overline"> <h3>ascending</h3> </v-list-item-title>
                 </v-list-item>
-                 <v-list-item @click="changeOrder('discendente')">
-                  <v-list-item-title class="overline"><h3>discendente</h3></v-list-item-title>
+                 <v-list-item @click="changeOrder('descending')">
+                  <v-list-item-title class="overline"><h3>descending</h3></v-list-item-title>
                 </v-list-item>
               </v-list>
             </v-menu>                  
@@ -60,7 +60,7 @@
               <template v-slot:activator="{ on }">
                 <v-btn v-on="on" block  :ripple="false" class="formButtons text-left" text height="60">
                   <v-icon>location_city</v-icon>
-                  {{city ===  undefined ? "Città" : city.name}}  
+                  {{city ===  undefined ? "city" : city.name}}  
                 </v-btn>
               </template>
               <v-card>
@@ -69,7 +69,7 @@
                       :items="cities.data"
                       :loading="cities.loading"
                       :search-input.sync="citySearchText"
-                      label="Cerca la città anche tramite CAP" 
+                      label="Search for the city also by CAP" 
                       hide-details hide-selected
                       no-filter clearable
                       hide-no-data>
@@ -97,14 +97,14 @@
                 </v-btn>
               </template>
               <v-list>
-                 <v-list-item @click="changeSubject('utente','face')">
-                  <v-list-item-title class="overline"> <h3>utente</h3> </v-list-item-title>
+                 <v-list-item @click="changeSubject('user','face')">
+                  <v-list-item-title class="overline"> <h3>User</h3> </v-list-item-title>
                 </v-list-item>
-                 <v-list-item @click="changeSubject('città','location_city')">
-                  <v-list-item-title class="overline"><h3>città</h3></v-list-item-title>
+                 <v-list-item @click="changeSubject('city','location_city')">
+                  <v-list-item-title class="overline"><h3>city</h3></v-list-item-title>
                 </v-list-item>
-                <v-list-item @click="changeSubject('edificio', 'home')">
-                  <v-list-item-title class="overline"><h3>edificio</h3></v-list-item-title>
+                <v-list-item @click="changeSubject('building', 'home')">
+                  <v-list-item-title class="overline"><h3>building</h3></v-list-item-title>
                 </v-list-item>
               </v-list>
             </v-menu>                                         
@@ -114,7 +114,7 @@
         <v-list-item :ripple="false" class="formButtons">
           <v-list-item-content>        
             <v-btn color="success" block class="lastButtons text-left" text height="60" @click="computeRank">                                    
-              Applica                                    
+              Apply                                  
             </v-btn>           
           </v-list-item-content>
           <v-list-item-content>
@@ -130,7 +130,7 @@
       <v-list-group append-icon="keyboard_arrow_down" class="elevation-1">
       <template slot="activator">
         <v-list-item-content>
-          <v-list-item-title class="overline" ><h2>Filtri</h2></v-list-item-title>                   
+          <v-list-item-title class="overline" ><h2>Filters</h2></v-list-item-title>                   
         </v-list-item-content>
       </template>
       <v-divider class="mx-2"></v-divider>
@@ -150,7 +150,7 @@
                     :items="trashCategories"
                     :menu-props="{closeOnClick: true, closeOnContentClick: true}"
                     hide-details hide-selected          
-                    label="Clicca e digita per cambiare.."
+                    label="Click and digit to change...."
                   ></v-autocomplete>
                  </v-card-text>
               </v-card>
@@ -165,11 +165,11 @@
                 </v-btn>
               </template>
               <v-list>
-                <v-list-item @click="changeOrder('ascendente')">
-                  <v-list-item-title class="overline"> <h3>ascendente</h3> </v-list-item-title>
+                <v-list-item @click="changeOrder('ascending')">
+                  <v-list-item-title class="overline"> <h3>ascending</h3> </v-list-item-title>
                 </v-list-item>
-                 <v-list-item @click="changeOrder('discendente')">
-                  <v-list-item-title class="overline"><h3>discendente</h3></v-list-item-title>
+                 <v-list-item @click="changeOrder('descending')">
+                  <v-list-item-title class="overline"><h3>descending</h3></v-list-item-title>
                 </v-list-item>
               </v-list>
             </v-menu>                
@@ -180,7 +180,7 @@
               <template v-slot:activator="{ on }">
                 <v-btn v-on="on" block class="text-left" text height="60">
                   <v-icon>location_city</v-icon>
-                  {{city ===  undefined ? "Città" : city.name}}  
+                  {{city ===  undefined ? "city" : city.name}}  
                 </v-btn>
               </template>
               <v-card>
@@ -189,7 +189,7 @@
                       :items="cities.data"
                       :loading="cities.loading"
                       :search-input.sync="citySearchText"
-                      label="Cerca la città anche tramite CAP" 
+                      label="Search for the city also by CAP" 
                       hide-details hide-selected
                       no-filter clearable
                       hide-no-data>
@@ -214,14 +214,14 @@
                 </v-btn>
               </template>
               <v-list>
-                <v-list-item @click="changeSubject('utente','face')">
-                  <v-list-item-title class="overline"> <h3>utente</h3> </v-list-item-title>
+                <v-list-item @click="changeSubject('user','face')">
+                  <v-list-item-title class="overline"> <h3>user</h3> </v-list-item-title>
                 </v-list-item>
-                 <v-list-item @click="changeSubject('città','location_city')">
-                  <v-list-item-title class="overline"><h3>città</h3></v-list-item-title>
+                 <v-list-item @click="changeSubject('city','location_city')">
+                  <v-list-item-title class="overline"><h3>city</h3></v-list-item-title>
                 </v-list-item>
-                <v-list-item @click="changeSubject('edificio', 'home')">
-                  <v-list-item-title class="overline"><h3>edificio</h3></v-list-item-title>
+                <v-list-item @click="changeSubject('building', 'home')">
+                  <v-list-item-title class="overline"><h3>building</h3></v-list-item-title>
                 </v-list-item>
               </v-list>
             </v-menu>                               
@@ -230,7 +230,7 @@
             <v-list-item>
                <v-list-item-content>
             <v-btn color="success" block class="text-left" text height="60" @click="computeRank">                                    
-              Applica                                    
+              Apply                                    
             </v-btn>                  
           </v-list-item-content>
               <v-list-item-content>
@@ -265,8 +265,8 @@ export default {
     data: () => ({
         elements : [],
         trashCategories : [],
-        order : "discendente",
-        subject : "utente",
+        order : "descending",
+        subject : "user",
         subjectIcon : "face",
         category : "",
         closeMenuOnCategorySelection: false,
@@ -277,7 +277,7 @@ export default {
         },
         city: undefined, 
         closeMenuOnCitySelection: false,
-        headerSubject : "utente",
+        headerSubject : "user",
         headerCategory : ""
 
     }),
@@ -298,19 +298,19 @@ export default {
     computed: {
       getRankHeader : function() {
         switch (this.headerSubject) {
-          case "utente" :
+          case "user" :
             return [
-              {text : 'Utente', value : 'user'}, 
+              {text : 'user', value : 'user'}, 
               {text : this.headerCategory, value : 'value'}
             ]
-          case "città" :
+          case "city" :
             return [
-              {text : 'Città', value : 'city.name'}, 
+              {text : 'city', value : 'city.name'}, 
               {text : this.headerCategory, value : 'value'}
             ]
-          case "edificio" :
+          case "building" :
             return [
-              {text : 'Edificio', value : 'building.name'}, 
+              {text : 'building', value : 'building.name'}, 
               {text : this.headerCategory, value : 'value'}
             ]
         }
@@ -335,14 +335,14 @@ export default {
         this.subjectIcon = changeInIcon
       },
       isSubjectCity() {
-        return this.subject === 'città'
+        return this.subject === 'city'
       },
       changeCategory(changeIn) {
         this.category = changeIn
       },
       resetFilters() {
-        this.order = "ascendente"
-        this.subject = "utente"
+        this.order = "ascending"
+        this.subject = "user"
         this.subjectIcon = "face"
         this.category = this.trashCategories[0]
         this.city = undefined
@@ -351,25 +351,25 @@ export default {
         var cap = this.city == undefined ? null : this.city.cap
         var categoryApplied = this.category
         switch(this.subject) {
-          case "utente" :
-            return ranksApi.getTrashRankByUser(this.order === "ascendente", this.category, cap)
+          case "user" :
+            return ranksApi.getTrashRankByUser(this.order === "ascending", this.category, cap)
             .then(rank => this.elements = rank)
             .then(() => {
-              this.headerSubject = "utente"
+              this.headerSubject = "user"
               this.headerCategory = categoryApplied
             })
-          case "città" :
-            return ranksApi.getTrashRankByCity(this.order === "ascendente", this.category)
+          case "city" :
+            return ranksApi.getTrashRankByCity(this.order === "ascending", this.category)
             .then(rank => this.elements = rank)
             .then(() => {
-              this.headerSubject = "città"
+              this.headerSubject = "city"
               this.headerCategory = categoryApplied
             })
-          case "edificio" :
-            return ranksApi.getTrashRankByBuilding(this.order === "ascendente", this.category, cap)
+          case "building" :
+            return ranksApi.getTrashRankByBuilding(this.order === "ascending", this.category, cap)
             .then(rank => this.elements = rank)
             .then(() => {
-              this.headerSubject = "edificio"
+              this.headerSubject = "building"
               this.headerCategory = categoryApplied
             })
         }

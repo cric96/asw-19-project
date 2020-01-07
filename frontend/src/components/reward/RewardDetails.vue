@@ -6,10 +6,10 @@
                 color="primary" text @click="onInfoClick" v-on="on"
             >
                 <template v-if="locked">
-                    Requisiti
+                    Requirements
                 </template>
                 <template v-else>
-                    Dettagli
+                    Details
                 </template>
                 <v-icon>{{ showMoreInfo ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
             </v-btn>
@@ -28,7 +28,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-const endRewardString = "per sbloccare questo premio"
+const endRewardString = "to unlock this reward"
 function trashesToString(reward) {
     return reward.unlockData.categories.map(category => category.toLowerCase()).join(" o ")
 }
@@ -75,15 +75,15 @@ export default {
         howToUnlock(reward) {
             switch(reward.unlockData.type) {
                 case 'genericTrash':
-                    return `devi buttare ${reward.unlockData.quantity} 
-                            rifiuti ${endRewardString}, ne hai buttati ${this.totalTrash()}`
+                    return `you have to recycle ${reward.unlockData.quantity} 
+                        trashes ${endRewardString}, you're at ${this.totalTrash()}`
                 case 'trash':
-                    return `devi buttare ${reward.unlockData.quantity} 
-                            rifiuti di ${trashesToString(reward)} ${endRewardString}, ne hai buttati ${this.trashFromCategories()}`
+                    return `you have to recycle ${reward.unlockData.quantity} 
+                             ${trashesToString(reward)} trashes ${endRewardString}, you're at ${this.trashFromCategories()}`
                 case 'score':
-                    return `devi raggiungere ${reward.unlockData.score} punti ${endRewardString}, ne hai guadagnati ${this.user.score}` 
+                    return `get ${reward.unlockData.score} scores ${endRewardString}, you're at ${this.user.score}` 
                 case 'level':
-                    return `devi raggiungere il livello ${reward.unlockData.level} per ${endRewardString}, ora sei al livello ${this.user.level}`
+                    return `reach level ${reward.unlockData.level} to ${endRewardString}, you're at ${this.user.level}`
             }
         }
     }

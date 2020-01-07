@@ -48,16 +48,16 @@ export default {
     data: () => ({
       links: [
         'Team',
-        'Ideologia',
-        'Contatti',
+        'Philosophy',
+        'Contacts',
       ]
     }),
     methods : {
       getComponentFromName(name) {
         switch(name) {
-          case "Ideologia":
+          case "Philosophy":
             return 'ideology-card'
-          case "Contatti":
+          case "Contacts":
             return 'contact-us-card'
           case 'Team':
             return 'team-card'

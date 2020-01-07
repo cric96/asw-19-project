@@ -4,7 +4,7 @@
             class="roboto-s secondary white--text"
             primary-title
         >
-            Contattaci
+            Contact us
         </v-card-title>
 
         
@@ -12,13 +12,13 @@
         <v-card-text>
             <v-list-item two-line>
                 <v-list-item-content>
-                    <v-list-item-content class="subtitle-1">Per segnalazioni potete contattarci alla mail:</v-list-item-content>
+                    <v-list-item-content class="subtitle-1">For any problem please contact us at:</v-list-item-content>
                     <v-list-item-subtitle><a href=”mailto:scanbage@gmail.it”>scanbage@gmail.it</a></v-list-item-subtitle>
                 </v-list-item-content>
             </v-list-item>
             <v-list-item two-line>
                 <v-list-item-content>
-                    <v-list-item-content class="subtitle-1">Oppure potete utilizzare i nostri canali social:</v-list-item-content>
+                    <v-list-item-content class="subtitle-1">Otherwise contact us on our socials:</v-list-item-content>
                 </v-list-item-content>
             </v-list-item>
             <v-row class="align-center justify-center">

@@ -3,7 +3,7 @@
     <v-layout row align-center justify-center>
         <v-card v-bind:style="{ backgroundColor: color}" class="mx-auto ma-3 mp-5 bordered_card" elevation="20"  max-width=340 >
           <alert v-model="showAlert" ref="alert"></alert>
-          <v-card-title class="justify-center"> ACCEDI </v-card-title>
+          <v-card-title class="justify-center"> LOG IN </v-card-title>
           <v-card-text>
             <v-form ref="form" v-model="valid" @keyup.native.enter="validate">
               <v-text-field
@@ -38,8 +38,8 @@
           </v-card-actions>
           <social-login/>
           <v-card-text class="text-center">
-              Non hai ancora un account?
-              <router-link to="/sign-up">Registrati</router-link>
+              Don't have an account yet?
+              <router-link to="/sign-up">Register</router-link>
           </v-card-text>
         </v-card>
     </v-layout>
@@ -67,11 +67,11 @@ export default {
     loggingIn: false,
     email: "",
     emailRules: [
-      v => !!v || "l'email è obbligatoria",
-      v => /.+@.+/.test(v) || "l'email deve essere valida"
+      v => !!v || messages.EMAIL_MANDATORY,
+      v => /.+@.+/.test(v) || messages.EMAIL_INVALID
     ],
     password: "",
-    passwordRules: [v => !!v || "la password è obbligatoria"]
+    passwordRules: [v => !!v || messages.PASSWD_MANDATORY]
   }),
   methods: {
     validate: function() {

@@ -7,7 +7,7 @@
   >
     <v-card>
     	<v-card-title class="secondary headline white--text" primary-title>
-        	Completa la registrazione
+        	Complete the registration
       </v-card-title>
       <alert class="mt-3 mx-3" text v-model="showAlert" ref="alert"/>
       <v-card-text>
@@ -20,8 +20,8 @@
       </v-card-text>
       <v-card-actions>
           <div class="flex-grow-1"></div>
-          <v-btn color="primary" text @click="validateForm" :disabled="!valid">Salva</v-btn>
-          <v-btn color="primary" text @click="opened = false">Chiudi</v-btn>
+          <v-btn color="primary" text @click="validateForm" :disabled="!valid">Save</v-btn>
+          <v-btn color="primary" text @click="opened = false">Close</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>

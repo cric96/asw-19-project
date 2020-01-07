@@ -28,10 +28,10 @@
                 <v-row class="align-center justify-center mt-4 pa-2">
                     <div class="text-xs-center">
                         <p v-if="!imageLoaded">
-                            Seleziona una foto da caricare..
+                            Choose a photo..
                         </p>
                         <p v-else>
-                            Ti va bene questa foto?
+                            Is it ok?
                         </p>
                     </div>
                 </v-row>
@@ -61,7 +61,7 @@ export default {
         'alert' : AlertMessageComponent
     },
     data: () => ({
-        title: "Foto profilo",
+        title: "Profile photo",
         imageSrc: null,
         imageData : null,
         loading : false,
@@ -108,7 +108,7 @@ export default {
                     this.error = true
                     this.loading = false
                     this.imageSrc =  null,
-                    this.$refs.alert.showError("Immagine non caricata...")
+                    this.$refs.alert.showError("Photo not loaded..")
                 })
         }
     }

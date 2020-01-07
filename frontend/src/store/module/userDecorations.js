@@ -36,7 +36,7 @@ export default {
         },
         //reaction at the newRewards message sent by server via web socket
         SOCKET_newRewards({commit}, rewards) {
-            var msg = new Notification("Nuovo premio sbloccato").setTo("/rewards")
+            var msg = new Notification("New unlocked reward").setTo("/rewards")
             this.dispatch('msg/addMessage', msg) //show notification
             commit("addRewards", rewards)
         }

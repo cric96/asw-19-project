@@ -29,8 +29,8 @@
         <v-list-item>
             <v-list-item-content>
                 <v-list-item-title class="headline">{{ user | formatUserDisplayName }}</v-list-item-title>
-                <v-list-item-subtitle class="overline font-weight-bold">Punteggio: {{ user.score }}</v-list-item-subtitle>
-                <v-list-item-subtitle class="overline font-weight-bold">Livello: {{ user.level }}</v-list-item-subtitle>
+                <v-list-item-subtitle class="overline font-weight-bold">Score: {{ user.score }}</v-list-item-subtitle>
+                <v-list-item-subtitle class="overline font-weight-bold">Level: {{ user.level }}</v-list-item-subtitle>
             </v-list-item-content>
         </v-list-item>
         <!-- default slot for add other contents to user header -->

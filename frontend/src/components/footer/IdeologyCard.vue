@@ -4,7 +4,7 @@
             class="roboto-s secondary white--text"
             primary-name
         >
-            Ideologia
+            Ideology
         </v-card-title>
 
         <v-card-text>

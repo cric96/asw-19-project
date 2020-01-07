@@ -2,8 +2,8 @@
     <v-snackbar v-model="notificationShow"
                 :timeout="timeout">
         {{notification.text}}
-        <v-btn v-if="hasLink" :to="notification.to" text> Vedi </v-btn>
-        <v-btn text color="primary" @click.native="notificationShow = false">Chiudi</v-btn>
+        <v-btn v-if="hasLink" :to="notification.to" text> See </v-btn>
+        <v-btn text color="primary" @click.native="notificationShow = false">Close</v-btn>
     </v-snackbar>
 </template>
 

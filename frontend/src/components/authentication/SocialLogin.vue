@@ -3,14 +3,14 @@
     <v-row>
       <v-col align="center" class="py-1">
         <v-btn class="loginBtn loginBtn--facebook" block @click="loginWithFb" dense>
-          <v-icon left dense>fab fa-facebook-f pr-1</v-icon>Login con Facebook
+          <v-icon left dense>fab fa-facebook-f pr-1</v-icon>Login with Facebook
         </v-btn>
       </v-col>
     </v-row>
     <v-row>
       <v-col align="center" class="py-1">
         <v-btn class="loginBtn loginBtn--google" block @click="loginWithGoogle">
-          <v-icon left dense>fab fa-google pr-1</v-icon>Login con Google
+          <v-icon left dense>fab fa-google pr-1</v-icon>Login with Google
         </v-btn>
       </v-col>
     </v-row>

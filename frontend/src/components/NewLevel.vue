@@ -8,7 +8,7 @@
   
   <v-card class="mx-auto" max-width="300" flat>
     <v-card-title primary-title class=" mx-auto text-xs-center">
-        Nuovo livello!
+        New level!
     </v-card-title>
     <v-layout justify-center> 
       <v-avatar color="primary" size="62" class="puff-in-center">
@@ -17,7 +17,7 @@
     </v-layout>
     <v-layout justify-center>  
       <v-card-text class="text-xs-center">
-        Continua così! La natura ti ringrazia
+        Keep going on saving nature!
       </v-card-text>
     </v-layout > 
     

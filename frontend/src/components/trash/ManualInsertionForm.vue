@@ -3,7 +3,7 @@
         <v-dialog v-model="value" persistent transition="dialog-bottom-transition" max-width="600px">
             <v-card>
                 <v-card-title class="roboto-s secondary white--text">
-                    <span > Tipologia di rifiuto</span>
+                    <span > Trash category</span>
                 </v-card-title>
                 <v-toolbar >
                     <!-- loading is used to show the loading time 
@@ -15,7 +15,7 @@
                         flat
                         hide-no-data
                         hide-details
-                        label="Digita..."
+                        label="Digit..."
                         solo
                         item-text="categoryName"
                         item-value="categoryName"
@@ -100,7 +100,7 @@ export default {
         //put the trash into backend
         return trashesApi.insertTrash(buildingId, { "name" : category.name })
           .then(() => {
-            let msg = new Notification('Hai guadagnato '+ category.score + ' punti')
+            let msg = new Notification('You got '+ category.score + ' points')
             this.$store.dispatch('msg/addMessage', msg)
             this.$store.commit('user/updateScore', category)
           })

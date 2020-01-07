@@ -52,7 +52,7 @@ export default {
         },
         passwordConfirmationLabel:{
             type:String,
-            default:"Conferma della password"
+            default:"Password confirmation"
         },
         withConfirmation: {
             type:Boolean,
@@ -91,13 +91,13 @@ export default {
         dictionary: {
             custom: {
                 password: {
-                    required: 'Password è un campo obbligatorio',
-                    min: 'la password deve contenere almeno 6 caratteri'
+                    required: 'Password is a mandatory field',
+                    min: 'Password must contain at least 6 characters'
                 },
                 confirmPassword: {
-                    required: 'La conferma della password è obbligatoria',
-                    min: 'Come la password, la sua conferma deve contenere almeno 6 caratteri',
-                    confirmed: 'La conferma della password non coincide'
+                    required: 'Password confirmation is mandatory',
+                    min: 'Password confirmation must contain at least 6 characters',
+                    confirmed: 'Password confirmation and password don\'t match '
                 }
             },
         },
@@ -105,7 +105,7 @@ export default {
     
     mounted () {
         const { $validator } = this;
-        $validator.localize('it',this.dictionary)
+        $validator.localize('en',this.dictionary)
     },
 }
 </script>

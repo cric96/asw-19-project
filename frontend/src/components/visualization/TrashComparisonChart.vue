@@ -11,7 +11,7 @@
             :height="height"
         >
             <v-card-title class="secondary white--text card-visualization-title">
-                Comparazione rifiuti
+                Trash comparison
             </v-card-title>
             <v-card-text class="mt-5">
                 <v-sheet color="rgba(0, 0, 0, .12)">
